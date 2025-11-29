@@ -10,4 +10,5 @@ export { useClock } from "./useClock";
 export { useFlickerAnimation } from "./useFlickerAnimation";
 export { useMorphState } from "./useMorphState";
 export { useHomeScroll } from "./useHomeScroll";
+export { useTouchDevice } from "./useTouchDevice";
 

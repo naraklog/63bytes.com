@@ -1,7 +1,8 @@
 "use client";
 
-import { forwardRef } from "react";
-import { MorphingText } from "./MorphingText";
+import { forwardRef, useRef, useEffect } from "react";
+import { MorphingText, MorphingTextHandle } from "./MorphingText";
+import { useLayoutContext } from "../context/LayoutContext";
 
 type NavDigitProps = {
 	/** The word form of the digit (e.g., "six", "three") */
@@ -12,8 +13,6 @@ type NavDigitProps = {
 	isFlickerPhase: boolean;
 	/** Whether the morph animation is active */
 	isMorphActive: boolean;
-	/** Current progress of the morph animation (0-1) */
-	morphProgress: number;
 	/** Alignment of the digit */
 	align: "left" | "right";
 	/** CSS class for flicker animation targeting */
@@ -27,10 +26,29 @@ type NavDigitProps = {
 /**
  * A component that renders a single navbar digit with flicker and morph animations.
  * Handles three states: flickering text, morphing animation, and static digit.
+ * 
+ * Uses imperative updates for scroll progress to avoid React re-renders on every frame.
  */
 const NavDigit = forwardRef<HTMLSpanElement, NavDigitProps>(
-	({ label, digit, isFlickerPhase, isMorphActive, morphProgress, align, flickerClass, injectFilters = true, isSmallScreen = false }, ref) => {
+	({ label, digit, isFlickerPhase, isMorphActive, align, flickerClass, injectFilters = true, isSmallScreen = false }, ref) => {
 		const blurStrength = isSmallScreen ? 2 : 8;
+		const morphingTextRef = useRef<MorphingTextHandle>(null);
+		const { subscribe, getSnapshot } = useLayoutContext();
+
+		// Subscribe to progress updates and imperatively update MorphingText
+		useEffect(() => {
+			if (!isMorphActive) return;
+
+			// Set initial progress
+			const initialState = getSnapshot();
+			morphingTextRef.current?.setProgress(initialState.progress);
+
+			const unsubscribe = subscribe((state) => {
+				morphingTextRef.current?.setProgress(state.progress);
+			});
+
+			return unsubscribe;
+		}, [isMorphActive, subscribe, getSnapshot]);
 
 		// Render flickering letters during flicker phase
 		if (isFlickerPhase) {
@@ -49,7 +67,16 @@ const NavDigit = forwardRef<HTMLSpanElement, NavDigitProps>(
 		if (isMorphActive) {
 			return (
 				<span ref={ref} className="font-sans text-off-white text-[clamp(2rem,6vw,5rem)] leading-none">
-					<MorphingText textFrom={label} textTo={digit} progress={morphProgress} layout="inline" align={align} color="inherit" injectFilters={injectFilters} blurStrength={blurStrength} />
+					<MorphingText
+						ref={morphingTextRef}
+						textFrom={label}
+						textTo={digit}
+						layout="inline"
+						align={align}
+						color="inherit"
+						injectFilters={injectFilters}
+						blurStrength={blurStrength}
+					/>
 				</span>
 			);
 		}
@@ -66,4 +93,3 @@ const NavDigit = forwardRef<HTMLSpanElement, NavDigitProps>(
 NavDigit.displayName = "NavDigit";
 
 export default NavDigit;
-

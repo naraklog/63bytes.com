@@ -7,7 +7,7 @@ import NavDigit from "./NavDigit";
 const Navbar = () => {
 	const { formattedTime, timezone } = useClock();
 	const { isNavVisible, isFlickerPhase } = useFlickerAnimation();
-	const { isMorphActive, morphProgress, isSmallScreen } = useMorphState();
+	const { isMorphActive, isSmallScreen } = useMorphState();
 	const { leftDigitRef, rightDigitRef } = useLayoutContext();
 
 	return (
@@ -23,7 +23,6 @@ const Navbar = () => {
 					digit="6"
 					isFlickerPhase={isFlickerPhase}
 					isMorphActive={isMorphActive}
-					morphProgress={morphProgress}
 					align="left"
 					flickerClass="flicker-char-left"
 					injectFilters={true}
@@ -45,7 +44,6 @@ const Navbar = () => {
 					digit="3"
 					isFlickerPhase={isFlickerPhase}
 					isMorphActive={isMorphActive}
-					morphProgress={morphProgress}
 					align="right"
 					flickerClass="flicker-char-right"
 					injectFilters={false}

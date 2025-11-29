@@ -333,3 +333,75 @@ code[data-theme] span {
 .animate-pixel-blink {
 	animation: pixel-blink 0.9s ease-in-out infinite;
 }
+
+/* Hide default cursor on non-touch devices */
+@media (pointer: fine) {
+	* {
+		cursor: none !important;
+	}
+}
+
+/* Main cursor element */
+.cursor {
+	position: fixed;
+	top: var(--cursor-top, 0);
+	left: var(--cursor-left, 0);
+	width: var(--cursor-width, 20px);
+	height: var(--cursor-height, 20px);
+	background-color: var(--foreground);
+	mix-blend-mode: difference;
+	pointer-events: none;
+	z-index: 9999;
+	transform: translate(-50%, -50%) scale(var(--cursor-scale, 1));
+	transition-duration: 0.1s;
+	transition-timing-function: ease-out;
+	transition-property: width, height, transform, background-color;
+
+	--cursor-top: 0;
+	--cursor-left: 0;
+	--cursor-width: 20px;
+	--cursor-height: 20px;
+	--cursor-scale: 1;
+	--cursor-translate-x: 0;
+	--cursor-translate-y: 0;
+}
+
+.cursor.is-locked {
+	transition-property: width, height, left, top;
+}
+
+/* Interactive element styling for magnetic/morph effect */
+a,
+button,
+[role="button"] {
+	position: relative;
+	transform: translate(var(--element-translate-x, 0), var(--element-translate-y, 0));
+	transition-duration: 0.1s;
+	transition-timing-function: ease-out;
+	transition-property: opacity, transform;
+
+	--element-translate-x: 0;
+	--element-translate-y: 0;
+}
+
+a:not(:hover),
+button:not(:hover),
+[role="button"]:not(:hover) {
+	transition-property: transform, opacity;
+}
+
+a:active,
+button:active,
+[role="button"]:active {
+	opacity: 0.8;
+	transform: translate(var(--element-translate-x, 0), var(--element-translate-y, 0));
+}
+
+/* Opt-out of cursor morph effect */
+[data-no-morph],
+[data-no-morph]:hover,
+[data-no-morph]:active {
+	transform: none !important;
+	--element-translate-x: 0 !important;
+	--element-translate-y: 0 !important;
+}

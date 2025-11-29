@@ -8,6 +8,7 @@ import { hasPreloaderRun } from "../../utils/preloader";
 import { CONTENT } from "../../utils/content";
 import { LandingNavigation } from "./LandingNavigation";
 import { LatestPostPreview } from "./LatestPostPreview";
+import { useTouchDevice } from "../../hooks/useTouchDevice";
 
 type LandingSectionProps = {
 	latestPost?: ArticleItem;
@@ -15,6 +16,7 @@ type LandingSectionProps = {
 
 const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function LandingSection({ latestPost }, ref) {
 	const [isLoaded, setIsLoaded] = useState(false);
+	const isTouchDevice = useTouchDevice();
 
 	const horizontalRef = useRef<HTMLDivElement>(null);
 	const verticalRef = useRef<HTMLDivElement>(null);
@@ -117,9 +119,13 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 			onMouseMove={handleMouseMove}
 			className="absolute inset-0 flex flex-col min-h-screen h-screen p-8 gap-8 border border-light-gray/20 bg-background text-foreground overflow-hidden"
 		>
-			{/* Cursor crosshairs */}
-			<div ref={horizontalRef} className="absolute top-0 left-0 w-full h-px bg-light-gray/20 pointer-events-none z-5" style={{ willChange: "transform" }} />
-			<div ref={verticalRef} className="absolute top-0 left-0 h-full w-px bg-light-gray/20 pointer-events-none z-5" style={{ willChange: "transform" }} />
+			{/* Cursor crosshairs - hidden on touch devices */}
+			{!isTouchDevice && (
+				<>
+					<div ref={horizontalRef} className="absolute top-0 left-0 w-full h-px bg-light-gray/20 pointer-events-none z-5" style={{ willChange: "transform" }} />
+					<div ref={verticalRef} className="absolute top-0 left-0 h-full w-px bg-light-gray/20 pointer-events-none z-5" style={{ willChange: "transform" }} />
+				</>
+			)}
 			{/* Coordinates */}
 			<div ref={coordinatesRef} className="hidden md:block absolute bottom-8 right-8 font-mono text-10xs text-off-white/70 pointer-events-none z-20 tabular-nums">
 				<ScrambleText text="[ 0° E , 0° N ]" scrambleOnMount={isLoaded} />

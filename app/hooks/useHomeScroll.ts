@@ -61,8 +61,25 @@ export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref,
 			const smoother = ScrollSmoother.create({
 				smooth: 2,
 				effects: true,
-				normalizeScroll: true,
+				normalizeScroll: { ignore: ".mobile-nav-portal" },
 			});
+
+			// Pre-initialize on first touchstart to prevent glitch
+			// The glitch happens because normalizeScroll initializes mid-scroll
+			// We pause very briefly then unpause in the same frame
+			let initialized = false;
+			const handleFirstTouch = () => {
+				if (initialized) return;
+				initialized = true;
+
+				// Briefly pause and immediately unpause to let normalizeScroll initialize
+				// without affecting the current touch gesture
+				smoother.paused(true);
+				smoother.paused(false);
+
+				window.removeEventListener("touchstart", handleFirstTouch, true);
+			};
+			window.addEventListener("touchstart", handleFirstTouch, { capture: true, passive: true });
 
 			// Initial setup
 			gsap.set(section2Ref.current, { yPercent: 100, zIndex: 10 });
@@ -86,6 +103,12 @@ export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref,
 					scrub: 1,
 					pin: true,
 					anticipatePin: 1,
+					snap: {
+						snapTo: [0, 1],
+						duration: { min: 0.2, max: 0.4 },
+						delay: 0,
+						ease: "power2.inOut",
+					},
 					onEnter: () => {
 						setMorphEnabled(true);
 					},
@@ -121,4 +144,3 @@ export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref,
 		};
 	}, [mainRef, containerRef, section1Ref, section2Ref, leftDigitRef, rightDigitRef, setMorphEnabled, setMorphProgress]);
 }
-

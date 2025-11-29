@@ -1,7 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 
-import CodeBlock from "./app/components/blog/CodeBlock";
+import CodeBlock from "./app/components/Blog/CodeBlock";
 
 const baseLinkClass = "underline decoration-dotted underline-offset-4 transition-opacity";
 

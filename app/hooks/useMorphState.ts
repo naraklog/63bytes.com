@@ -6,8 +6,6 @@ import { useLayoutContext } from "../context/LayoutContext";
 
 type MorphStateReturn = {
 	morphEnabled: boolean;
-	morphProgress: number;
-	shouldMorph: boolean;
 	isMorphActive: boolean;
 	isWebKit: boolean;
 	isSmallScreen: boolean;
@@ -16,6 +14,10 @@ type MorphStateReturn = {
 /**
  * A hook that manages the morph animation state.
  * Handles WebKit detection, screen size checks, and context subscription.
+ * 
+ * NOTE: This hook no longer tracks morphProgress to avoid re-renders on every scroll frame.
+ * Components that need progress updates should subscribe to context directly and use
+ * imperative updates via refs.
  */
 export function useMorphState(): MorphStateReturn {
 	const pathname = usePathname();
@@ -25,7 +27,6 @@ export function useMorphState(): MorphStateReturn {
 	const { subscribe, getSnapshot } = useLayoutContext();
 
 	const [morphEnabled, setMorphEnabled] = useState(false);
-	const [morphProgress, setMorphProgress] = useState(0);
 	const [isWebKit, setIsWebKit] = useState(false);
 	const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -57,11 +58,10 @@ export function useMorphState(): MorphStateReturn {
 		}
 	}, []);
 
-	// Subscribe to morph state from context
+	// Subscribe to morph enabled state from context (not progress)
 	useEffect(() => {
 		if (!isHomePage && !isBlogPost) {
 			setMorphEnabled(false);
-			setMorphProgress(0);
 			return;
 		}
 
@@ -71,7 +71,6 @@ export function useMorphState(): MorphStateReturn {
 		if ((isSupportedEnvironment || isBlogPost) && snapshot.enabled) {
 			setMorphEnabled(true);
 		}
-		setMorphProgress(snapshot.progress);
 
 		const unsubscribe = subscribe((state) => {
 			if (isWebKit && !isBlogPost) return;
@@ -84,8 +83,7 @@ export function useMorphState(): MorphStateReturn {
 			} else {
 				setMorphEnabled(false);
 			}
-
-			setMorphProgress(state.progress);
+			// NOTE: We no longer track state.progress here to avoid re-renders
 		});
 
 		return () => {
@@ -94,15 +92,13 @@ export function useMorphState(): MorphStateReturn {
 	}, [isHomePage, isBlogPost, isWebKit, isSmallScreen, subscribe, getSnapshot]);
 
 	const shouldMorph = (isHomePage || isBlogPost) && morphEnabled && (isBlogPost || (!isWebKit && !isSmallScreen));
-	const isMorphActive = shouldMorph && morphProgress < 1;
+	// isMorphActive is now based on morphEnabled only - progress tracking moved to NavDigit
+	const isMorphActive = shouldMorph;
 
 	return {
 		morphEnabled,
-		morphProgress,
-		shouldMorph,
 		isMorphActive,
 		isWebKit,
 		isSmallScreen,
 	};
 }
-
