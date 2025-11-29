@@ -306,9 +306,9 @@ export const PageTransitionProvider = ({ children }: { children: ReactNode }) =>
 			>
 				<div ref={panelRef} className="absolute inset-x-0 bottom-0 h-[110%] bg-foreground will-change-transform" />
 				<div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-2 px-6 pointer-events-none text-background">
-					<p className="text-xs tracking-widest font-mono uppercase text-background/60">Preparing</p>
+					<p className="text-[10px] md:text-xs tracking-widest font-mono uppercase text-background/60">Preparing</p>
 					<div className="flex items-center justify-center min-h-7]">
-						<span ref={textRef} className="block text-xl tracking-widest font-mono font-semibold leading-none opacity-0 text-center" />
+						<span ref={textRef} className="block text-sm md:text-xl tracking-widest font-mono font-semibold leading-none opacity-0 text-center" />
 					</div>
 				</div>
 			</div>

@@ -1,7 +1,6 @@
 "use client";
 
-import { Search, X, Home } from "lucide-react";
-import { BookOpenIcon, RowsIcon, SquaresFourIcon, StackIcon } from "@phosphor-icons/react";
+import { BookOpenIcon, RowsIcon, SquaresFourIcon, StackIcon, HouseIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { RadialBlur } from "progressive-blur";
@@ -54,7 +53,13 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 			<div className="md:hidden fixed bottom-4 left-0 right-0 z-100 flex justify-center px-4">
 				<div className="relative">
 					{/* Radial blur background */}
-					<RadialBlur className="absolute inset-0 pointer-events-none" strength={16} steps={8} falloffPercentage={120} style={{ zIndex: -1, margin: "-0.5rem -1rem" }} />
+					<RadialBlur
+						className="absolute inset-0 pointer-events-none"
+						strength={16}
+						steps={8}
+						falloffPercentage={120}
+						style={{ zIndex: -1, marginTop: "-0.75rem", marginBottom: "-0.75rem", marginLeft: "-3.5rem", marginRight: "-3.5rem" }}
+					/>
 					<div className="flex items-center gap-4 px-3 py-2 font-semi-mono text-sm shrink-0">
 						<button
 							onClick={() => {
@@ -81,27 +86,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 						{showHomeButton && (
 							<>
 								<TransitionLink href="/" className="flex items-center gap-2 text-black no-underline" transitionLabel="Home" aria-label="Go to homepage">
-									<Home size={24} />
-								</TransitionLink>
-							</>
-						)}
-						{showSearch ? (
-							<>
-								<button
-									onClick={() => {
-										setIsMobileSearchOpen(!isMobileSearchOpen);
-										setIsMobileMenuOpen(false);
-									}}
-									className="flex items-center gap-2 text-black"
-									data-no-morph
-								>
-									<Search size={24} />
-								</button>
-							</>
-						) : (
-							<>
-								<TransitionLink href="/blog" className="flex items-center gap-2 text-black no-underline" transitionLabel="Blog" aria-label="View all blog posts">
-									<BookOpenIcon weight="fill" size={20} />
+									<HouseIcon size={20} weight="fill" />
 								</TransitionLink>
 							</>
 						)}
@@ -114,6 +99,26 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 						>
 							<ToggleIcon size={20} weight="fill" />
 						</button>
+						{showSearch ? (
+							<>
+								<button
+									onClick={() => {
+										setIsMobileSearchOpen(!isMobileSearchOpen);
+										setIsMobileMenuOpen(false);
+									}}
+									className="flex items-center gap-2 text-black"
+									data-no-morph
+								>
+									<MagnifyingGlassIcon size={20} weight="bold" />
+								</button>
+							</>
+						) : (
+							<>
+								<TransitionLink href="/blog" className="flex items-center gap-2 text-black no-underline" transitionLabel="Blog" aria-label="View all blog posts">
+									<BookOpenIcon weight="fill" size={20} />
+								</TransitionLink>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -156,14 +161,6 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 			{showSearch && (
 				<>
 					{/* Mobile: Bottom search panel (animated) */}
-					{/* Scrim */}
-					<div
-						className={`md:hidden fixed inset-0 z-90 bg-black/30 transition-opacity duration-200 ${
-							isMobileSearchOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-						}`}
-						onClick={() => setIsMobileSearchOpen(false)}
-						aria-hidden={!isMobileSearchOpen}
-					/>
 					{/* Panel */}
 					<div
 						className={`md:hidden fixed bottom-20 left-0 right-0 z-100 px-4 transition-all duration-200 ease-out ${
@@ -171,7 +168,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 						}`}
 						aria-hidden={!isMobileSearchOpen}
 					>
-						<div className="mx-auto w-full max-w-[1080px] border border-background bg-foreground/80 backdrop-blur-sm shadow-lg p-3 flex items-center gap-2">
+						<div className="mx-auto w-full max-w-[1080px] border border-background bg-foreground shadow-lg p-3 flex items-center gap-2">
 							<input
 								type="text"
 								placeholder="Search articles..."
@@ -181,7 +178,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 								className="flex-1 px-3 py-2 text-background/80 placeholder:text-background/60 focus:outline-none font-semi-mono text-sm"
 							/>
 							<button onClick={() => setIsMobileSearchOpen(false)} className="p-2 text-background/70" data-no-morph aria-label="Close search">
-								<X size={20} />
+								<XIcon size={20} weight="bold" />
 							</button>
 						</div>
 					</div>

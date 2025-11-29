@@ -8,13 +8,15 @@ interface CursorAnimationProps {
 	cursorRef: React.RefObject<HTMLDivElement>;
 	isCursorLockedRef: React.MutableRefObject<boolean>;
 	transitionActiveRef: React.MutableRefObject<boolean>;
+	enabled: boolean;
 }
 
-export function useCursorAnimation({ cursorRef, isCursorLockedRef, transitionActiveRef }: CursorAnimationProps) {
+export function useCursorAnimation({ cursorRef, isCursorLockedRef, transitionActiveRef, enabled }: CursorAnimationProps) {
 	const [isVisible, setIsVisible] = useState(false);
 	const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
 
 	useEffect(() => {
+		if (!enabled) return;
 		const cursor = cursorRef.current;
 		if (!cursor) return;
 
@@ -55,7 +57,7 @@ export function useCursorAnimation({ cursorRef, isCursorLockedRef, transitionAct
 			document.removeEventListener("mouseup", handleMouseUp);
 			document.removeEventListener("mousemove", handleMouseMove);
 		};
-	}, [cursorRef, isVisible, isCursorLockedRef, transitionActiveRef]);
+	}, [cursorRef, isVisible, isCursorLockedRef, transitionActiveRef, enabled]);
 
 	return { isVisible, lastPointerRef };
 }
@@ -65,9 +67,10 @@ interface ElementHandlersProps {
 	isCursorLockedRef: React.MutableRefObject<boolean>;
 	transitionActiveRef: React.MutableRefObject<boolean>;
 	isScrollingRef: React.MutableRefObject<boolean>;
+	enabled: boolean;
 }
 
-export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef }: ElementHandlersProps) {
+export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, enabled }: ElementHandlersProps) {
 	const currentHostRef = useRef<HTMLElement | null>(null);
 
 	const unlockAndReset = useCallback(() => {
@@ -88,6 +91,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 	}, [cursorRef, isCursorLockedRef]);
 
 	useEffect(() => {
+		if (!enabled) return;
 		const cursor = cursorRef.current;
 		if (!cursor) return;
 
@@ -263,7 +267,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 			interactiveCleanupMap.forEach((cleanup) => cleanup());
 			textCleanupMap.forEach((cleanup) => cleanup());
 		};
-	}, [cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef]);
+	}, [cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, enabled]);
 
 	return { unlockAndReset };
 }
@@ -273,10 +277,12 @@ interface ScrollMonitorProps {
 	isScrollingRef: React.MutableRefObject<boolean>;
 	transitionActiveRef: React.MutableRefObject<boolean>;
 	lastPointerRef: React.MutableRefObject<{ x: number; y: number } | null>;
+	enabled: boolean;
 }
 
-export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef }: ScrollMonitorProps) {
+export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef, enabled }: ScrollMonitorProps) {
 	useEffect(() => {
+		if (!enabled) return;
 		let scrollTimeoutId: number | null = null;
 		const SCROLL_IDLE_DELAY_MS = 100;
 		let rafId: number | null = null;
@@ -377,6 +383,6 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 				window.clearTimeout(scrollTimeoutId);
 			}
 		};
-	}, [unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef]);
+	}, [unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef, enabled]);
 }
 

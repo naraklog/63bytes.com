@@ -80,7 +80,7 @@ export default function Articles({ activeCategory, items = [], limit, showViewAl
 				{showViewAllButton ? (
 					<ul className="ul-cross-br flex w-full justify-center border border-light-gray/15 border-t-0 py-12 bg-foreground">
 						<li className="w-full flex justify-center">
-							<TransitionLink href="/blog" className="w-4/5 border border-black bg-transparent px-4 py-2 text-center font-semibold font-mono text-black" transitionLabel="Blog">
+							<TransitionLink href="/blog" className="w-4/5 border border-black bg-transparent px-4 py-2 text-center text-sm font-semibold font-mono text-black" transitionLabel="Blog">
 								View All Posts
 							</TransitionLink>
 						</li>

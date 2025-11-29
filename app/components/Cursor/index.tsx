@@ -17,24 +17,29 @@ export default function Cursor() {
 	const [isTransitionActive, setIsTransitionActive] = useState(false);
 
 	// Hooks
+	const enabled = !isTouchDevice;
+	
 	const { isVisible, lastPointerRef } = useCursorAnimation({ 
 		cursorRef, 
 		isCursorLockedRef, 
-		transitionActiveRef 
+		transitionActiveRef,
+		enabled
 	});
 
 	const { unlockAndReset } = useElementHandlers({ 
 		cursorRef, 
 		isCursorLockedRef, 
 		transitionActiveRef, 
-		isScrollingRef 
+		isScrollingRef,
+		enabled
 	});
 
 	useScrollMonitor({ 
 		unlockAndReset, 
 		isScrollingRef, 
 		transitionActiveRef, 
-		lastPointerRef 
+		lastPointerRef,
+		enabled
 	});
 
 	// Handle visual transition state
