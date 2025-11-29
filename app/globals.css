@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+	--background: #050508;
+	--foreground: #fafafa;
+	--black: #050508;
+	--white: #fafafa;
+	--off-white: #dbdad7;
+	--light-gray: #606068;
+	--selection-background: var(--foreground);
+	--selection-color: var(--background);
+	--code-highlight-default: rgba(255, 255, 255, 0.08);
+	--code-highlight-light: rgba(5, 5, 8, 0.08);
+	--code-highlight-dark: rgba(255, 255, 255, 0.12);
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-black: var(--black);
+	--color-white: var(--white);
+	--color-light-gray: var(--light-gray);
+	--color-off-white: var(--off-white);
+	--font-sans: var(--font-roobert-sans);
+	--font-mono: var(--font-roobert-mono);
+	--font-semi-mono: var(--font-roobert-semi-mono);
+	--font-spacing: 0.05em;
+}
+
+@layer base {
+	.font-mono {
+		font-size: 0.8rem;
+	}
+}
+
+html {
+	background: var(--background);
+	height: 100%;
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-sans), sans-serif;
+	min-height: 100dvh;
+	overscroll-behavior-y: none;
+}
+
+/* Hex flip animation styles */
+.hex-container {
+	position: relative;
+	width: max-content;
+}
+
+.scramble-text {
+	white-space: nowrap;
+}
+
+.hex-flip-text {
+	display: flex;
+	align-items: baseline;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	white-space: nowrap;
+}
+
+.flip-container {
+	display: grid;
+	overflow: hidden;
+	width: 1ch;
+	height: 1em;
+}
+
+.flip-container > * {
+	grid-area: 1/1/2/2;
+	line-height: 1;
+}
