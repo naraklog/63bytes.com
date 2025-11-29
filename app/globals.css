@@ -77,3 +77,242 @@ body {
 	grid-area: 1/1/2/2;
 	line-height: 1;
 }
+
+/* Corner cross for article grid (top-left of first ul) */
+.ul-cross {
+	position: relative;
+	/* Keep these in sync with the ul's border to align perfectly */
+	--guide-width: 1px; /* Tailwind border default */
+	--cross-size: clamp(12px, 3vw, 21px);
+	--cross-half-size: calc((var(--cross-size) / 2) + var(--guide-width) - 0.5px);
+}
+
+.ul-cross::before,
+.ul-cross::after {
+	content: "";
+	position: absolute;
+	top: calc(var(--cross-half-size) * -1);
+	left: calc(var(--cross-half-size) * -1);
+	pointer-events: none;
+	z-index: 2;
+}
+
+/* Vertical line (downward) */
+.ul-cross::before {
+	width: var(--cross-half-size);
+	height: var(--cross-size);
+	border-right: var(--guide-width) solid rgb(96 96 104 / 0.4); /* matches border-light-gray/15 */
+}
+
+/* Horizontal line (rightward) */
+.ul-cross::after {
+	width: var(--cross-size);
+	height: var(--cross-half-size);
+	border-bottom: var(--guide-width) solid rgb(96 96 104 / 0.4);
+}
+
+/* Corner cross (bottom-right of last ul) */
+.ul-cross-br {
+	position: relative;
+	--guide-width: 1px;
+	--cross-size: clamp(12px, 3vw, 21px);
+	--cross-half-size: calc((var(--cross-size) / 2) + var(--guide-width) - 0.5px);
+}
+
+.ul-cross-br::before,
+.ul-cross-br::after {
+	content: "";
+	position: absolute;
+	right: calc(var(--cross-half-size) * -1);
+	bottom: calc(var(--cross-half-size) * -1);
+	pointer-events: none;
+	z-index: 2;
+}
+
+/* Vertical line (upward) */
+.ul-cross-br::before {
+	width: var(--cross-half-size);
+	height: var(--cross-size);
+	border-left: var(--guide-width) solid rgb(96 96 104 / 0.4);
+}
+
+/* Horizontal line (leftward) */
+.ul-cross-br::after {
+	width: var(--cross-size);
+	height: var(--cross-half-size);
+	border-top: var(--guide-width) solid rgb(96 96 104 / 0.4);
+}
+
+/* CSS Variables used by CodeBlock */
+:root {
+	--background: #050508;
+	--foreground: #fafafa;
+	--code-highlight-default: rgba(255, 255, 255, 0.08);
+	--code-highlight-light: rgba(5, 5, 8, 0.08);
+	--code-highlight-dark: rgba(255, 255, 255, 0.12);
+}
+
+/* Base pre styles */
+pre {
+	background-color: rgb(255 255 255 / 0.04);
+	border: 1px solid rgb(96 96 104 / 0.4);
+	border-radius: 0;
+	margin: 1.5rem 0;
+	padding: 0.25rem 0;
+	overflow-x: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 0.8rem;
+	line-height: 1.5;
+}
+
+pre::-webkit-scrollbar {
+	display: none;
+}
+
+pre code {
+	display: grid;
+}
+
+/* CodeBlock shell wrapper */
+.code-block-shell {
+	position: relative;
+	margin: 1.5rem 0;
+}
+
+pre.code-block {
+	margin: 0;
+}
+
+/* Copy button */
+.code-copy-button {
+	position: absolute;
+	top: 0.6rem;
+	right: 0.75rem;
+	pointer-events: auto;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.4rem 0.6rem;
+	border: 1px solid rgb(96 96 104 / 0.35);
+	background: rgba(5, 5, 8, 0.85);
+	color: var(--foreground);
+	z-index: 2;
+	transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+[data-code-theme="light"] .code-copy-button {
+	background: var(--foreground);
+	color: var(--background);
+	border-color: rgb(5 5 8 / 0.2);
+}
+
+[data-code-theme="dark"] .code-copy-button {
+	background: var(--background);
+	color: var(--foreground);
+	border-color: rgb(255 255 255 / 0.2);
+}
+
+.code-copy-button[data-copied="true"] {
+	opacity: 1;
+}
+
+.code-copy-button:hover,
+.code-copy-button:focus-visible {
+	opacity: 1;
+	transform: translateY(-1px);
+}
+
+.code-copy-button:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* Line padding in code blocks */
+pre [data-line] {
+	padding: 0 1.5rem;
+}
+
+/* Line numbers */
+code[data-line-numbers] {
+	counter-reset: line;
+}
+
+code[data-line-numbers] > [data-line] {
+	padding-left: 0.5rem;
+}
+
+code[data-line-numbers] > [data-line]::before {
+	counter-increment: line;
+	content: counter(line);
+	display: inline-block;
+	width: 1rem;
+	margin-right: 1.25rem;
+	text-align: right;
+	color: rgb(150 150 160);
+	font-size: 0.75em;
+	user-select: none;
+}
+
+code[data-line-numbers-max-digits="2"] > [data-line]::before {
+	width: 1.5rem;
+}
+
+code[data-line-numbers-max-digits="3"] > [data-line]::before {
+	width: 2rem;
+}
+
+code[data-line-numbers-max-digits="4"] > [data-line]::before {
+	width: 2.5rem;
+}
+
+/* Line highlighting */
+pre [data-line][data-highlighted-line] {
+	background: var(--code-highlight-default);
+	transition: background-color 150ms ease;
+}
+
+[data-code-theme="light"] pre [data-line][data-highlighted-line] {
+	background: var(--code-highlight-light);
+}
+
+[data-code-theme="dark"] pre [data-line][data-highlighted-line] {
+	background: var(--code-highlight-dark);
+}
+
+/* Shiki theme colors */
+code[data-theme],
+code[data-theme] span {
+	color: var(--shiki-light, var(--foreground));
+	background-color: var(--shiki-light-bg, transparent);
+	transition: color 150ms ease, background-color 150ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+	code[data-theme],
+	code[data-theme] span {
+		color: var(--shiki-dark, var(--foreground));
+		background-color: var(--shiki-dark-bg, transparent);
+	}
+}
+
+[data-code-theme="light"] code[data-theme],
+[data-code-theme="light"] code[data-theme] span {
+	color: var(--shiki-light, var(--foreground));
+	background-color: var(--shiki-light-bg, transparent);
+}
+
+[data-code-theme="dark"] code[data-theme],
+[data-code-theme="dark"] code[data-theme] span {
+	color: var(--shiki-dark, var(--foreground));
+	background-color: var(--shiki-dark-bg, transparent);
+}
+
+/* Theme-specific pre backgrounds */
+[data-code-theme="light"] pre {
+	background-color: var(--color-foreground, #fafafa);
+}
+
+[data-code-theme="dark"] pre {
+	background-color: var(--color-black, #050508);
+}

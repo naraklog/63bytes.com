@@ -12,6 +12,7 @@
         "lucide-react": "^0.555.0",
         "next": "16.0.5",
         "postprocessing": "^6.38.0",
+        "progressive-blur": "^1.0.0",
         "react": "19.2.0",
         "react-dom": "19.2.0",
         "three": "^0.181.2",
@@ -750,6 +751,8 @@
     "postprocessing": ["postprocessing@6.38.0", "", { "peerDependencies": { "three": ">= 0.157.0 < 0.182.0" } }, "sha512-tisx8XN/PWTL3uXz2mt8bjlMS1wiOUSCK3ixi4zjwUCFmP8XW8hNhXwrxwd2zf2VmCyCQ3GUaLm7GLnkkBbDsQ=="],
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
+
+    "progressive-blur": ["progressive-blur@1.0.0", "", { "peerDependencies": { "react": "^18.2.0", "react-dom": "^18.2.0" } }, "sha512-BZkJJHksqsxt9eJ+bv5ptXyUDa+ZbpOzdGJNJVxFo2qF0u+Y38E1oKWidt6JIaHCM1xk9o8LSjf9TbtHpbx9WQ=="],
 
     "prop-types": ["prop-types@15.8.1", "", { "dependencies": { "loose-envify": "^1.4.0", "object-assign": "^4.1.1", "react-is": "^16.13.1" } }, "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="],
 

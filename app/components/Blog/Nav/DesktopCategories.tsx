@@ -1,0 +1,162 @@
+"use client";
+
+import { ChevronDown, Menu, LayoutGrid, List } from "lucide-react";
+import { useRef, useState } from "react";
+import { categoryOptions, type CategoryOption } from "../../../types/posts";
+import { useOverflowMeasurement } from "../../../hooks/useOverflowMeasurement";
+import { useClickOutside } from "../../../hooks/useClickOutside";
+import { useEscapeKey } from "../../../hooks/useKeyboardShortcut";
+import { iconComponents } from "./iconComponents";
+import SearchBar from "./SearchBar";
+
+const categories = categoryOptions;
+const categoriesWithoutAll = categories.filter((category) => category.id !== "all");
+
+type DesktopCategoriesProps = {
+	activeCategory: string;
+	onCategoryChange: (category: string) => void;
+	viewMode: "grid" | "list";
+	onViewModeChange: (mode: "grid" | "list") => void;
+	searchQuery: string;
+	onSearchChange: (value: string) => void;
+	showSearch: boolean;
+	shortcutLabel: string;
+	searchInputRef: React.RefObject<HTMLInputElement | null>;
+};
+
+export default function DesktopCategories({
+	activeCategory,
+	onCategoryChange,
+	viewMode,
+	onViewModeChange,
+	searchQuery,
+	onSearchChange,
+	showSearch,
+	shortcutLabel,
+	searchInputRef,
+}: DesktopCategoriesProps) {
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+	const navRef = useRef<HTMLDivElement | null>(null);
+	const measureListRef = useRef<HTMLUListElement | null>(null);
+	const searchRef = useRef<HTMLDivElement | null>(null);
+	const allButtonRef = useRef<HTMLButtonElement | null>(null);
+	const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+	const isListView = viewMode === "list";
+	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
+	const ToggleIcon = isListView ? LayoutGrid : List;
+
+	const visibleCount = useOverflowMeasurement({
+		navRef,
+		measureListRef,
+		allButtonRef,
+		searchRef,
+		totalItemCount: categoriesWithoutAll.length,
+	});
+
+	const visibleCategories = categoriesWithoutAll.slice(0, visibleCount);
+
+	useClickOutside(dropdownRef, () => setIsDropdownOpen(false), isDropdownOpen);
+	useEscapeKey(() => setIsDropdownOpen(false), isDropdownOpen);
+
+	return (
+		<>
+			<div className="hidden md:flex items-center w-full gap-6">
+				<div ref={navRef} className="flex items-center gap-3 flex-1 min-w-0">
+					<div className="relative" ref={dropdownRef}>
+						<button
+							ref={allButtonRef}
+							onClick={() => setIsDropdownOpen((prev) => !prev)}
+							className={`flex items-center gap-2 px-3 py-1.5 h-8 box-border border transition-all duration-200 font-semi-mono text-xs tracking-tighter ${
+								activeCategory === "all" ? "bg-background text-foreground/80 border-background" : "border-background text-background/80"
+							}`}
+							aria-haspopup="menu"
+							aria-expanded={isDropdownOpen}
+						>
+							<span>All</span>
+							<ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+						</button>
+
+						{isDropdownOpen && (
+							<div className="absolute top-full left-0 mt-2 bg-foreground border border-background shadow-lg z-50 min-w-[200px]" role="menu">
+								<ul className="p-1.5 max-h-72 overflow-auto">
+									{categories.map((category) => {
+										const IconComponent = iconComponents[category.icon] ?? Menu;
+										return (
+											<li key={`all-${category.id}`}>
+												<button
+													onClick={() => {
+														onCategoryChange(category.id);
+														setIsDropdownOpen(false);
+													}}
+													className={`w-full text-left px-4 py-2 transition-all duration-200 font-semi-mono flex items-center gap-2 ${
+														activeCategory === category.id ? "bg-background text-foreground/80" : "text-background/80"
+													}`}
+													role="menuitem"
+												>
+													<IconComponent size={16} />
+													{category.label}
+												</button>
+											</li>
+										);
+									})}
+								</ul>
+							</div>
+						)}
+					</div>
+					<ul className="flex relative gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter overflow-hidden">
+						{visibleCategories.map((category) => {
+							const IconComponent = iconComponents[category.icon] ?? Menu;
+							return (
+								<li key={category.id}>
+									<button
+										onClick={() => onCategoryChange(category.id)}
+										className={`flex items-center gap-2 px-4 py-1.5 h-8 box-border border transition-all duration-200 ${
+											activeCategory === category.id ? "bg-background text-foreground/80 border-background" : "border-background text-background/80"
+										}`}
+										data-morph
+									>
+										<IconComponent size={16} />
+										{category.label}
+									</button>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
+				<div ref={searchRef} className="flex items-center gap-3">
+					<button
+						type="button"
+						onClick={() => onViewModeChange(isListView ? "grid" : "list")}
+						className="flex items-center justify-center w-9 h-8 border border-black bg-white text-black transition-colors duration-200"
+						aria-label={toggleAriaLabel}
+						title={toggleAriaLabel}
+					>
+						<ToggleIcon size={16} />
+					</button>
+					<SearchBar ref={searchInputRef} searchQuery={searchQuery} onSearchChange={onSearchChange} shortcutLabel={shortcutLabel} showSearch={showSearch} />
+				</div>
+			</div>
+
+			{/* Hidden measurement list to avoid oscillation and ensure stable width checks */}
+			<ul
+				ref={measureListRef}
+				aria-hidden="true"
+				className="md:flex hidden gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter absolute opacity-0 pointer-events-none -z-10"
+			>
+				{categoriesWithoutAll.map((category) => {
+					const IconComponent = iconComponents[category.icon] ?? Menu;
+					return (
+						<li key={`measure-${category.id}`}>
+							<button className="flex items-center gap-2 px-3 py-1.5 h-8 box-border border">
+								<IconComponent size={16} />
+								{category.label}
+							</button>
+						</li>
+					);
+				})}
+			</ul>
+		</>
+	);
+}
