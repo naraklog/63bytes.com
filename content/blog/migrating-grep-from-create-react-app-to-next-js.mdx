@@ -1,0 +1,44 @@
+---
+title: "Migrating Grep from Create React App to Next.js"
+description: "The playbook we followed to lift a legacy CRA dashboard into the App Router without pausing feature work."
+date: "2025-04-14"
+category: "Migration"
+icon: "gitBranch"
+authors:
+  - name: "Ethan"
+  - name: "Kevin"
+tags:
+  - migration
+  - react
+heroImage: "/blog/migrating-grep.png"
+---
+
+We treated the migration as a series of *compatibility layers* rather than a single flag day.
+
+### Steps we checked off
+
+- [x] Move routing logic into `/app` while keeping CRA bootstrapping for auth pages.
+- [x] Switch shared UI to Server Components and hoist client-only bits behind `use client` boundaries.
+- [ ] Replace bespoke webpack aliases; this work is in progress.
+
+### Lessons learned
+
+> Partial hydration is the cheapest win. Rendering the hero card on the server shaved ~200ms for free.
+
+```tsx
+// app/(marketing)/Hero.tsx
+import dynamic from "next/dynamic";
+
+const LiveNumbers = dynamic(() => import("./LiveNumbers"), { ssr: false });
+
+export default function Hero() {
+	return (
+		<section>
+			<h1>Meet the searchable backlog</h1>
+			<LiveNumbers />
+		</section>
+	);
+}
+```
+
+Github Flavored Markdown (courtesy of `remark-gfm`) keeps these lists pleasant to author—the unchecked box above represents the final milestone we're still syncing across teams.

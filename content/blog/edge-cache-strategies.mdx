@@ -1,0 +1,35 @@
+---
+title: "Edge caching strategies that actually work"
+description: "How we pair stale-while-revalidate with tag-based purge hooks to keep edge caches coherent under deploy storms."
+date: "2025-05-22"
+category: "Caching"
+icon: "database"
+authors:
+  - name: "Priya"
+tags:
+  - caching
+  - cdn
+heroImage: "/blog/edge-cache.png"
+---
+
+Edge caches fail when invalidation lags deploys. We fix that with **structured tags** and background revalidation.
+
+### Tag vocabulary
+
+| Tag | Scope | Example invalidation trigger |
+| --- | --- | --- |
+| `page:/blog` | All blog listing pages | Scheduled publish |
+| `post:how-fluid-compute-works-on-vercel` | A single post | Author edits content |
+| `asset:hero` | Hero image sprite sheet | CDN rollouts |
+
+### Deployment hook
+
+```ts
+await fetch("https://edge.example.com/purge", {
+	method: "POST",
+	headers: { "x-api-key": process.env.EDGE_CACHE_KEY! },
+	body: JSON.stringify({ tags: ["post:" + slug, "page:/blog"] }),
+});
+```
+
+Pair that with MDX frontmatter for hero images and you can drop in the right cache tags per post.

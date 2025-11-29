@@ -6,4 +6,8 @@ export { useArticleFilter } from "./useArticleFilter";
 export { useInfiniteLoader } from "./useInfiniteLoader";
 export { useIntersectionObserver } from "./useIntersectionObserver";
 export { useMediaQuery } from "./useMediaQuery";
+export { useClock } from "./useClock";
+export { useFlickerAnimation } from "./useFlickerAnimation";
+export { useMorphState } from "./useMorphState";
+export { useHomeScroll } from "./useHomeScroll";
 

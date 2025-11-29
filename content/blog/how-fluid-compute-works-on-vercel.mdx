@@ -1,0 +1,45 @@
+---
+title: "How Fluid compute works on Vercel"
+description: "A practical tour of Fluid compute's automatic scaling and how to decide when to run background work, edge logic, or region-tied jobs."
+date: "2025-03-03"
+category: "Compute"
+icon: "newspaper"
+authors:
+  - name: "Mariano"
+  - name: "Collier"
+tags:
+  - vercel
+  - compute
+  - scaling
+heroImage: "/blog/fluid-compute.png"
+---
+
+Fluid compute is Vercel's response to bursty, IO-heavy workloads. Instead of pre-provisioning lambdas per route, you describe **intents** and let the platform hydrate the required capacity in the closest region.
+
+## Scaling decisions
+
+| Signal | What Vercel does |
+| --- | --- |
+| CPU saturation | Moves the job to a compute-optimized pool |
+| Repeated cron invocations | Converts the job into a scheduled worker |
+| Fan-out webhooks | Keeps the workload on edge runtime to avoid cold starts |
+
+## Recommended architecture
+
+1. Keep routing logic at the edge so users never wait for a region hop.
+2. Forward heavy analytics to a Fluid worker via `fetch("/api/analytics" , { keepalive: true })`.
+3. Use streaming SSR to overlap computation with TTFB updates.
+
+```ts
+export async function POST() {
+	const analytics = startAnalyticsBatch();
+	const [featureFlags, experiments] = await Promise.all([
+		getFeatureFlags(),
+		getExperimentBranches(),
+	]);
+	await analytics.flush();
+	return Response.json({ featureFlags, experiments });
+}
+```
+
+When paired with `remark-gfm`, authoring these callouts in Markdown stays ergonomic—you can drop checkboxes, tables, or autolinks without custom MDX components.
