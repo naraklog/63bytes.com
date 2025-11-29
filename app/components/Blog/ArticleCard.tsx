@@ -1,0 +1,93 @@
+import { type ArticleItem, type IconKey } from "../../types/posts";
+import { Newspaper, GitBranch, Shield, Database, FileCode, Component, Menu, Cpu, type LucideIcon } from "lucide-react";
+import TransitionLink from "../TransitionLink";
+import AuthorsList from "./AuthorsList";
+
+const iconComponents: Record<IconKey, LucideIcon> = {
+	newspaper: Newspaper,
+	gitBranch: GitBranch,
+	shield: Shield,
+	database: Database,
+	fileCode: FileCode,
+	component: Component,
+	menu: Menu,
+	cpu: Cpu,
+};
+
+type ArticleCardProps = {
+	item: ArticleItem;
+	isListView: boolean;
+	needsRightOutline?: boolean;
+};
+
+export default function ArticleCard({ item, isListView, needsRightOutline = false }: ArticleCardProps) {
+	const IconComponent = iconComponents[item.icon] ?? Newspaper;
+
+	const listItemClasses = ["h-auto", !isListView ? "lg:h-[560px]" : "", needsRightOutline ? "lg:border-r lg:border-light-gray/20" : ""].filter(Boolean).join(" ");
+
+	const contentWrapperClasses = [
+		"flex h-full flex-col gap-4 bg-foreground no-underline text-black transition-colors duration-200",
+		isListView ? "p-4 md:p-6" : "p-8 lg:p-10",
+	].join(" ");
+
+	const excerptClasses = isListView ? "hidden" : "relative mt-3 overflow-hidden lg:flex-grow";
+	const metadataClasses = "mt-4 flex items-center gap-2";
+
+	const renderAuthors = (textClassName: string) => <AuthorsList authors={item.authors} className={textClassName} disableLinks />;
+
+	return (
+		<li className={listItemClasses}>
+			<article aria-label={item.label} className="h-full">
+				<TransitionLink href={item.href} className={contentWrapperClasses} transitionLabel={item.label}>
+					{isListView ? (
+						<>
+							<div className="flex items-center justify-between gap-4">
+								<div className="flex items-center gap-3">
+									<span className="inline-flex h-6 w-6 items-center justify-center rounded-sm text-black" aria-hidden="true">
+										<IconComponent size={200} strokeWidth={2} />
+									</span>
+									<h2 className="text-black text-lg sm:text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+								</div>
+								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">
+									{item.category}
+								</span>
+							</div>
+							<div className="flex flex-wrap items-center gap-3 justify-end text-sm text-light-gray text-right">
+								{renderAuthors("text-light-gray text-xs sm:text-sm")}
+								<span className="text-light-gray/60" aria-hidden="true">
+									•
+								</span>
+								<time dateTime={item.dateTime} className="text-light-gray text-[0.65rem] sm:text-xs uppercase tracking-wide">
+									{item.dateLabel}
+								</time>
+							</div>
+						</>
+					) : (
+						<>
+							<div className="flex items-start justify-between">
+								<span className="inline-flex h-6 w-6 items-center justify-center rounded-sm text-black" aria-hidden="true">
+									<IconComponent size={200} strokeWidth={2} />
+								</span>
+								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">
+									{item.category}
+								</span>
+							</div>
+							<h2 className="mt-2 text-black text-lg md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+							<div className={excerptClasses}>
+								<p className="text-light-gray text-sm leading-6">{item.intro}</p>
+								<div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-linear-to-b from-transparent to-foreground" />
+							</div>
+							<div className={metadataClasses}>
+								{renderAuthors("text-light-gray text-xs sm:text-sm")}
+								<time dateTime={item.dateTime} className="ml-auto text-light-gray text-[0.7rem] md:text-[0.8rem] leading-4 text-right">
+									{item.dateLabel}
+								</time>
+							</div>
+						</>
+					)}
+				</TransitionLink>
+			</article>
+		</li>
+	);
+}
+

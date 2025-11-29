@@ -1,9 +1,10 @@
 "use client";
 
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import CategoriesNav from "./CategoriesNav";
 import Articles from "./Articles";
 import type { ArticleItem } from "../../types/posts";
+import { useIntersectionObserver, useMediaQuery } from "../../hooks";
 
 type BlogSectionProps = {
 	limit?: number;
@@ -18,46 +19,39 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [searchQuery, setSearchQuery] = useState("");
-	const [isInView, setIsInView] = useState(false);
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const hasInitializedView = useRef(false);
 
 	// Merge forwarded ref with local ref
-	function assignRefs(el: HTMLElement | null) {
-		sectionRef.current = el;
-		if (typeof ref === "function") {
-			ref(el);
-		} else if (ref && typeof ref === "object") {
-			(ref as React.MutableRefObject<HTMLElement | null>).current = el;
-		}
-	}
+	const assignRefs = useCallback(
+		(el: HTMLElement | null) => {
+			sectionRef.current = el;
+			if (typeof ref === "function") {
+				ref(el);
+			} else if (ref && typeof ref === "object") {
+				(ref as React.MutableRefObject<HTMLElement | null>).current = el;
+			}
+		},
+		[ref]
+	);
 
-	useEffect(() => {
-		const el = sectionRef.current;
-		if (!el) return;
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.target === el) {
-						setIsInView(entry.isIntersecting && entry.intersectionRatio > 0.1);
-					}
-				}
-			},
-			{ threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] }
-		);
-		observer.observe(el);
-		return () => observer.disconnect();
-	}, []);
+	// Use custom hook for intersection observation
+	const isInView = useIntersectionObserver(sectionRef, {
+		threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+		minRatio: 0.1,
+	});
 
+	// Use custom hook for media query
+	const isMobile = useMediaQuery("(max-width: 767px)");
+
+	// Initialize view mode based on screen size (once)
 	useEffect(() => {
 		if (hasInitializedView.current) return;
-		if (typeof window === "undefined") return;
-		const media = window.matchMedia("(max-width: 767px)");
-		if (media.matches) {
-			setViewMode((prev) => (prev === "list" ? prev : "list"));
+		if (isMobile) {
+			setViewMode("list");
 		}
 		hasInitializedView.current = true;
-	}, []);
+	}, [isMobile]);
 
 	useEffect(() => {
 		onLayoutChange?.();

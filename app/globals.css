@@ -316,3 +316,20 @@ code[data-theme] span {
 [data-code-theme="dark"] pre {
 	background-color: var(--color-black, #050508);
 }
+
+/* Pixel blink animation for loading indicator */
+@keyframes pixel-blink {
+	0%,
+	100% {
+		opacity: 0.35;
+		transform: translateY(0);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(-3px);
+	}
+}
+
+.animate-pixel-blink {
+	animation: pixel-blink 0.9s ease-in-out infinite;
+}

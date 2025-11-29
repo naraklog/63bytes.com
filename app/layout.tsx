@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { PageTransitionProvider } from "./components/PageTransitionProvider";
 import PreloaderGate from "./components/PreloaderGate";
+import { LayoutProvider } from "./context/LayoutContext";
 
 const roobertSans = localFont({
 	src: [
@@ -224,8 +225,10 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} antialiased`}>
 				<PageTransitionProvider>
-					<PreloaderGate />
-					{children}
+					<LayoutProvider>
+						<PreloaderGate />
+						{children}
+					</LayoutProvider>
 				</PageTransitionProvider>
 			</body>
 		</html>
