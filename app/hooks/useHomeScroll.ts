@@ -25,6 +25,27 @@ type UseHomeScrollOptions = {
  * Handles the pinned scroll animation between landing and blog sections.
  */
 export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref, leftDigitRef, rightDigitRef, setMorphEnabled, setMorphProgress }: UseHomeScrollOptions): void {
+	// Disable browser scroll restoration and reset scroll position on mount
+	// This ensures the animation always starts from a clean state on page refresh
+	useLayoutEffect(() => {
+		if (typeof window === "undefined") return;
+
+		// Disable browser's automatic scroll restoration
+		if ("scrollRestoration" in history) {
+			history.scrollRestoration = "manual";
+		}
+
+		// Force scroll to top
+		window.scrollTo(0, 0);
+
+		return () => {
+			// Restore default scroll restoration behavior on unmount
+			if ("scrollRestoration" in history) {
+				history.scrollRestoration = "auto";
+			}
+		};
+	}, []);
+
 	useLayoutEffect(() => {
 		// Reset state on mount
 		setMorphEnabled(false);

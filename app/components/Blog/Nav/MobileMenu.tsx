@@ -3,7 +3,7 @@
 import { Search, X, ChevronDown, ChevronUp, Menu, Home, LayoutGrid, List, Library } from "lucide-react";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
-import { LinearBlur } from "progressive-blur";
+import { RadialBlur } from "progressive-blur";
 import { categoryOptions } from "../../../types/posts";
 import TransitionLink from "../../TransitionLink";
 import { iconComponents } from "./iconComponents";
@@ -19,7 +19,6 @@ type MobileMenuProps = {
 	onSearchChange: (value: string) => void;
 	showSearch: boolean;
 	showHomeButton: boolean;
-	isIos: boolean;
 	isMobileMenuOpen: boolean;
 	setIsMobileMenuOpen: (open: boolean) => void;
 	isMobileSearchOpen: boolean;
@@ -36,7 +35,6 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 		onSearchChange,
 		showSearch,
 		showHomeButton,
-		isIos,
 		isMobileMenuOpen,
 		setIsMobileMenuOpen,
 		isMobileSearchOpen,
@@ -51,81 +49,63 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	return createPortal(
 		<>
 			{/* Small screens: Floating bottom nav */}
-			<div className="md:hidden fixed bottom-4 left-0 right-0 z-100 flex justify-center">
-				<div className="w-full max-w-[1080px] relative">
-					{!isIos && (
-						<LinearBlur
-							steps={3.2}
-							strength={64}
-							falloffPercentage={120}
-							side="bottom"
-							style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 160, zIndex: 0, pointerEvents: "none" }}
-						/>
+			<div className="md:hidden fixed bottom-4 left-0 right-0 z-100 flex justify-center px-4">
+				<RadialBlur steps={3.2} strength={64} falloffPercentage={120} style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 160, zIndex: 0, pointerEvents: "none" }} />
+				<div className="relative z-1 flex items-center gap-3 border border-light-gray/80 bg-black/90 backdrop-blur px-3 py-2 font-semi-mono text-sm shadow-lg">
+					<button
+						onClick={() => {
+							setIsMobileMenuOpen(!isMobileMenuOpen);
+							setIsMobileSearchOpen(false);
+						}}
+						className="flex items-center gap-2 text-foreground/80"
+						aria-haspopup="menu"
+						aria-expanded={isMobileMenuOpen}
+					>
+						{(() => {
+							const activeCat = categories.find((cat) => cat.id === activeCategory);
+							const IconComponent = activeCat ? iconComponents[activeCat.icon] ?? Menu : null;
+							return (
+								<>
+									{IconComponent && <IconComponent size={16} />}
+									<span className="max-w-[40vw] truncate">{activeCat?.label}</span>
+								</>
+							);
+						})()}
+						{isMobileMenuOpen ? <ChevronDown size={16} className="rotate-180" /> : <ChevronUp size={16} />}
+					</button>
+					<div className="w-px h-5 bg-foreground/20" />
+					{showHomeButton && (
+						<>
+							<TransitionLink href="/" className="flex items-center gap-2 text-foreground/80 no-underline" transitionLabel="Home" aria-label="Go to homepage">
+								<Home size={16} />
+							</TransitionLink>
+							<div className="w-px h-5 bg-foreground/20" />
+						</>
 					)}
-					<div className="mx-auto w-full flex flex-wrap items-center justify-center gap-3 py-4">
-						<div className="relative z-1 flex items-center border border-light-gray/80 bg-black/90 backdrop-blur px-3 py-2 font-semi-mono text-sm shadow-lg">
+					{showSearch ? (
+						<>
 							<button
 								onClick={() => {
-									setIsMobileMenuOpen(!isMobileMenuOpen);
-									setIsMobileSearchOpen(false);
+									setIsMobileSearchOpen(!isMobileSearchOpen);
+									setIsMobileMenuOpen(false);
 								}}
 								className="flex items-center gap-2 text-foreground/80"
-								aria-haspopup="menu"
-								aria-expanded={isMobileMenuOpen}
 							>
-								{(() => {
-									const activeCat = categories.find((cat) => cat.id === activeCategory);
-									const IconComponent = activeCat ? iconComponents[activeCat.icon] ?? Menu : null;
-									return (
-										<>
-											{IconComponent && <IconComponent size={16} />}
-											<span className="max-w-[40vw] truncate">{activeCat?.label}</span>
-										</>
-									);
-								})()}
-								{isMobileMenuOpen ? <ChevronDown size={16} className="rotate-180" /> : <ChevronUp size={16} />}
+								<Search size={16} />
 							</button>
-						</div>
-						<div className="relative z-1 flex items-center gap-3 border border-light-gray/80 bg-black/90 backdrop-blur px-4 py-2 font-semi-mono text-sm shadow-lg">
-							{showHomeButton && (
-								<>
-									<TransitionLink href="/" className="flex items-center gap-2 text-foreground/80 no-underline" transitionLabel="Home" aria-label="Go to homepage">
-										<Home size={16} />
-									</TransitionLink>
-									<div className="w-px h-5 bg-foreground/20" />
-								</>
-							)}
-							{showSearch ? (
-								<>
-									<button
-										onClick={() => {
-											setIsMobileSearchOpen(!isMobileSearchOpen);
-											setIsMobileMenuOpen(false);
-										}}
-										className="flex items-center gap-2 text-foreground/80"
-									>
-										<Search size={16} />
-									</button>
-									<div className="w-px h-5 bg-foreground/20" />
-								</>
-							) : (
-								<>
-									<TransitionLink href="/blog" className="flex items-center gap-2 text-foreground/80 no-underline" transitionLabel="Blog" aria-label="View all blog posts">
-										<Library size={16} />
-									</TransitionLink>
-									<div className="w-px h-5 bg-foreground/20" />
-								</>
-							)}
-							<button
-								onClick={() => onViewModeChange(isListView ? "grid" : "list")}
-								className="flex items-center text-foreground/80"
-								aria-label={toggleAriaLabel}
-								title={toggleAriaLabel}
-							>
-								<ToggleIcon size={16} />
-							</button>
-						</div>
-					</div>
+							<div className="w-px h-5 bg-foreground/20" />
+						</>
+					) : (
+						<>
+							<TransitionLink href="/blog" className="flex items-center gap-2 text-foreground/80 no-underline" transitionLabel="Blog" aria-label="View all blog posts">
+								<Library size={16} />
+							</TransitionLink>
+							<div className="w-px h-5 bg-foreground/20" />
+						</>
+					)}
+					<button onClick={() => onViewModeChange(isListView ? "grid" : "list")} className="flex items-center text-foreground/80" aria-label={toggleAriaLabel} title={toggleAriaLabel}>
+						<ToggleIcon size={16} />
+					</button>
 				</div>
 			</div>
 

@@ -33,8 +33,8 @@ const Navbar = () => {
 
 			{/* Center clock */}
 			<div className="text-left">
-				<div className="font-mono text-white/80 text-[clamp(0.7rem,2.5vw,0.8rem)]">{formattedTime}</div>
-				<div className="font-mono text-light-gray tracking-tighter text-[clamp(0.7rem,2.5vw,0.8rem)]">({timezone})</div>
+				<div className="font-mono text-white/80 text-[clamp(0.7rem,2.5vw,0.8rem)]">{formattedTime || "\u00A0"}</div>
+				<div className="font-mono text-light-gray tracking-tighter text-[clamp(0.7rem,2.5vw,0.8rem)]">{timezone ? `(${timezone})` : "\u00A0"}</div>
 			</div>
 
 			{/* Right digit */}

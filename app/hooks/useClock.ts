@@ -7,7 +7,7 @@ type ClockOptions = {
 };
 
 type ClockReturn = {
-	time: Date;
+	time: Date | null;
 	formattedTime: string;
 	timezone: string;
 };
@@ -15,13 +15,17 @@ type ClockReturn = {
 /**
  * A hook that manages time state and formatting.
  * Updates every second by default.
+ * Returns null/empty values on initial render to avoid hydration mismatch.
  */
 export function useClock(options: ClockOptions = {}): ClockReturn {
 	const { updateInterval = 1000, locale = "en-US", hour12 = true } = options;
 
-	const [time, setTime] = useState(() => new Date());
+	const [time, setTime] = useState<Date | null>(null);
 
 	useEffect(() => {
+		// Set time immediately on mount
+		setTime(new Date());
+
 		const timer = setInterval(() => {
 			setTime(new Date());
 		}, updateInterval);
@@ -30,7 +34,8 @@ export function useClock(options: ClockOptions = {}): ClockReturn {
 	}, [updateInterval]);
 
 	const formatTime = useCallback(
-		(date: Date) => {
+		(date: Date | null) => {
+			if (!date) return "";
 			return date.toLocaleTimeString(locale, {
 				hour: "2-digit",
 				minute: "2-digit",
@@ -42,6 +47,7 @@ export function useClock(options: ClockOptions = {}): ClockReturn {
 	);
 
 	const getTimezone = useCallback(() => {
+		if (!time) return "";
 		// Get the user's timezone abbreviation
 		try {
 			const formatter = new Intl.DateTimeFormat(locale, { timeZoneName: "short" });
@@ -59,4 +65,3 @@ export function useClock(options: ClockOptions = {}): ClockReturn {
 		timezone: getTimezone(),
 	};
 }
-

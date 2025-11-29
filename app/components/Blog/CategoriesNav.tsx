@@ -28,7 +28,7 @@ export default function BlogNavigation({ activeCategory, onCategoryChange, showF
 	const pathname = usePathname();
 	const showHomeButton = pathname !== "/";
 	const { isTransitioning } = usePageTransition();
-	const { isMac, isIos, shortcutLabel } = usePlatform();
+	const { isMac, shortcutLabel } = usePlatform();
 
 	const searchInputRef = useRef<HTMLInputElement | null>(null);
 	const mobileSearchInputRef = useRef<HTMLInputElement | null>(null);
@@ -132,7 +132,6 @@ export default function BlogNavigation({ activeCategory, onCategoryChange, showF
 					onSearchChange={onSearchChange}
 					showSearch={showSearch}
 					showHomeButton={showHomeButton}
-					isIos={isIos}
 					isMobileMenuOpen={isMobileMenuOpen}
 					setIsMobileMenuOpen={setIsMobileMenuOpen}
 					isMobileSearchOpen={isMobileSearchOpen}
