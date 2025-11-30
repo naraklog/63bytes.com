@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronDown, Menu, LayoutGrid, List } from "lucide-react";
+import { CaretDownIcon, StackIcon, SquaresFourIcon, ListDashesIcon } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
-import { categoryOptions, type CategoryOption } from "../../../types/posts";
+import { categoryOptions } from "../../../types/posts";
 import { useOverflowMeasurement } from "../../../hooks/useOverflowMeasurement";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 import { useEscapeKey } from "../../../hooks/useKeyboardShortcut";
@@ -45,7 +45,7 @@ export default function DesktopCategories({
 
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
-	const ToggleIcon = isListView ? LayoutGrid : List;
+	const ToggleIcon = isListView ? SquaresFourIcon : ListDashesIcon;
 
 	const visibleCount = useOverflowMeasurement({
 		navRef,
@@ -75,14 +75,14 @@ export default function DesktopCategories({
 							aria-expanded={isDropdownOpen}
 						>
 							<span>All</span>
-							<ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+							<CaretDownIcon className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
 						</button>
 
 						{isDropdownOpen && (
 							<div className="absolute top-full left-0 mt-2 bg-foreground border border-background shadow-lg z-50 min-w-[200px]" role="menu">
 								<ul className="p-1.5 max-h-72 overflow-auto">
 									{categories.map((category) => {
-										const IconComponent = iconComponents[category.icon] ?? Menu;
+										const IconComponent = iconComponents[category.icon] ?? StackIcon;
 										return (
 											<li key={`all-${category.id}`}>
 												<button
@@ -95,7 +95,7 @@ export default function DesktopCategories({
 													}`}
 													role="menuitem"
 												>
-													<IconComponent size={16} />
+													<IconComponent size={16} weight="regular" />
 													{category.label}
 												</button>
 											</li>
@@ -107,7 +107,7 @@ export default function DesktopCategories({
 					</div>
 					<ul className="flex relative gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter overflow-hidden">
 						{visibleCategories.map((category) => {
-							const IconComponent = iconComponents[category.icon] ?? Menu;
+							const IconComponent = iconComponents[category.icon] ?? StackIcon;
 							return (
 								<li key={category.id}>
 									<button
@@ -117,7 +117,7 @@ export default function DesktopCategories({
 										}`}
 										data-morph
 									>
-										<IconComponent size={16} />
+										<IconComponent size={16} weight="regular" />
 										{category.label}
 									</button>
 								</li>
@@ -133,7 +133,7 @@ export default function DesktopCategories({
 						aria-label={toggleAriaLabel}
 						title={toggleAriaLabel}
 					>
-						<ToggleIcon size={16} />
+						<ToggleIcon size={16} weight="regular" />
 					</button>
 					<SearchBar ref={searchInputRef} searchQuery={searchQuery} onSearchChange={onSearchChange} shortcutLabel={shortcutLabel} showSearch={showSearch} />
 				</div>
@@ -146,7 +146,7 @@ export default function DesktopCategories({
 				className="md:flex hidden gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter absolute opacity-0 pointer-events-none -z-10"
 			>
 				{categoriesWithoutAll.map((category) => {
-					const IconComponent = iconComponents[category.icon] ?? Menu;
+					const IconComponent = iconComponents[category.icon] ?? StackIcon;
 					return (
 						<li key={`measure-${category.id}`}>
 							<button className="flex items-center gap-2 px-3 py-1.5 h-8 box-border border">
