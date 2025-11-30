@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ClockFading, ListTree, AtSign, Home, Sun, Moon } from "lucide-react";
+import { ClockFading } from "lucide-react";
+import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon } from "@phosphor-icons/react";
 
 import CopyLinkButton from "../../components/CopyLinkButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
@@ -154,7 +155,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												disabled={isTransitioning}
 												aria-label="Go to homepage"
 											>
-												<Home className="h-6 w-6" strokeWidth={1.5} />
+												<HouseIcon className="h-6 w-6" strokeWidth={1.5} />
 												<span className="sr-only">Go to homepage</span>
 											</button>
 											<button
@@ -164,7 +165,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												aria-pressed={isDarkMode}
 												aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
 											>
-												{isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+												{isDarkMode ? <SunIcon size={24} /> : <MoonIcon size={24} />}
 												<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
 											</button>
 											{outlineItems.length ? (
@@ -181,7 +182,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 													aria-atomic="true"
 													style={{ touchAction: "manipulation" }}
 												>
-													<ListTree className={`h-6 w-6 ${isOutlineOpen ? "text-current" : ""}`} strokeWidth={1.5} />
+													<TreeViewIcon size={24} className={`h-6 w-6 ${isOutlineOpen ? "text-current" : ""}`} />
 													<span className="sr-only">Toggle outline</span>
 												</button>
 											) : null}
@@ -192,7 +193,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									</div>
 
 									<header className="flex flex-col gap-4">
-										<h1 className={`text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold ${theme.heading}`}>{metadata.label}</h1>
+										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold ${theme.heading}`}>{metadata.label}</h1>
 										{metadata.authors.length ? (
 											<AuthorsList
 												authors={metadata.authors}
@@ -212,7 +213,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									</header>
 
 									<div
-										className={`leading-relaxed space-y-4 [&>h2]:text-2xl [&>h2]:font-semibold [&>h3]:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 ${theme.content}`}
+										className={`text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 ${theme.content}`}
 									>
 										{children}
 									</div>
@@ -250,7 +251,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									<div className={`border ${theme.sectionBorder} ${theme.sectionBg} p-5 flex flex-col gap-6 h-full`}>
 										<p className={`text-[0.65rem] uppercase tracking-[0.35em] ${theme.muted}`}>Communication</p>
 										<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 h-full content-between">
-											{hasContactEmail && <SocialLinkItem label="Send Email" href={`mailto:${CONTACT_EMAIL}`} Icon={AtSign} theme={theme} gridLineClass={theme.gridLine} />}
+											{hasContactEmail && <SocialLinkItem label="Send Email" href={`mailto:${CONTACT_EMAIL}`} Icon={AtIcon} theme={theme} gridLineClass={theme.gridLine} />}
 											{SOCIAL_LINKS.map((link) => (
 												<SocialLinkItem key={link.label} label={link.label} href={link.href} Icon={link.Icon} theme={theme} gridLineClass={theme.gridLine} />
 											))}

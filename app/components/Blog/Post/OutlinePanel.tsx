@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { ListTree, X } from "lucide-react";
+import { TreeViewIcon, XIcon } from "@phosphor-icons/react";
 import type { OutlineItem, OutlinePosition } from "./constants";
 
 type OutlinePanelProps = {
@@ -53,11 +53,11 @@ export default function OutlinePanel({ isOpen, mode, width, position, useHighlig
 		>
 			<div className="flex items-center justify-between gap-2 px-4 pt-3">
 				<div className="flex items-center gap-2 font-semi-mono text-[0.75rem] uppercase tracking-[0.16em]">
-					<ListTree className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+					<TreeViewIcon size={16} weight="duotone" aria-hidden="true" />
 					On This Page
 				</div>
 				<button type="button" onClick={onClose} className="flex items-center gap-1 text-xs font-mono uppercase tracking-tight opacity-80 transition-opacity" aria-label="Close outline">
-					<X className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+					<XIcon size={16} aria-hidden="true" />
 				</button>
 			</div>
 			<div className="flex-1 overflow-y-auto px-2 pb-2">

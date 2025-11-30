@@ -1,6 +1,6 @@
 "use client";
 
-import { Library, LayoutList, LayoutGrid, Home, Search, X, Layers, MoreHorizontal } from "lucide-react";
+import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon, RowsIcon, SquaresFourIcon, StackIcon } from "@phosphor-icons/react";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,7 @@ import { iconComponents } from "./iconComponents";
 import { useScrollDirection } from "../../../hooks";
 
 const categories = categoryOptions;
+const ICON_SIZE = 18;
 
 type MobileMenuProps = {
 	activeCategory: string;
@@ -47,7 +48,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	const isCollapsed = scrollDirection === "down";
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
-	const ToggleIcon = isListView ? LayoutGrid : LayoutList;
+	const ToggleIcon = isListView ? RowsIcon : SquaresFourIcon;
 
 	return createPortal(
 		<div className="mobile-nav-portal">
@@ -79,7 +80,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									onClick={() => setScrollDirection("up")}
 									aria-label="Expand menu"
 								>
-									<MoreHorizontal size={16} />
+									<DotsThreeOutlineIcon size={ICON_SIZE} weight="fill" />
 								</motion.button>
 							) : (
 								<motion.div
@@ -103,10 +104,10 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									>
 										{(() => {
 											const activeCat = categories.find((cat) => cat.id === activeCategory);
-											const IconComponent = activeCat ? iconComponents[activeCat.icon] ?? Layers : null;
+											const IconComponent = activeCat ? iconComponents[activeCat.icon] ?? StackIcon : null;
 											return (
 												<>
-													{IconComponent && <IconComponent size={16} />}
+													{IconComponent && <IconComponent size={16} weight="duotone" />}
 													<span className="max-w-[40vw] truncate">{activeCat?.label}</span>
 												</>
 											);
@@ -118,7 +119,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									{showHomeButton && (
 										<>
 											<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">
-												<Home size={16} />
+												<HouseIcon size={ICON_SIZE} weight="duotone" />
 											</TransitionLink>
 											<div className="h-4 w-px shrink-0 bg-light-gray" />
 										</>
@@ -133,11 +134,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 											className="flex items-center gap-2"
 											data-no-morph
 										>
-											<Search size={16} />
+											<MagnifyingGlassIcon size={ICON_SIZE} weight="duotone" />
 										</button>
 									) : (
 										<TransitionLink href="/blog" className="flex items-center gap-2 no-underline" transitionLabel="Blog" aria-label="View all blog posts">
-											<Library size={16} />
+											<BooksIcon size={ICON_SIZE} weight="duotone" />
 										</TransitionLink>
 									)}
 
@@ -150,7 +151,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 										aria-label={toggleAriaLabel}
 										title={toggleAriaLabel}
 									>
-										<ToggleIcon size={16} />
+										<ToggleIcon size={ICON_SIZE} weight="duotone" />
 									</button>
 								</motion.div>
 							)}
@@ -171,7 +172,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 				<div className="mx-auto w-full max-w-[1080px] border border-background bg-foreground/80 backdrop-blur-sm shadow-lg font-semi-mono">
 					<ul className="p-2">
 						{categories.map((category) => {
-							const IconComponent = iconComponents[category.icon] ?? Layers;
+							const IconComponent = iconComponents[category.icon] ?? StackIcon;
 							return (
 								<li key={`mobile-${category.id}`}>
 									<button
@@ -184,7 +185,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 										}`}
 										role="menuitem"
 									>
-										<IconComponent size={16} />
+										<IconComponent size={16} weight="duotone" />
 										{category.label}
 									</button>
 								</li>
@@ -214,7 +215,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 								className="flex-1 px-3 py-2 text-background/80 placeholder:text-background/60 focus:outline-none font-semi-mono text-sm"
 							/>
 							<button onClick={() => setIsMobileSearchOpen(false)} className="p-2 text-background/70" data-no-morph aria-label="Close search">
-								<X size={16} />
+								<XIcon size={ICON_SIZE} weight="duotone" />
 							</button>
 						</div>
 					</div>

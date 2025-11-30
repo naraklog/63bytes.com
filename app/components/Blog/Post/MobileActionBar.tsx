@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { Home, Library, ListTreeIcon, Sun, Moon, MoreHorizontal } from "lucide-react";
+import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
@@ -14,6 +14,8 @@ type MobileActionBarProps = {
 	onToggleTheme: () => void;
 	onToggleOutline: () => void;
 };
+
+const ICON_SIZE = 18;
 
 export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
@@ -47,7 +49,7 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								onClick={() => setScrollDirection("up")}
 								aria-label="Expand menu"
 							>
-								<MoreHorizontal size={16} />
+								<DotsThreeOutlineIcon size={ICON_SIZE} weight="fill" />
 							</motion.button>
 						) : (
 							<motion.div
@@ -60,14 +62,14 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 							>
 								<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">
-									<Home size={16} />
+									<HouseIcon size={ICON_SIZE} weight="duotone" />
 									<span className="sr-only">Go to homepage</span>
 								</TransitionLink>
 
 								<div className="h-4 w-px shrink-0 bg-light-gray" />
 
 								<TransitionLink href="/blog" className="flex items-center gap-2 no-underline" transitionLabel="All blogs" aria-label="View all blogs">
-									<Library size={16} />
+									<BooksIcon size={ICON_SIZE} weight="duotone" />
 									<span className="sr-only">View all blogs</span>
 								</TransitionLink>
 
@@ -80,7 +82,7 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 									aria-pressed={isDarkMode}
 									aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
 								>
-									{isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+									{isDarkMode ? <SunIcon size={ICON_SIZE} weight="duotone" /> : <MoonIcon size={ICON_SIZE} weight="duotone" />}
 									<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
 								</button>
 
@@ -88,7 +90,7 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 									<>
 										<div className="h-4 w-px shrink-0 bg-light-gray" />
 										<button type="button" onClick={onToggleOutline} className="flex items-center" aria-pressed={isOutlineOpen} aria-label="Toggle page outline">
-											<ListTreeIcon size={16} />
+											<TreeViewIcon size={ICON_SIZE} weight="duotone" />
 											<span className="sr-only">Toggle page outline</span>
 										</button>
 									</>
