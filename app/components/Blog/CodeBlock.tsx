@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
-import { Check, Copy } from "lucide-react";
+import { CheckIcon, CopyIcon } from "@phosphor-icons/react";
 
 type CodeBlockProps = ComponentPropsWithoutRef<"pre">;
 
@@ -35,7 +35,7 @@ export default function CodeBlock({ className, children, ...props }: CodeBlockPr
 	return (
 		<div className="code-block-shell">
 			<button type="button" className="code-copy-button" onClick={handleCopy} aria-live="polite" data-copied={copied ? "true" : "false"}>
-				{copied ? <Check className="h-3 w-3" strokeWidth={2} aria-hidden="true" /> : <Copy className="h-3 w-3" strokeWidth={2} aria-hidden="true" />}
+				{copied ? <CheckIcon size={16} aria-hidden="true" /> : <CopyIcon size={16} weight="duotone" aria-hidden="true" />}
 			</button>
 			<pre ref={preRef} className={joinClassNames("code-block", className)} {...props}>
 				{children}

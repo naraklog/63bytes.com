@@ -2,19 +2,19 @@
 
 import { useRef, type MouseEvent, type PointerEvent } from "react";
 import { type ArticleItem, type IconKey } from "../../types/posts";
-import { Newspaper, GitBranch, Shield, Database, FileCode, Component, Menu, Cpu, type LucideIcon } from "lucide-react";
+import { StackIcon, CpuIcon, GitBranchIcon, NewspaperIcon, DatabaseIcon, ShieldIcon, FileCodeIcon, DiamondsFourIcon, type Icon as PhosphorIcon } from "@phosphor-icons/react";
 import TransitionLink from "../TransitionLink";
 import AuthorsList from "./AuthorsList";
 
-const iconComponents: Record<IconKey, LucideIcon> = {
-	newspaper: Newspaper,
-	gitBranch: GitBranch,
-	shield: Shield,
-	database: Database,
-	fileCode: FileCode,
-	component: Component,
-	menu: Menu,
-	cpu: Cpu,
+const iconComponents: Record<IconKey, PhosphorIcon> = {
+	newspaper: NewspaperIcon,
+	gitBranch: GitBranchIcon,
+	shield: ShieldIcon,
+	database: DatabaseIcon,
+	fileCode: FileCodeIcon,
+	component: DiamondsFourIcon,
+	menu: StackIcon,
+	cpu: CpuIcon,
 };
 
 type ArticleCardProps = {
@@ -27,7 +27,7 @@ const DRAG_THRESHOLD = 10;
 
 export default function ArticleCard({ item, isListView, needsRightOutline = false }: ArticleCardProps) {
 	const startPos = useRef<{ x: number; y: number } | null>(null);
-	const IconComponent = iconComponents[item.icon] ?? Newspaper;
+	const IconComponent = iconComponents[item.icon] ?? NewspaperIcon;
 
 	const handlePointerDown = (e: PointerEvent<HTMLAnchorElement>) => {
 		startPos.current = { x: e.clientX, y: e.clientY };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Link as LinkIcon, Check } from "lucide-react";
+import { LinkIcon, CheckIcon } from "@phosphor-icons/react";
 
 type CopyLinkButtonProps = {
 	href: string;
@@ -48,7 +48,7 @@ export default function CopyLinkButton({ href, className, variant = "light" }: C
 			className={`inline-flex items-center gap-2 bg-transparent px-2 py-1 transition-opacity duration-200 ${variantClasses.button} ${className ?? ""}`}
 			aria-label={copied ? "Link copied" : "Copy post URL"}
 		>
-			{copied ? <Check className="w-4 h-4" strokeWidth={2} /> : <LinkIcon className="w-4 h-4" strokeWidth={2} />}
+			{copied ? <CheckIcon size={16} weight="bold" /> : <LinkIcon size={16} weight="bold" />}
 			<span className={`text-sm font-semibold ${variantClasses.label}`}>Copy URL</span>
 		</button>
 	);
