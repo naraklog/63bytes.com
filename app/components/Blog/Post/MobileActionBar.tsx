@@ -1,10 +1,11 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { HouseIcon, BookOpenIcon, BookmarksSimpleIcon, SunIcon, MoonIcon } from "@phosphor-icons/react";
-import { RadialBlur } from "progressive-blur";
+import { Home, Library, ListTreeIcon, Sun, Moon, MoreHorizontal } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
+import { useScrollDirection } from "../../../hooks";
 
 type MobileActionBarProps = {
 	isDarkMode: boolean;
@@ -15,36 +16,87 @@ type MobileActionBarProps = {
 };
 
 export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
+	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
+	const isCollapsed = scrollDirection === "down";
+
 	return createPortal(
-		<div className="md:hidden fixed bottom-4 left-0 right-0 z-100 flex justify-center px-4" style={{ fontFamily: BLOG_FONT_FAMILY }}>
+		<div className="md:hidden fixed bottom-2 left-0 right-0 z-100 flex justify-center px-4" style={{ fontFamily: BLOG_FONT_FAMILY }}>
 			<div className="relative">
-				<RadialBlur
-					className="absolute inset-0 pointer-events-none"
-					strength={16}
-					steps={8}
-					falloffPercentage={120}
-					style={{ zIndex: -1, marginTop: "-0.75rem", marginBottom: "-0.75rem", marginLeft: "-3.5rem", marginRight: "-3.5rem" }}
-				/>
-				<div className={`flex items-center gap-6 px-3 py-2 font-semi-mono text-sm shrink-0 ${isDarkMode ? "text-off-white" : "text-black"}`}>
-					<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">
-						<HouseIcon size={20} weight="fill" />
-						<span className="sr-only">Go to homepage</span>
-					</TransitionLink>
-					<TransitionLink href="/blog" className="flex items-center gap-2 no-underline" transitionLabel="All blogs" aria-label="View all blogs">
-						<BookOpenIcon size={20} weight="fill" />
-						<span className="sr-only">View all blogs</span>
-					</TransitionLink>
-					<button type="button" onClick={onToggleTheme} className="flex items-center" aria-pressed={isDarkMode} aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}>
-						{isDarkMode ? <SunIcon size={20} weight="fill" /> : <MoonIcon size={20} weight="fill" />}
-						<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
-					</button>
-					{hasOutlineItems && (
-						<button type="button" onClick={onToggleOutline} className="flex items-center" aria-pressed={isOutlineOpen} aria-label="Toggle page outline">
-							<BookmarksSimpleIcon size={20} weight="fill" />
-							<span className="sr-only">Toggle page outline</span>
-						</button>
-					)}
-				</div>
+				<motion.div
+					layout
+					initial={false}
+					transition={{
+						layout: {
+							type: "spring",
+							stiffness: 450,
+							damping: 30,
+						},
+					}}
+					className={`flex items-center justify-center shrink-0 border border-light-gray/50 text-off-white backdrop-blur-sm overflow-hidden ${isDarkMode ? "bg-black/50" : "bg-black/90"}`}
+				>
+					<AnimatePresence mode="popLayout" initial={false}>
+						{isCollapsed ? (
+							<motion.button
+								key="collapsed"
+								layout
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 0.15, layout: { duration: 0 } }}
+								className="px-1.75"
+								onClick={() => setScrollDirection("up")}
+								aria-label="Expand menu"
+							>
+								<MoreHorizontal size={16} />
+							</motion.button>
+						) : (
+							<motion.div
+								key="expanded"
+								layout
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 0.15, layout: { duration: 0 } }}
+								className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
+							>
+								<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">
+									<Home size={16} />
+									<span className="sr-only">Go to homepage</span>
+								</TransitionLink>
+
+								<div className="h-4 w-px shrink-0 bg-light-gray" />
+
+								<TransitionLink href="/blog" className="flex items-center gap-2 no-underline" transitionLabel="All blogs" aria-label="View all blogs">
+									<Library size={16} />
+									<span className="sr-only">View all blogs</span>
+								</TransitionLink>
+
+								<div className="h-4 w-px shrink-0 bg-light-gray" />
+
+								<button
+									type="button"
+									onClick={onToggleTheme}
+									className="flex items-center"
+									aria-pressed={isDarkMode}
+									aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+								>
+									{isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+									<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
+								</button>
+
+								{hasOutlineItems && (
+									<>
+										<div className="h-4 w-px shrink-0 bg-light-gray" />
+										<button type="button" onClick={onToggleOutline} className="flex items-center" aria-pressed={isOutlineOpen} aria-label="Toggle page outline">
+											<ListTreeIcon size={16} />
+											<span className="sr-only">Toggle page outline</span>
+										</button>
+									</>
+								)}
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</motion.div>
 			</div>
 		</div>,
 		document.body

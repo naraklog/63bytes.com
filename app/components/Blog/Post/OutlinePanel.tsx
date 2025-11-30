@@ -28,14 +28,14 @@ export default function OutlinePanel({ isOpen, mode, width, position, useHighlig
 		borderClass,
 		textClass,
 		blurClass,
-		useHighlightBackground ? "" : isDarkMode ? "bg-black/85" : "bg-white/95",
+		useHighlightBackground ? "" : isDarkMode ? "bg-black/85" : "bg-white/80",
 		mode === "overlay" ? (isDarkMode ? "shadow-2xl" : "shadow-[0_12px_50px_rgba(0,0,0,0.12)]") : "",
 	]
 		.filter(Boolean)
 		.join(" ");
 
 	const { top, right, bottom, left, translateX } = position;
-	const highlightBg = isDarkMode ? "rgba(0, 0, 0, 0.8)" : "rgba(5, 5, 8, 0.16)";
+	const highlightBg = isDarkMode ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.8)";
 
 	const aside = (
 		<aside

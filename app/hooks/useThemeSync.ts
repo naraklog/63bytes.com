@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { LIGHT_THEME_COLOR, DARK_THEME_COLOR } from "../components/Blog/Post/constants";
+import { setMetaThemeColor } from "../utils/theme";
 
 type UseThemeSyncOptions = {
 	isDarkMode: boolean;
@@ -35,7 +36,8 @@ export function useThemeSync({ isDarkMode, mounted }: UseThemeSyncOptions): void
 		}
 
 		const color = isDarkMode ? DARK_THEME_COLOR : LIGHT_THEME_COLOR;
-		meta.setAttribute("content", color);
+		setMetaThemeColor(color, isDarkMode);
+
 		root.style.colorScheme = isDarkMode ? "dark" : "light";
 	}, [isDarkMode, mounted]);
 

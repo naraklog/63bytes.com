@@ -65,10 +65,12 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 
 		const observer = new IntersectionObserver(
 			([entry]) => {
+				// BlogSection is Light theme (#fafafa), so pass false for isDarkMode
 				if (entry.isIntersecting) {
-					setMetaThemeColor("#fafafa");
+					setMetaThemeColor("#fafafa", false);
 				} else {
-					setMetaThemeColor("#050508");
+					// When leaving, assume we're going back to dark (#050508)
+					setMetaThemeColor("#050508", true);
 				}
 			},
 			{
@@ -85,7 +87,8 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 
 		return () => {
 			observer.disconnect();
-			setMetaThemeColor("#050508");
+			// Revert to dark theme on unmount
+			setMetaThemeColor("#050508", true);
 		};
 	}, []);
 

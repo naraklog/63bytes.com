@@ -9,22 +9,10 @@ import Dither from "../../components/Dither";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
-import {
-	OutlinePanel,
-	MobileActionBar,
-	SocialLinkItem,
-	CONTROL_BUTTON_BASE,
-	LIGHT_THEME_COLOR,
-	DARK_THEME_COLOR,
-	THEME_PRESETS,
-	BLOG_FONT_FAMILY,
-	CONTACT_EMAIL,
-	SOCIAL_LINKS,
-} from "../../components/Blog/Post";
+import { OutlinePanel, MobileActionBar, SocialLinkItem, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
 import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
-import { setMetaThemeColor } from "../../utils/theme";
 import { useLayoutContext } from "../../context/LayoutContext";
 
 type BlogPostLayoutProps = {
@@ -83,8 +71,6 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 
 	useEffect(() => {
 		setMounted(true);
-		// Set light theme immediately on mount to prevent flash from inherited dark theme
-		setMetaThemeColor(LIGHT_THEME_COLOR);
 	}, []);
 
 	const theme = useMemo(() => (isDarkMode ? THEME_PRESETS.dark : THEME_PRESETS.light), [isDarkMode]);
@@ -92,7 +78,6 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const handleToggleTheme = useCallback(() => {
 		const next = !isDarkMode;
 		setIsDarkMode(next);
-		setMetaThemeColor(next ? DARK_THEME_COLOR : LIGHT_THEME_COLOR);
 	}, [isDarkMode]);
 
 	const handleBackToBlog = useCallback(() => {

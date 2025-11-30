@@ -115,7 +115,7 @@ export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPr
 				setOutlineMode("overlay");
 				setOutlineWidth(overlayWidth);
 				if (isMobileBarActive) {
-					setOutlinePosition({ bottom: 118, left: "50%", translateX: "-50%" });
+					setOutlinePosition({ bottom: 65, left: "50%", translateX: "-50%" });
 				} else {
 					setOutlinePosition({ top: Math.max(STICKY_TOP_OFFSET, articleTop), right: 18 });
 				}

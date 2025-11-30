@@ -13,3 +13,4 @@ export { useHomeScroll } from "./useHomeScroll";
 export { useTouchDevice } from "./useTouchDevice";
 export { useArticleOutline } from "./useArticleOutline";
 export { useThemeSync } from "./useThemeSync";
+export { useScrollDirection } from "./useScrollDirection";
