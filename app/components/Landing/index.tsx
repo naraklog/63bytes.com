@@ -23,7 +23,6 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 	const coordinatesRef = useRef<HTMLDivElement>(null);
 	const sectionRef = useRef<HTMLElement>(null);
 	const rafId = useRef<number | null>(null);
-	const rectRef = useRef<DOMRect | null>(null);
 
 	// Combine refs
 	const setRef = useCallback(
@@ -48,34 +47,9 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 		return () => window.removeEventListener("app:preloader-complete", handlePreloaderComplete);
 	}, []);
 
-	// Cache dimensions on mount and resize
-	useEffect(() => {
-		const updateRect = () => {
-			if (sectionRef.current) {
-				rectRef.current = sectionRef.current.getBoundingClientRect();
-			}
-		};
-
-		updateRect();
-		window.addEventListener("resize", updateRect);
-		// Also update on scroll since the section might move relative to viewport if it's sticky/fixed or if layout changes
-		window.addEventListener("scroll", updateRect);
-
-		return () => {
-			window.removeEventListener("resize", updateRect);
-			window.removeEventListener("scroll", updateRect);
-		};
-	}, []);
-
 	const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-		// If no rect, try to get it once
-		if (!rectRef.current && sectionRef.current) {
-			rectRef.current = sectionRef.current.getBoundingClientRect();
-		}
+		if (!sectionRef.current) return;
 
-		if (!rectRef.current) return;
-
-		// Use client coordinates directly since we have the cached rect
 		const clientX = e.clientX;
 		const clientY = e.clientY;
 
@@ -84,7 +58,9 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 		}
 
 		rafId.current = requestAnimationFrame(() => {
-			const rect = rectRef.current;
+			// Get fresh rect on every frame to account for GSAP transforms (scale, translate)
+			// that are applied during scroll animations
+			const rect = sectionRef.current?.getBoundingClientRect();
 			if (!rect) return;
 
 			const x = clientX - rect.left;
