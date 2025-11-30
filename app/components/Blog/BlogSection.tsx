@@ -14,9 +14,11 @@ type BlogSectionProps = {
 	items?: ArticleItem[];
 	onLayoutChange?: () => void;
 	showSearch?: boolean;
+	/** When true, skips desktop theme inversion for overscroll background */
+	useThemeColorOnly?: boolean;
 };
 
-const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true }, ref) => {
+const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false }, ref) => {
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -63,14 +65,16 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 		const el = sectionRef.current;
 		if (!el) return;
 
+		const themeOptions = useThemeColorOnly ? { useThemeColorOnly: true } : undefined;
+
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				// BlogSection is Light theme (#fafafa), so pass false for isDarkMode
 				if (entry.isIntersecting) {
-					setMetaThemeColor("#fafafa", false);
+					setMetaThemeColor("#fafafa", false, themeOptions);
 				} else {
 					// When leaving, assume we're going back to dark (#050508)
-					setMetaThemeColor("#050508", true);
+					setMetaThemeColor("#050508", true, themeOptions);
 				}
 			},
 			{
@@ -88,9 +92,9 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 		return () => {
 			observer.disconnect();
 			// Revert to dark theme on unmount
-			setMetaThemeColor("#050508", true);
+			setMetaThemeColor("#050508", true, themeOptions);
 		};
-	}, []);
+	}, [useThemeColorOnly]);
 
 	const effectiveSearchQuery = showSearch ? searchQuery : "";
 

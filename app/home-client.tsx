@@ -44,7 +44,7 @@ export default function HomeClient({ articles }: HomeClientProps) {
 					<div ref={containerRef} className="relative min-h-screen">
 						<LandingSection ref={section1Ref} latestPost={latestArticle} />
 
-						<BlogSection ref={section2Ref} limit={ARTICLES_PER_LOAD} items={fallbackItems} onLayoutChange={() => ScrollTrigger.refresh()} showSearch={false} />
+						<BlogSection ref={section2Ref} limit={ARTICLES_PER_LOAD} items={fallbackItems} onLayoutChange={() => ScrollTrigger.refresh()} showSearch={false} useThemeColorOnly />
 					</div>
 				</div>
 			</div>
