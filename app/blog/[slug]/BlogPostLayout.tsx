@@ -1,9 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { motion } from "framer-motion";
-import { ClockFading, ListTree, AtSign } from "lucide-react";
-import { HouseIcon } from "@phosphor-icons/react";
+import { ClockFading, ListTree, AtSign, Home, Sun, Moon } from "lucide-react";
 
 import CopyLinkButton from "../../components/CopyLinkButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
@@ -27,7 +25,6 @@ import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
 import { setMetaThemeColor } from "../../utils/theme";
-import { toggleThemeWithTransition } from "../../utils/theme-transition";
 import { useLayoutContext } from "../../context/LayoutContext";
 
 type BlogPostLayoutProps = {
@@ -93,7 +90,9 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const theme = useMemo(() => (isDarkMode ? THEME_PRESETS.dark : THEME_PRESETS.light), [isDarkMode]);
 
 	const handleToggleTheme = useCallback(() => {
-		toggleThemeWithTransition(isDarkMode, setIsDarkMode);
+		const next = !isDarkMode;
+		setIsDarkMode(next);
+		setMetaThemeColor(next ? DARK_THEME_COLOR : LIGHT_THEME_COLOR);
 	}, [isDarkMode]);
 
 	const handleBackToBlog = useCallback(() => {
@@ -170,7 +169,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												disabled={isTransitioning}
 												aria-label="Go to homepage"
 											>
-												<HouseIcon className="h-6 w-6" strokeWidth={1.5} weight="fill" />
+												<Home className="h-6 w-6" strokeWidth={1.5} />
 												<span className="sr-only">Go to homepage</span>
 											</button>
 											<button
@@ -180,18 +179,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												aria-pressed={isDarkMode}
 												aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
 											>
-												<svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6">
-													<motion.g animate={{ rotate: isDarkMode ? -180 : 0 }} transition={{ ease: "easeInOut", duration: 0.5 }}>
-														<path d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5" fill={isDarkMode ? "white" : "black"} />
-														<path d="M120 67.5C90.75 67.5 67.5 90.75 67.5 120C67.5 149.25 90.75 172.5 120 172.5" fill={isDarkMode ? "black" : "white"} />
-													</motion.g>
-													<motion.path
-														animate={{ rotate: isDarkMode ? 180 : 0 }}
-														transition={{ ease: "easeInOut", duration: 0.5 }}
-														d="M120 3.75C55.5 3.75 3.75 55.5 3.75 120C3.75 184.5 55.5 236.25 120 236.25C184.5 236.25 236.25 184.5 236.25 120C236.25 55.5 184.5 3.75 120 3.75ZM120 214.5V172.5C90.75 172.5 67.5 149.25 67.5 120C67.5 90.75 90.75 67.5 120 67.5V25.5C172.5 25.5 214.5 67.5 214.5 120C214.5 172.5 172.5 214.5 120 214.5Z"
-														fill={isDarkMode ? "white" : "black"}
-													/>
-												</svg>
+												{isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
 												<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
 											</button>
 											{outlineItems.length ? (

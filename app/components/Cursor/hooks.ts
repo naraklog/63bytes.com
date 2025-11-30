@@ -199,6 +199,9 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 
 		const unregisterInteractiveElement = (element: Element) => {
 			if (!(element instanceof HTMLElement)) return;
+			if (element === currentHostRef.current) {
+				unlockAndReset();
+			}
 			const cleanup = interactiveCleanupMap.get(element);
 			if (cleanup) {
 				cleanup();
@@ -385,4 +388,3 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 		};
 	}, [unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef, enabled]);
 }
-

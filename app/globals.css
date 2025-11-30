@@ -345,6 +345,59 @@ pre [data-line][data-highlighted-line] {
 	background: var(--code-highlight-dark);
 }
 
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid rgb(96 96 104 / 0.4);
+	font-size: inherit;
+}
+
+table th,
+table td {
+	padding: 0.5rem 0.75rem;
+	text-align: left;
+	border: none;
+	font-size: 0.8rem;
+}
+
+table thead {
+	background-color: var(--color-black, #050508);
+	color: var(--color-off-white, #dbdad7);
+	font-weight: 600;
+	font-size: 0.8rem;
+}
+
+[data-code-theme="dark"] table thead {
+	background-color: var(--color-off-white, #dbdad7);
+	color: var(--color-black, #050508);
+}
+
+table tr > * + * {
+	border-left: 1px solid rgb(96 96 104 / 0.4);
+}
+
+table tbody tr:nth-child(even) {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+[data-code-theme="light"] table tbody tr:nth-child(even) {
+	background: rgba(5, 5, 8, 0.08);
+}
+
+[data-code-theme="dark"] table tbody tr:nth-child(even) {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+[data-code-theme="light"] table,
+[data-code-theme="light"] pre {
+	background-color: var(--color-foreground, #fafafa);
+}
+
+[data-code-theme="dark"] table,
+[data-code-theme="dark"] pre {
+	background-color: var(--color-black, #050508);
+}
+
 /* Shiki theme colors */
 code[data-theme],
 code[data-theme] span {
@@ -401,7 +454,17 @@ code[data-theme] span {
 
 /* Hide default cursor on non-touch devices */
 @media (pointer: fine) {
-	* {
+	*,
+	svg,
+	svg * {
+		cursor: none !important;
+	}
+
+	/* Reinforce hiding when the cursor component opts-in (covers SVG content like MorphingText) */
+	html.cursor-hidden,
+	html.cursor-hidden *,
+	html.cursor-hidden svg,
+	html.cursor-hidden svg * {
 		cursor: none !important;
 	}
 }
@@ -512,4 +575,29 @@ button:active,
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+::selection,
+::-moz-selection {
+	background: var(--selection-background);
+	color: var(--selection-color);
+}
+
+.bg-foreground,
+.bg-foreground\/20,
+.bg-foreground\/80,
+.bg-white,
+.bg-white\/80,
+.bg-white\/90 {
+	--selection-background: var(--background);
+	--selection-color: var(--foreground);
+}
+
+.bg-background,
+.bg-black\/30,
+.bg-black\/50,
+.bg-black\/70,
+.bg-black\/90 {
+	--selection-background: var(--foreground);
+	--selection-color: var(--background);
 }

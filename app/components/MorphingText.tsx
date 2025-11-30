@@ -199,7 +199,7 @@ export const MorphingText = forwardRef<MorphingTextHandle, MorphingTextProps>(
 					ref={svgRef}
 					width="100%"
 					height="100%"
-					className={`absolute inset-0 overflow-visible ${isInline ? "" : "mx-auto"}`}
+					className={`absolute inset-0 overflow-visible pointer-events-none ${isInline ? "" : "mx-auto"}`}
 					style={{
 						filter: initialThresholdActive ? `url(#${filterId})` : "none",
 						// Force hardware acceleration for Safari
