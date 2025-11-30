@@ -26,7 +26,7 @@ const buildAbsoluteUrl = (href: string) => {
 	return `${window.location.origin}${href.startsWith("/") ? href : `/${href}`}`;
 };
 
-export default function CopyLinkButton({ href, className, variant = "light" }: CopyLinkButtonProps) {
+export default function CopyLinkButton({ href, className, variant = "light", showLabel = true }: CopyLinkButtonProps & { showLabel?: boolean }) {
 	const [copied, setCopied] = useState(false);
 	const variantClasses = VARIANT_STYLES[variant];
 	const targetUrl = useMemo(() => buildAbsoluteUrl(href), [href]);
@@ -49,7 +49,7 @@ export default function CopyLinkButton({ href, className, variant = "light" }: C
 			aria-label={copied ? "Link copied" : "Copy post URL"}
 		>
 			{copied ? <CheckIcon size={16} weight="bold" /> : <LinkIcon size={16} weight="bold" />}
-			<span className={`text-sm font-semibold ${variantClasses.label}`}>Copy URL</span>
+			{showLabel && <span className={`text-sm font-semibold ${variantClasses.label}`}>Copy URL</span>}
 		</button>
 	);
 }

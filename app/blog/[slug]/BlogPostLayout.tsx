@@ -126,11 +126,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 				<div className="flex justify-center">
 					<div className="relative flex w-full max-w-[1080px] min-w-[368px] mt-px ml-px flex-col">
 						<div className="ul-cross w-full">
-							<article
-								ref={articleRef}
-								data-code-theme={isDarkMode ? "dark" : "light"}
-								className={`relative border ${theme.articleSurface} px-6 py-6 sm:px-12 sm:py-12 lg:px-24 lg:py-24`}
-							>
+							<article ref={articleRef} data-code-theme={isDarkMode ? "dark" : "light"} className={`relative border ${theme.articleSurface} px-6 py-6 sm:px-12 sm:py-12 lg:p-24`}>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />

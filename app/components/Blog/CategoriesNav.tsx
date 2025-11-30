@@ -107,7 +107,7 @@ export default function BlogNavigation({ activeCategory, onCategoryChange, showF
 
 	return (
 		<>
-			<nav className="flex justify-between items-center w-full max-w-[1080px] mx-auto pb-8 relative">
+			<nav className="hidden md:flex justify-between items-center w-full max-w-[1080px] mx-auto pb-8 relative">
 				<DesktopCategories
 					activeCategory={activeCategory}
 					onCategoryChange={onCategoryChange}
