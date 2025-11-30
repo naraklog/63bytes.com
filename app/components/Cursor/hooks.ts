@@ -5,7 +5,7 @@ export const TEXT_SELECTOR = "p, h1, h2, h3, h4, h5, h6, span";
 export const DEFAULT_CURSOR_SIZE = "20px";
 
 interface CursorAnimationProps {
-	cursorRef: React.RefObject<HTMLDivElement>;
+	cursorRef: React.RefObject<HTMLDivElement | null>;
 	isCursorLockedRef: React.MutableRefObject<boolean>;
 	transitionActiveRef: React.MutableRefObject<boolean>;
 	enabled: boolean;
@@ -63,7 +63,7 @@ export function useCursorAnimation({ cursorRef, isCursorLockedRef, transitionAct
 }
 
 interface ElementHandlersProps {
-	cursorRef: React.RefObject<HTMLDivElement>;
+	cursorRef: React.RefObject<HTMLDivElement | null>;
 	isCursorLockedRef: React.MutableRefObject<boolean>;
 	transitionActiveRef: React.MutableRefObject<boolean>;
 	isScrollingRef: React.MutableRefObject<boolean>;
