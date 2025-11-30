@@ -6,8 +6,8 @@ export const DEFAULT_CURSOR_SIZE = "20px";
 
 interface CursorAnimationProps {
 	cursorRef: React.RefObject<HTMLDivElement | null>;
-	isCursorLockedRef: React.MutableRefObject<boolean>;
-	transitionActiveRef: React.MutableRefObject<boolean>;
+	isCursorLockedRef: React.RefObject<boolean>;
+	transitionActiveRef: React.RefObject<boolean>;
 	enabled: boolean;
 }
 
@@ -64,9 +64,9 @@ export function useCursorAnimation({ cursorRef, isCursorLockedRef, transitionAct
 
 interface ElementHandlersProps {
 	cursorRef: React.RefObject<HTMLDivElement | null>;
-	isCursorLockedRef: React.MutableRefObject<boolean>;
-	transitionActiveRef: React.MutableRefObject<boolean>;
-	isScrollingRef: React.MutableRefObject<boolean>;
+	isCursorLockedRef: React.RefObject<boolean>;
+	transitionActiveRef: React.RefObject<boolean>;
+	isScrollingRef: React.RefObject<boolean>;
 	enabled: boolean;
 }
 
@@ -98,7 +98,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 		const setupInteractiveElement = (element: HTMLElement) => {
 			// Skip elements that opt-out of morph effect
 			if (element.hasAttribute("data-no-morph")) return () => {};
-			
+
 			let rect: DOMRect | null = null;
 			const host = element; // lock to the interactive element
 
@@ -233,33 +233,36 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 
 		registerExistingElements();
 
-		const mutationObserver = typeof MutationObserver !== "undefined" ? new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				mutation.addedNodes.forEach((node) => {
-					if (!(node instanceof HTMLElement)) return;
-					if (node.matches(INTERACTIVE_SELECTOR)) {
-						registerInteractiveElement(node);
-					}
-					node.querySelectorAll(INTERACTIVE_SELECTOR).forEach(registerInteractiveElement);
-					if (node.matches(TEXT_SELECTOR)) {
-						registerTextElement(node);
-					}
-					node.querySelectorAll(TEXT_SELECTOR).forEach(registerTextElement);
-				});
+		const mutationObserver =
+			typeof MutationObserver !== "undefined"
+				? new MutationObserver((mutations) => {
+						mutations.forEach((mutation) => {
+							mutation.addedNodes.forEach((node) => {
+								if (!(node instanceof HTMLElement)) return;
+								if (node.matches(INTERACTIVE_SELECTOR)) {
+									registerInteractiveElement(node);
+								}
+								node.querySelectorAll(INTERACTIVE_SELECTOR).forEach(registerInteractiveElement);
+								if (node.matches(TEXT_SELECTOR)) {
+									registerTextElement(node);
+								}
+								node.querySelectorAll(TEXT_SELECTOR).forEach(registerTextElement);
+							});
 
-				mutation.removedNodes.forEach((node) => {
-					if (!(node instanceof HTMLElement)) return;
-					if (node.matches(INTERACTIVE_SELECTOR)) {
-						unregisterInteractiveElement(node);
-					}
-					node.querySelectorAll(INTERACTIVE_SELECTOR).forEach(unregisterInteractiveElement);
-					if (node.matches(TEXT_SELECTOR)) {
-						unregisterTextElement(node);
-					}
-					node.querySelectorAll(TEXT_SELECTOR).forEach(unregisterTextElement);
-				});
-			});
-		}) : null;
+							mutation.removedNodes.forEach((node) => {
+								if (!(node instanceof HTMLElement)) return;
+								if (node.matches(INTERACTIVE_SELECTOR)) {
+									unregisterInteractiveElement(node);
+								}
+								node.querySelectorAll(INTERACTIVE_SELECTOR).forEach(unregisterInteractiveElement);
+								if (node.matches(TEXT_SELECTOR)) {
+									unregisterTextElement(node);
+								}
+								node.querySelectorAll(TEXT_SELECTOR).forEach(unregisterTextElement);
+							});
+						});
+				  })
+				: null;
 
 		if (mutationObserver && document.body) {
 			mutationObserver.observe(document.body, { childList: true, subtree: true });
@@ -277,9 +280,9 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 
 interface ScrollMonitorProps {
 	unlockAndReset: () => void;
-	isScrollingRef: React.MutableRefObject<boolean>;
-	transitionActiveRef: React.MutableRefObject<boolean>;
-	lastPointerRef: React.MutableRefObject<{ x: number; y: number } | null>;
+	isScrollingRef: React.RefObject<boolean>;
+	transitionActiveRef: React.RefObject<boolean>;
+	lastPointerRef: React.RefObject<{ x: number; y: number } | null>;
 	enabled: boolean;
 }
 
