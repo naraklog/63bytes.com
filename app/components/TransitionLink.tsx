@@ -3,6 +3,7 @@
 import Link, { type LinkProps } from "next/link";
 import { AnchorHTMLAttributes, MouseEvent, forwardRef } from "react";
 import { usePageTransition } from "./PageTransitionProvider";
+import { useSound } from "../context/SoundContext";
 
 type TransitionLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> &
 	Omit<LinkProps, "href"> & {
@@ -15,8 +16,10 @@ const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>(functi
 	ref
 ) {
 	const { startTransition, isTransitioning } = usePageTransition();
+	const { playSound } = useSound();
 
 	const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+		playSound("click");
 		onClick?.(event);
 		if (event.defaultPrevented) return;
 		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -28,7 +31,18 @@ const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>(functi
 	};
 
 	return (
-		<Link ref={ref} href={href} target={target} prefetch={prefetch} {...rest} onClick={handleClick}>
+		<Link
+			ref={ref}
+			href={href}
+			target={target}
+			prefetch={prefetch}
+			{...rest}
+			onClick={handleClick}
+			onMouseEnter={(e) => {
+				playSound("hover");
+				rest.onMouseEnter?.(e);
+			}}
+		>
 			{children}
 		</Link>
 	);

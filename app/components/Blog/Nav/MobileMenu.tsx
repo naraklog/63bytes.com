@@ -8,6 +8,7 @@ import { categoryOptions } from "../../../types/posts";
 import TransitionLink from "../../TransitionLink";
 import { iconComponents } from "./iconComponents";
 import { useScrollDirection } from "../../../hooks";
+import { useSound } from "../../../context/SoundContext";
 
 const categories = categoryOptions;
 const ICON_SIZE = 18;
@@ -45,6 +46,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	mobileSearchInputRef
 ) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
+	const { playSound } = useSound();
 	const isCollapsed = scrollDirection === "down";
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
@@ -77,7 +79,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
 									className="px-1.75"
-									onClick={() => setScrollDirection("up")}
+									onClick={() => {
+										playSound("click");
+										setScrollDirection("up");
+									}}
+									onMouseEnter={() => playSound("hover")}
 									aria-label="Expand menu"
 								>
 									<DotsThreeOutlineIcon size={ICON_SIZE} weight="fill" />
@@ -94,9 +100,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 								>
 									<button
 										onClick={() => {
+											playSound("click");
 											setIsMobileMenuOpen(!isMobileMenuOpen);
 											setIsMobileSearchOpen(false);
 										}}
+										onMouseEnter={() => playSound("hover")}
 										className="flex items-center gap-2"
 										data-no-morph
 										aria-haspopup="menu"
@@ -128,9 +136,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									{showSearch ? (
 										<button
 											onClick={() => {
+												playSound("click");
 												setIsMobileSearchOpen(!isMobileSearchOpen);
 												setIsMobileMenuOpen(false);
 											}}
+											onMouseEnter={() => playSound("hover")}
 											className="flex items-center gap-2"
 											data-no-morph
 										>
@@ -145,7 +155,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									<div className="h-4 w-px shrink-0 bg-light-gray" />
 
 									<button
-										onClick={() => onViewModeChange(isListView ? "grid" : "list")}
+										onClick={() => {
+											playSound("click");
+											onViewModeChange(isListView ? "grid" : "list");
+										}}
+										onMouseEnter={() => playSound("hover")}
 										className="flex items-center"
 										data-no-morph
 										aria-label={toggleAriaLabel}
@@ -177,9 +191,11 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 								<li key={`mobile-${category.id}`}>
 									<button
 										onClick={() => {
+											playSound("click");
 											onCategoryChange(category.id);
 											setIsMobileMenuOpen(false);
 										}}
+										onMouseEnter={() => playSound("hover")}
 										className={`w-full text-left px-4 py-2 transition-all duration-200 font-semi-mono flex items-center gap-2 ${
 											activeCategory === category.id ? "bg-background text-foreground/80" : "text-background/80"
 										}`}
@@ -214,7 +230,16 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 								onChange={(e) => onSearchChange(e.target.value)}
 								className="flex-1 px-3 py-2 text-background/80 placeholder:text-background/60 focus:outline-none font-semi-mono text-sm"
 							/>
-							<button onClick={() => setIsMobileSearchOpen(false)} className="p-2 text-background/70" data-no-morph aria-label="Close search">
+							<button
+								onClick={() => {
+									playSound("click");
+									setIsMobileSearchOpen(false);
+								}}
+								onMouseEnter={() => playSound("hover")}
+								className="p-2 text-background/70"
+								data-no-morph
+								aria-label="Close search"
+							>
 								<XIcon size={ICON_SIZE} weight="duotone" />
 							</button>
 						</div>

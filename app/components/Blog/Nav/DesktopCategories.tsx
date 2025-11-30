@@ -8,6 +8,7 @@ import { useClickOutside } from "../../../hooks/useClickOutside";
 import { useEscapeKey } from "../../../hooks/useKeyboardShortcut";
 import { iconComponents } from "./iconComponents";
 import SearchBar from "./SearchBar";
+import { useSound } from "../../../context/SoundContext";
 
 const categories = categoryOptions;
 const categoriesWithoutAll = categories.filter((category) => category.id !== "all");
@@ -36,6 +37,7 @@ export default function DesktopCategories({
 	searchInputRef,
 }: DesktopCategoriesProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const { playSound } = useSound();
 
 	const navRef = useRef<HTMLDivElement | null>(null);
 	const measureListRef = useRef<HTMLUListElement | null>(null);
@@ -67,7 +69,11 @@ export default function DesktopCategories({
 					<div className="relative" ref={dropdownRef}>
 						<button
 							ref={allButtonRef}
-							onClick={() => setIsDropdownOpen((prev) => !prev)}
+							onClick={() => {
+								playSound("click");
+								setIsDropdownOpen((prev) => !prev);
+							}}
+							onMouseEnter={() => playSound("hover")}
 							className={`flex items-center gap-2 px-3 py-1.5 h-8 box-border border transition-all duration-200 font-semi-mono text-xs tracking-tighter ${
 								activeCategory === "all" ? "bg-background text-foreground/80 border-background" : "border-background text-background/80"
 							}`}
@@ -87,9 +93,11 @@ export default function DesktopCategories({
 											<li key={`all-${category.id}`}>
 												<button
 													onClick={() => {
+														playSound("click");
 														onCategoryChange(category.id);
 														setIsDropdownOpen(false);
 													}}
+													onMouseEnter={() => playSound("hover")}
 													className={`w-full text-left px-4 py-2 transition-all duration-200 font-semi-mono flex items-center gap-2 ${
 														activeCategory === category.id ? "bg-background text-foreground/80" : "text-background/80"
 													}`}
@@ -111,7 +119,11 @@ export default function DesktopCategories({
 							return (
 								<li key={category.id}>
 									<button
-										onClick={() => onCategoryChange(category.id)}
+										onClick={() => {
+											playSound("click");
+											onCategoryChange(category.id);
+										}}
+										onMouseEnter={() => playSound("hover")}
 										className={`flex items-center gap-2 px-4 py-1.5 h-8 box-border border transition-all duration-200 ${
 											activeCategory === category.id ? "bg-background text-foreground/80 border-background" : "border-background text-background/80"
 										}`}
@@ -128,7 +140,11 @@ export default function DesktopCategories({
 				<div ref={searchRef} className="flex items-center gap-3">
 					<button
 						type="button"
-						onClick={() => onViewModeChange(isListView ? "grid" : "list")}
+						onClick={() => {
+							playSound("click");
+							onViewModeChange(isListView ? "grid" : "list");
+						}}
+						onMouseEnter={() => playSound("hover")}
 						className="flex items-center justify-center w-9 h-8 border border-black bg-white text-black transition-colors duration-200"
 						aria-label={toggleAriaLabel}
 						title={toggleAriaLabel}

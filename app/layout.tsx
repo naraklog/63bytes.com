@@ -6,6 +6,7 @@ import PreloaderGate from "./components/PreloaderGate";
 import Navbar from "./components/Navbar";
 import Cursor from "./components/Cursor";
 import { LayoutProvider } from "./context/LayoutContext";
+import { SoundProvider } from "./context/SoundContext";
 
 const roobertSans = localFont({
 	src: [
@@ -227,12 +228,14 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} antialiased`}>
 				<PageTransitionProvider>
-					<LayoutProvider>
-						<PreloaderGate />
-						<Cursor />
-						<Navbar />
-						{children}
-					</LayoutProvider>
+					<SoundProvider>
+						<LayoutProvider>
+							<PreloaderGate />
+							<Cursor />
+							<Navbar />
+							{children}
+						</LayoutProvider>
+					</SoundProvider>
 				</PageTransitionProvider>
 			</body>
 		</html>
