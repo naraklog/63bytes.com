@@ -7,8 +7,10 @@ import { hasPreloaderRun } from "../../utils/preloader";
 import { usePlatform } from "../../hooks/usePlatform";
 import { useEscapeKey, useKeyboardShortcut } from "../../hooks/useKeyboardShortcut";
 import { DesktopCategories, MobileMenu } from "./Nav";
+import { type CategoryOption } from "../../types/posts";
 
 type BlogNavigationProps = {
+	categories: CategoryOption[];
 	activeCategory: string;
 	onCategoryChange: (category: string) => void;
 	showFloating?: boolean;
@@ -19,7 +21,17 @@ type BlogNavigationProps = {
 	showSearch?: boolean;
 };
 
-export default function BlogNavigation({ activeCategory, onCategoryChange, showFloating = true, viewMode, onViewModeChange, searchQuery, onSearchChange, showSearch = true }: BlogNavigationProps) {
+export default function BlogNavigation({
+	categories,
+	activeCategory,
+	onCategoryChange,
+	showFloating = true,
+	viewMode,
+	onViewModeChange,
+	searchQuery,
+	onSearchChange,
+	showSearch = true,
+}: BlogNavigationProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 	const [mounted, setMounted] = useState(false);
@@ -109,6 +121,7 @@ export default function BlogNavigation({ activeCategory, onCategoryChange, showF
 		<>
 			<nav className="hidden md:flex justify-between items-center w-full max-w-[1080px] mx-auto pb-8 relative">
 				<DesktopCategories
+					categories={categories}
 					activeCategory={activeCategory}
 					onCategoryChange={onCategoryChange}
 					viewMode={viewMode}
@@ -124,6 +137,7 @@ export default function BlogNavigation({ activeCategory, onCategoryChange, showF
 			{shouldShowMobileMenu && (
 				<MobileMenu
 					ref={mobileSearchInputRef}
+					categories={categories}
 					activeCategory={activeCategory}
 					onCategoryChange={onCategoryChange}
 					viewMode={viewMode}

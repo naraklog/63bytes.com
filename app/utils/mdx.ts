@@ -4,8 +4,8 @@ import matter from "gray-matter";
 import { cache } from "react";
 import type { JSX } from "react";
 
-import type { ArticleFrontmatter, ArticleItem, ArticleAuthor, IconKey } from "../types/posts";
-import { iconKeys } from "../types/posts";
+import type { ArticleFrontmatter, ArticleItem, ArticleAuthor, IconKey, CategoryOption } from "../types/posts";
+import { categoryIconMap, DEFAULT_CATEGORY_ICON } from "../types/posts";
 import { formatShortDate } from "./date";
 
 const BLOG_ROOT = path.join(process.cwd(), "content", "blog");
@@ -30,10 +30,6 @@ type NormalizedPost = BlogPreview & {
 	frontmatter: NormalizedFrontmatter;
 };
 
-const isIconKey = (value: string): value is IconKey => {
-	return iconKeys.includes(value as IconKey);
-};
-
 const normalizeAuthors = (authors?: ArticleAuthor[]): ArticleAuthor[] => {
 	if (!authors?.length) return [FALLBACK_AUTHOR];
 	return authors.map((author) => ({
@@ -47,7 +43,7 @@ const normalizeFrontmatter = (data: Partial<ArticleFrontmatter>, slug: string): 
 	const requiredFields: Array<keyof ArticleFrontmatter> = ["title", "description", "date", "category"];
 	for (const field of requiredFields) {
 		if (!data[field]) {
-			throw new Error(`Missing required frontmatter field \\"${field}\\" in ${slug}.mdx`);
+			throw new Error(`Missing required frontmatter field "${field}" in ${slug}.mdx`);
 		}
 	}
 	return {
@@ -56,7 +52,7 @@ const normalizeFrontmatter = (data: Partial<ArticleFrontmatter>, slug: string): 
 		date: data.date!,
 		category: data.category!,
 		authors: normalizeAuthors(data.authors),
-		icon: data.icon && isIconKey(data.icon) ? data.icon : "newspaper",
+		icon: data.icon ?? "newspaper",
 		tags: data.tags ?? [],
 		heroImage: data.heroImage,
 	};
@@ -82,7 +78,7 @@ const calculateReadingTime = (content: string) => {
 const readPostFrontmatter = async (slug: string): Promise<NormalizedPost> => {
 	const fullPath = path.join(BLOG_ROOT, `${slug}.mdx`);
 	if (!(await fileExists(fullPath))) {
-		throw new Error(`Unable to locate blog post for slug \\"${slug}\\"`);
+		throw new Error(`Unable to locate blog post for slug "${slug}"`);
 	}
 	const file = await fs.readFile(fullPath, "utf-8");
 	const { data, content } = matter(file);
@@ -127,6 +123,20 @@ export const getAllPosts = cache(async (): Promise<BlogPreview[]> => {
 			void frontmatter;
 			return preview;
 		});
+});
+
+export const getAllCategories = cache(async (): Promise<CategoryOption[]> => {
+	const posts = await getAllPosts();
+	const uniqueCategories = [...new Set(posts.map((p) => p.category))];
+
+	return [
+		{ id: "all", label: "All", icon: "StackIcon" },
+		...uniqueCategories.map((cat) => ({
+			id: cat.toLowerCase(),
+			label: cat,
+			icon: categoryIconMap[cat.toLowerCase()] ?? DEFAULT_CATEGORY_ICON,
+		})),
+	];
 });
 
 type MDXContent = (props: Record<string, unknown>) => JSX.Element;

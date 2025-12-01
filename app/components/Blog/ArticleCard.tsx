@@ -1,22 +1,11 @@
 "use client";
 
 import { useRef, useState, type MouseEvent, type PointerEvent } from "react";
-import { type ArticleItem, type IconKey } from "../../types/posts";
-import { StackIcon, CpuIcon, GitBranchIcon, NewspaperIcon, DatabaseIcon, ShieldIcon, FileCodeIcon, DiamondsFourIcon, type Icon as PhosphorIcon } from "@phosphor-icons/react";
+import { type ArticleItem } from "../../types/posts";
+import { resolvePhosphorIcon } from "../../utils/icons";
 import TransitionLink from "../TransitionLink";
 import AuthorsList from "./AuthorsList";
 import PixelIconDisplay from "../Blog/DotMatrixIcon";
-
-const iconComponents: Record<IconKey, PhosphorIcon> = {
-	newspaper: NewspaperIcon,
-	gitBranch: GitBranchIcon,
-	shield: ShieldIcon,
-	database: DatabaseIcon,
-	fileCode: FileCodeIcon,
-	component: DiamondsFourIcon,
-	menu: StackIcon,
-	cpu: CpuIcon,
-};
 
 type ArticleCardProps = {
 	item: ArticleItem;
@@ -29,7 +18,7 @@ const DRAG_THRESHOLD = 10;
 export default function ArticleCard({ item, isListView, needsRightOutline = false }: ArticleCardProps) {
 	const startPos = useRef<{ x: number; y: number } | null>(null);
 	const [isHovered, setIsHovered] = useState(false);
-	const IconComponent = iconComponents[item.icon] ?? NewspaperIcon;
+	const IconComponent = resolvePhosphorIcon(item.icon);
 
 	const handlePointerDown = (e: PointerEvent<HTMLAnchorElement>) => {
 		startPos.current = { x: e.clientX, y: e.clientY };
@@ -96,7 +85,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 								</span>
 								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{item.category}</span>
 							</div>
-							<h2 className="mt-2 text-black text-lg md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+							<h2 className="mt-2 text-black text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
 							<div className={excerptClasses}>
 								<p className="text-light-gray text-sm leading-6">{item.intro}</p>
 								<div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-linear-to-b from-transparent to-foreground" />

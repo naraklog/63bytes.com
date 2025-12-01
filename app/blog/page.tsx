@@ -4,14 +4,14 @@ import { formatFullDate } from "../utils/date";
 import Dither from "../components/Dither";
 import TransitionLink from "../components/TransitionLink";
 import { ScrambleText } from "../components/ScrambleText";
-import { getAllPosts } from "../utils/mdx";
+import { getAllPosts, getAllCategories } from "../utils/mdx";
 
 export const viewport: Viewport = {
 	themeColor: "#fafafa",
 };
 
 export default async function BlogPage() {
-	const articles = await getAllPosts();
+	const [articles, categories] = await Promise.all([getAllPosts(), getAllCategories()]);
 	const latestArticle = articles[0];
 
 	const header = (
@@ -58,7 +58,7 @@ export default async function BlogPage() {
 
 	return (
 		<main className="bg-foreground text-background min-h-screen">
-			<BlogSection header={header} limit={articles.length || undefined} showViewAllButton={false} items={articles} />
+			<BlogSection header={header} limit={articles.length || undefined} showViewAllButton={false} items={articles} categories={categories} />
 		</main>
 	);
 }

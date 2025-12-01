@@ -2,18 +2,16 @@
 
 import { CaretDownIcon, StackIcon, SquaresFourIcon, ListDashesIcon } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
-import { categoryOptions } from "../../../types/posts";
+import { type CategoryOption } from "../../../types/posts";
 import { useOverflowMeasurement } from "../../../hooks/useOverflowMeasurement";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 import { useEscapeKey } from "../../../hooks/useKeyboardShortcut";
-import { iconComponents } from "./iconComponents";
+import { resolvePhosphorIcon } from "../../../utils/icons";
 import SearchBar from "./SearchBar";
 import { useSound } from "../../../context/SoundContext";
 
-const categories = categoryOptions;
-const categoriesWithoutAll = categories.filter((category) => category.id !== "all");
-
 type DesktopCategoriesProps = {
+	categories: CategoryOption[];
 	activeCategory: string;
 	onCategoryChange: (category: string) => void;
 	viewMode: "grid" | "list";
@@ -26,6 +24,7 @@ type DesktopCategoriesProps = {
 };
 
 export default function DesktopCategories({
+	categories,
 	activeCategory,
 	onCategoryChange,
 	viewMode,
@@ -48,6 +47,8 @@ export default function DesktopCategories({
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
 	const ToggleIcon = isListView ? SquaresFourIcon : ListDashesIcon;
+
+	const categoriesWithoutAll = categories.filter((category) => category.id !== "all");
 
 	const visibleCount = useOverflowMeasurement({
 		navRef,
@@ -88,7 +89,7 @@ export default function DesktopCategories({
 							<div className="absolute top-full left-0 mt-2 bg-foreground border border-background shadow-lg z-50 min-w-[200px]" role="menu">
 								<ul className="p-1.5 max-h-72 overflow-auto">
 									{categories.map((category) => {
-										const IconComponent = iconComponents[category.icon] ?? StackIcon;
+										const IconComponent = resolvePhosphorIcon(category.icon);
 										return (
 											<li key={`all-${category.id}`}>
 												<button
@@ -115,7 +116,7 @@ export default function DesktopCategories({
 					</div>
 					<ul className="flex relative gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter overflow-hidden">
 						{visibleCategories.map((category) => {
-							const IconComponent = iconComponents[category.icon] ?? StackIcon;
+							const IconComponent = resolvePhosphorIcon(category.icon);
 							return (
 								<li key={category.id}>
 									<button
@@ -162,7 +163,7 @@ export default function DesktopCategories({
 				className="md:flex hidden gap-4 whitespace-nowrap list-none font-semi-mono text-xs tracking-tighter absolute opacity-0 pointer-events-none -z-10"
 			>
 				{categoriesWithoutAll.map((category) => {
-					const IconComponent = iconComponents[category.icon] ?? StackIcon;
+					const IconComponent = resolvePhosphorIcon(category.icon);
 					return (
 						<li key={`measure-${category.id}`}>
 							<button className="flex items-center gap-2 px-3 py-1.5 h-8 box-border border">

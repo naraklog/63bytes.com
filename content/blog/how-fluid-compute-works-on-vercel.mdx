@@ -3,14 +3,14 @@ title: "How Fluid compute works on Vercel"
 description: "A practical tour of Fluid compute's automatic scaling and how to decide when to run background work, edge logic, or region-tied jobs."
 date: "2025-03-03"
 category: "Compute"
-icon: "newspaper"
+icon: "NewspaperIcon"
 authors:
-  - name: "Mariano"
-  - name: "Collier"
+    - name: "Mariano"
+    - name: "Collier"
 tags:
-  - vercel
-  - compute
-  - scaling
+    - vercel
+    - compute
+    - scaling
 heroImage: "/blog/fluid-compute.png"
 ---
 
@@ -18,11 +18,11 @@ Fluid compute is Vercel's response to bursty, IO-heavy workloads. Instead of pre
 
 ## Scaling decisions
 
-| Signal | What Vercel does |
-| --- | --- |
-| CPU saturation | Moves the job to a compute-optimized pool |
-| Repeated cron invocations | Converts the job into a scheduled worker |
-| Fan-out webhooks | Keeps the workload on edge runtime to avoid cold starts |
+| Signal                    | What Vercel does                                        |
+| ------------------------- | ------------------------------------------------------- |
+| CPU saturation            | Moves the job to a compute-optimized pool               |
+| Repeated cron invocations | Converts the job into a scheduled worker                |
+| Fan-out webhooks          | Keeps the workload on edge runtime to avoid cold starts |
 
 ## Recommended architecture
 
@@ -33,10 +33,7 @@ Fluid compute is Vercel's response to bursty, IO-heavy workloads. Instead of pre
 ```ts
 export async function POST() {
 	const analytics = startAnalyticsBatch();
-	const [featureFlags, experiments] = await Promise.all([
-		getFeatureFlags(),
-		getExperimentBranches(),
-	]);
+	const [featureFlags, experiments] = await Promise.all([getFeatureFlags(), getExperimentBranches()]);
 	await analytics.flush();
 	return Response.json({ featureFlags, experiments });
 }

@@ -3,11 +3,12 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import CategoriesNav from "./CategoriesNav";
 import Articles from "./Articles";
-import type { ArticleItem } from "../../types/posts";
+import type { ArticleItem, CategoryOption } from "../../types/posts";
 import { useIntersectionObserver } from "../../hooks";
 import { setMetaThemeColor } from "../../utils/theme";
 
 type BlogSectionProps = {
+	categories: CategoryOption[];
 	limit?: number;
 	showViewAllButton?: boolean;
 	header?: React.ReactNode;
@@ -18,7 +19,7 @@ type BlogSectionProps = {
 	useThemeColorOnly?: boolean;
 };
 
-const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false }, ref) => {
+const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ categories, limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false }, ref) => {
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -97,6 +98,7 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 					</div>
 				) : null}
 				<CategoriesNav
+					categories={categories}
 					activeCategory={activeCategory}
 					onCategoryChange={setActiveCategory}
 					showFloating={isInView}

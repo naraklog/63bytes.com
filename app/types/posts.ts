@@ -1,6 +1,17 @@
-export type IconKey = "newspaper" | "gitBranch" | "shield" | "database" | "fileCode" | "component" | "menu" | "cpu";
+export type IconKey = string; // Now allows any string since we resolve dynamically
 
-export const iconKeys = ["newspaper", "gitBranch", "shield", "database", "fileCode", "component", "menu", "cpu"] as const satisfies IconKey[];
+// Map category names (lowercase) to their display icons
+export const categoryIconMap: Record<string, string> = {
+	security: "ShieldIcon",
+	migration: "GitBranchIcon",
+	compute: "CpuIcon",
+	caching: "DatabaseIcon",
+	"next.js": "FileCodeIcon",
+	rsc: "DiamondsFourIcon",
+	product: "NewspaperIcon",
+};
+
+export const DEFAULT_CATEGORY_ICON = "NewspaperIcon";
 
 export type ArticleAuthor = {
 	name: string;
@@ -35,13 +46,3 @@ export type CategoryOption = {
 	label: string;
 	icon: IconKey;
 };
-
-export const categoryOptions: CategoryOption[] = [
-	{ id: "all", label: "All", icon: "menu" },
-	{ id: "compute", label: "Compute", icon: "cpu" },
-	{ id: "migration", label: "Migration", icon: "gitBranch" },
-	{ id: "security", label: "Security", icon: "shield" },
-	{ id: "next.js", label: "Next.js", icon: "fileCode" },
-	{ id: "caching", label: "Caching", icon: "database" },
-	{ id: "rsc", label: "RSC", icon: "component" },
-];

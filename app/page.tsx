@@ -1,7 +1,7 @@
 import HomeClient from "./home-client";
-import { getAllPosts } from "./utils/mdx";
+import { getAllPosts, getAllCategories } from "./utils/mdx";
 
 export default async function HomePage() {
-	const articles = await getAllPosts();
-	return <HomeClient articles={articles} />;
+	const [articles, categories] = await Promise.all([getAllPosts(), getAllCategories()]);
+	return <HomeClient articles={articles} categories={categories} />;
 }

@@ -4,16 +4,16 @@ import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon,
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { categoryOptions } from "../../../types/posts";
+import { type CategoryOption } from "../../../types/posts";
 import TransitionLink from "../../TransitionLink";
-import { iconComponents } from "./iconComponents";
+import { resolvePhosphorIcon } from "../../../utils/icons";
 import { useScrollDirection, useMediaQuery } from "../../../hooks";
 import { useSound } from "../../../context/SoundContext";
 
-const categories = categoryOptions;
 const ICON_SIZE = 18;
 
 type MobileMenuProps = {
+	categories: CategoryOption[];
 	activeCategory: string;
 	onCategoryChange: (category: string) => void;
 	viewMode: "grid" | "list";
@@ -30,6 +30,7 @@ type MobileMenuProps = {
 
 const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function MobileMenu(
 	{
+		categories,
 		activeCategory,
 		onCategoryChange,
 		viewMode,
@@ -118,7 +119,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									>
 										{(() => {
 											const activeCat = categories.find((cat) => cat.id === activeCategory);
-											const IconComponent = activeCat ? iconComponents[activeCat.icon] ?? StackIcon : null;
+											const IconComponent = resolvePhosphorIcon(activeCat?.icon ?? "StackIcon");
 											return (
 												<>
 													{IconComponent && <IconComponent size={16} weight="duotone" />}
@@ -192,7 +193,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 				<div className="mx-auto w-full max-w-[1080px] border border-background bg-foreground/80 backdrop-blur-sm shadow-lg font-semi-mono">
 					<ul className="p-2">
 						{categories.map((category) => {
-							const IconComponent = iconComponents[category.icon] ?? StackIcon;
+							const IconComponent = resolvePhosphorIcon(category.icon);
 							return (
 								<li key={`mobile-${category.id}`}>
 									<button
