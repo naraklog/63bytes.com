@@ -2,13 +2,7 @@ export type IconKey = string; // Now allows any string since we resolve dynamica
 
 // Map category names (lowercase) to their display icons
 export const categoryIconMap: Record<string, string> = {
-	security: "ShieldIcon",
-	migration: "GitBranchIcon",
-	compute: "CpuIcon",
-	caching: "DatabaseIcon",
-	"next.js": "FileCodeIcon",
-	rsc: "DiamondsFourIcon",
-	product: "NewspaperIcon",
+	log: "NotebookIcon",
 };
 
 export const DEFAULT_CATEGORY_ICON = "NewspaperIcon";

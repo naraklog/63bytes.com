@@ -39,9 +39,10 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 
 	const listItemClasses = ["h-auto", !isListView ? "lg:h-[560px]" : "", needsRightOutline ? "lg:border-r lg:border-light-gray/20" : ""].filter(Boolean).join(" ");
 
-	const contentWrapperClasses = ["flex h-full flex-col bg-foreground no-underline text-black transition-colors duration-200 touch-pan-y", isListView ? "gap-2 p-3 sm:p-4" : "gap-6 p-8 lg:p-10"].join(
-		" "
-	);
+	const contentWrapperClasses = [
+		"flex h-full flex-col bg-foreground no-underline text-black transition-colors duration-200 touch-pan-y",
+		isListView ? "gap-2 p-3 sm:p-4" : "gap-4 md:gap-6 p-8 lg:p-10",
+	].join(" ");
 
 	const excerptClasses = isListView ? "hidden" : "relative mt-3 overflow-hidden lg:flex-grow";
 	const metadataClasses = "mt-4 flex items-center gap-2";
@@ -55,7 +56,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 					{isListView ? (
 						<>
 							<div className="flex items-center justify-between gap-4">
-								<h2 className="text-black text-lg sm:text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+								<h2 className="text-black text-lg md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
 								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90 shrink-0">{item.category}</span>
 							</div>
 							<div className="flex flex-wrap items-center gap-3 justify-start text-sm text-light-gray text-right">
@@ -85,7 +86,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 								</span>
 								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{item.category}</span>
 							</div>
-							<h2 className="mt-2 text-black text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+							<h2 className="mt-2 text-black text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
 							<div className={excerptClasses}>
 								<p className="text-light-gray text-sm leading-6">{item.intro}</p>
 								<div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-linear-to-b from-transparent to-foreground" />
