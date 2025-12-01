@@ -601,3 +601,69 @@ button:active,
 	--selection-background: var(--foreground);
 	--selection-color: var(--background);
 }
+
+.rehype-code-title,
+[data-rehype-pretty-code-title] {
+	margin: 1rem 0 0;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	background-color: transparent;
+	border: 1px solid rgb(96 96 104 / 0.4);
+	border-radius: 0;
+	font-size: 0.8rem;
+	font-weight: 600;
+	font-family: var(--font-mono), monospace;
+	text-transform: none;
+	letter-spacing: 0.02em;
+	color: var(--foreground);
+	position: relative;
+}
+
+[data-code-theme="light"] .rehype-code-title,
+[data-code-theme="light"] [data-rehype-pretty-code-title] {
+	color: var(--background);
+	background-color: var(--color-foreground, #fafafa);
+}
+
+[data-code-theme="dark"] .rehype-code-title,
+[data-code-theme="dark"] [data-rehype-pretty-code-title] {
+	color: var(--foreground);
+	background-color: var(--color-black, #050508);
+}
+
+.rehype-code-title::after,
+[data-rehype-pretty-code-title]::after {
+	content: "";
+	position: absolute;
+	left: -1px;
+	right: -1px;
+	bottom: -1px;
+	height: 1px;
+}
+
+.rehype-code-title + pre,
+[data-rehype-pretty-code-title] + pre,
+.rehype-code-title + .code-block-shell,
+[data-rehype-pretty-code-title] + .code-block-shell {
+	margin-top: 0;
+	margin-bottom: 0.25rem;
+	border-top: none;
+}
+
+.rehype-code-title + .code-block-shell pre,
+[data-rehype-pretty-code-title] + .code-block-shell pre {
+	border-top: none;
+}
+
+[data-rehype-pretty-code-caption] {
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.85rem;
+	color: var(--color-light-gray);
+	font-style: italic;
+}
