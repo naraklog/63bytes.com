@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { categoryOptions } from "../../../types/posts";
 import TransitionLink from "../../TransitionLink";
 import { iconComponents } from "./iconComponents";
-import { useScrollDirection } from "../../../hooks";
+import { useScrollDirection, useMediaQuery } from "../../../hooks";
 import { useSound } from "../../../context/SoundContext";
 
 const categories = categoryOptions;
@@ -47,6 +47,10 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 ) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
 	const { playSound } = useSound();
+	const isMobile = useMediaQuery("(max-width: 767px)");
+
+	if (!isMobile) return null;
+
 	const isCollapsed = scrollDirection === "down";
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";

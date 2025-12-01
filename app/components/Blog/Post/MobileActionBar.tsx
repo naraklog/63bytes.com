@@ -5,7 +5,7 @@ import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, Books
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
-import { useScrollDirection } from "../../../hooks";
+import { useScrollDirection, useMediaQuery } from "../../../hooks";
 import { useSound } from "../../../context/SoundContext";
 
 type MobileActionBarProps = {
@@ -21,6 +21,10 @@ const ICON_SIZE = 18;
 export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
 	const { playSound } = useSound();
+	const isMobile = useMediaQuery("(max-width: 767px)");
+
+	if (!isMobile) return null;
+
 	const isCollapsed = scrollDirection === "down";
 
 	return createPortal(
