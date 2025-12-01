@@ -1,27 +1,24 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState, useCallback, type ElementType, type ReactNode } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { LinkIcon, CheckIcon } from "@phosphor-icons/react";
 
+type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
 type LinkedHeadingProps = {
-	as: ElementType;
+	as: HeadingTag;
 	id?: string;
 	children: ReactNode;
 	className?: string;
-	[key: string]: any;
 };
 
-export default function LinkedHeading({ as: Component, id, children, className = "", ...props }: LinkedHeadingProps) {
+export default function LinkedHeading({ as: Component, id, children, className = "" }: LinkedHeadingProps) {
 	const pathname = usePathname();
 	const [copied, setCopied] = useState(false);
 
 	if (!id) {
-		return (
-			<Component className={className} {...props}>
-				{children}
-			</Component>
-		);
+		return <Component className={className}>{children}</Component>;
 	}
 
 	const href = `${pathname}#${id}`;
@@ -38,7 +35,7 @@ export default function LinkedHeading({ as: Component, id, children, className =
 	}, [href]);
 
 	return (
-		<Component id={id} onClick={handleCopy} className={`group flex items-center gap-2 cursor-pointer ${className}`} {...props}>
+		<Component id={id} onClick={handleCopy} className={`group flex items-center gap-2 cursor-pointer ${className}`}>
 			{children}
 			<span
 				className="text-current opacity-0 group-hover:opacity-100 focus:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity p-1 inline-flex items-center justify-center"
