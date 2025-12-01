@@ -26,6 +26,9 @@ const nextConfig: NextConfig = {
 	env: {
 		NEXT_TELEMETRY_DISABLED: "1",
 	},
+	images: {
+		qualities: [70, 75, 100],
+	},
 };
 
 export default withMDX(nextConfig);
