@@ -23,7 +23,6 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [searchQuery, setSearchQuery] = useState("");
 	const sectionRef = useRef<HTMLElement | null>(null);
-	const hasInitializedView = useRef(false);
 
 	// Merge forwarded ref with local ref
 	const assignRefs = useCallback(
@@ -43,19 +42,6 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ limit = 6, show
 		threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
 		minRatio: 0.1,
 	});
-
-	// Initialize view mode based on screen size (once, on client side)
-	useEffect(() => {
-		if (hasInitializedView.current) return;
-
-		// Directly check media query on mount to avoid SSR/hydration race
-		// This ensures list view is default when MobileMenu is active (md:hidden = max-width: 767px)
-		const isMobileScreen = window.matchMedia("(max-width: 767px)").matches;
-		if (isMobileScreen) {
-			setViewMode("list");
-		}
-		hasInitializedView.current = true;
-	}, []);
 
 	useEffect(() => {
 		onLayoutChange?.();

@@ -50,7 +50,9 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 
 	const listItemClasses = ["h-auto", !isListView ? "lg:h-[560px]" : "", needsRightOutline ? "lg:border-r lg:border-light-gray/20" : ""].filter(Boolean).join(" ");
 
-	const contentWrapperClasses = ["flex h-full flex-col gap-6 bg-foreground no-underline text-black transition-colors duration-200 touch-pan-y", isListView ? "p-4 md:p-6" : "p-8 lg:p-10"].join(" ");
+	const contentWrapperClasses = ["flex h-full flex-col bg-foreground no-underline text-black transition-colors duration-200 touch-pan-y", isListView ? "gap-2 p-3 sm:p-4" : "gap-6 p-8 lg:p-10"].join(
+		" "
+	);
 
 	const excerptClasses = isListView ? "hidden" : "relative mt-3 overflow-hidden lg:flex-grow";
 	const metadataClasses = "mt-4 flex items-center gap-2";
@@ -64,31 +66,17 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 					{isListView ? (
 						<>
 							<div className="flex items-center justify-between gap-4">
-								<div className="flex items-center gap-3">
-									<span className="inline-flex h-16 w-16 items-center justify-center rounded-sm text-black" aria-hidden="true">
-										<PixelIconDisplay
-											svg={<IconComponent size={32} weight="regular" />}
-											gridSize={24}
-											dotScale={0.8}
-											sparkleDensity={0.75}
-											shape="square"
-											color="black"
-											sparkleEnabled={isHovered}
-											className="w-full h-full"
-										/>
-									</span>
-									<h2 className="text-black text-lg sm:text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
-								</div>
-								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{item.category}</span>
+								<h2 className="text-black text-lg sm:text-xl md:text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
+								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90 shrink-0">{item.category}</span>
 							</div>
-							<div className="flex flex-wrap items-center gap-3 justify-end text-sm text-light-gray text-right">
-								{renderAuthors("text-light-gray text-xs sm:text-sm")}
+							<div className="flex flex-wrap items-center gap-3 justify-start text-sm text-light-gray text-right">
+								<time dateTime={item.dateTime} className="text-light-gray text-left text-[0.65rem] sm:text-xs uppercase tracking-wide">
+									{item.dateLabel}
+								</time>
 								<span className="text-light-gray/60" aria-hidden="true">
 									•
 								</span>
-								<time dateTime={item.dateTime} className="text-light-gray text-[0.65rem] sm:text-xs uppercase tracking-wide">
-									{item.dateLabel}
-								</time>
+								{renderAuthors("text-light-gray text-xs sm:text-sm")}
 							</div>
 						</>
 					) : (
