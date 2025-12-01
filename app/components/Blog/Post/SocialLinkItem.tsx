@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ScrambleText } from "../../ScrambleText";
 import type { ThemePreset } from "./constants";
+import { useSound } from "../../../context/SoundContext";
 
 type SocialLinkItemProps = {
 	label: string;
@@ -16,6 +17,7 @@ type SocialLinkItemProps = {
 
 export default function SocialLinkItem({ label, href, Icon, theme, gridLineClass }: SocialLinkItemProps) {
 	const [isHovered, setIsHovered] = useState(false);
+	const { playSound } = useSound();
 
 	return (
 		<a
@@ -23,8 +25,12 @@ export default function SocialLinkItem({ label, href, Icon, theme, gridLineClass
 			target={href.startsWith("mailto:") ? undefined : "_blank"}
 			rel={href.startsWith("mailto:") ? undefined : "noreferrer"}
 			className={`group flex items-center gap-3 text-sm ${theme.content} hover:${theme.heading} transition-colors`}
-			onMouseEnter={() => setIsHovered(true)}
+			onMouseEnter={() => {
+				playSound("hover");
+				setIsHovered(true);
+			}}
 			onMouseLeave={() => setIsHovered(false)}
+			onClick={() => playSound("click")}
 		>
 			<div className={`flex items-center justify-center w-8 h-8 border ${gridLineClass} group-hover:border-current transition-colors overflow-hidden relative`}>
 				<Icon className="absolute inset-0 m-auto w-4 h-4 transform transition-transform duration-300 group-hover:-translate-y-[175%] group-hover:translate-x-[175%]" />
