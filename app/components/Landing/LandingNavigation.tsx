@@ -82,11 +82,11 @@ export const LandingNavigation = ({ isLoaded }: LandingNavigationProps) => {
 				</span>
 			</TransitionLink>
 
-			<TransitionLink className="m-0 text-10xs text-off-white/80 group" href={CONTENT.links.contact.href} onMouseEnter={contactScramble.trigger} onMouseLeave={contactScramble.trigger}>
-				<span aria-label={CONTENT.links.contact.label}>
+			<TransitionLink className="m-0 text-10xs text-off-white/80 group" href={CONTENT.links.linkedin.href} onMouseEnter={contactScramble.trigger} onMouseLeave={contactScramble.trigger}>
+				<span aria-label={CONTENT.links.linkedin.label}>
 					<ScrambleText
 						className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-2"
-						text={CONTENT.links.contact.label}
+						text={CONTENT.links.linkedin.label}
 						trigger={contactScramble.signal}
 						scrambleOnMount={isLoaded}
 					/>
@@ -113,4 +113,3 @@ export const LandingNavigation = ({ isLoaded }: LandingNavigationProps) => {
 		</div>
 	);
 };
-

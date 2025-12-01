@@ -5,8 +5,8 @@ import Image from "next/image";
 import { ScrambleText } from "../ScrambleText";
 import { ArticleItem } from "../../types/posts";
 import { hasPreloaderRun } from "../../utils/preloader";
-import { CONTENT } from "../../utils/content";
 import { LandingNavigation } from "./LandingNavigation";
+import { LandingHero } from "./LandingHero";
 import { LatestPostPreview } from "./LatestPostPreview";
 import { useTouchDevice } from "../../hooks/useTouchDevice";
 
@@ -103,7 +103,7 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 				</>
 			)}
 			{/* Coordinates */}
-			<div ref={coordinatesRef} className="hidden md:block absolute bottom-8 right-8 font-mono text-10xs text-off-white/70 pointer-events-none z-20 tabular-nums">
+			<div ref={coordinatesRef} className="hidden md:block absolute bottom-8 left-8 font-mono text-10xs text-off-white/70 pointer-events-none z-20 tabular-nums">
 				<ScrambleText text="[ 0° E , 0° N ]" scrambleOnMount={isLoaded} />
 			</div>
 
@@ -121,18 +121,8 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 			<div className="relative z-10 mt-auto h-[70%] flex flex-col justify-between gap-12 border-t border-light-gray/20 w-full">
 				<LandingNavigation isLoaded={isLoaded} />
 
-				<div className="grid grid-cols-1 md:grid-cols-2 items-end gap-x-2 gap-y-8">
-					<div className="flex flex-col gap-4 mb-4 md:mb-12 order-2 md:order-1">
-						<h1 className="text-4xl font-bold">
-							<span aria-label={`Hi, I'm ${CONTENT.name}`}>
-								<ScrambleText text="Hi, I'm " scrambleOnMount={isLoaded} />
-								<ScrambleText text={CONTENT.name} className="text-off-white" scrambleOnMount={isLoaded} />
-							</span>
-						</h1>
-						<span aria-label={CONTENT.role}>
-							<ScrambleText as="p" className="text-lg text-light-gray/80" text={CONTENT.role} scrambleOnMount={isLoaded} />
-						</span>
-					</div>
+				<div className="grid grid-cols-1 md:grid-cols-2 items-end gap-x-8 gap-y-8">
+					<LandingHero isLoaded={isLoaded} />
 
 					{latestPost && <LatestPostPreview latestPost={latestPost} />}
 				</div>
