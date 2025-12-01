@@ -26,10 +26,10 @@ export function LandingHero({ isLoaded }: LandingHeroProps) {
 				<div className="flex justify-between items-center text-xs md:text-sm font-mono text-light-gray/90 tracking-tighter uppercase">
 					<span className="flex items-center gap-2">
 						<TerminalIcon size={16} />
-						<ScrambleText text="naraklog" scrambleOnMount={isLoaded} />
+						<ScrambleText text="naraklog" scrambleOnMount={isLoaded} scrambleOnHover />
 					</span>
 					<a href={CONTENT.links.contact.href} className="hover:text-off-white transition-colors cursor-pointer" onMouseEnter={() => playSound("hover")} onClick={() => playSound("click")}>
-						<ScrambleText text="CONTACT [+]" scrambleOnMount={isLoaded} />
+						<ScrambleText text="CONTACT [+]" scrambleOnMount={isLoaded} scrambleOnHover />
 					</a>
 				</div>
 			</div>
