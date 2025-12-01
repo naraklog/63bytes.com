@@ -13,7 +13,7 @@ export function LandingHero({ isLoaded }: LandingHeroProps) {
 	const { playSound } = useSound();
 
 	return (
-		<div className="flex flex-col gap-8 mb-4 md:mb-12 w-full max-w-2xl">
+		<div className="flex flex-col gap-4 md:gap-6 mb-4 md:mb-12 w-full max-w-2xl">
 			<h1 className="text-sm md:text-lg font-sans leading-tight text-off-white/80">
 				<ScrambleText
 					text="I'm a multidisciplinary designer who's passionate about crafting immersive websites for creative individuals + brands. Previously @R/GA."
