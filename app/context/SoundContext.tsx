@@ -130,7 +130,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 		const gainNode = context.createGain();
 
 		// Reduce volume significantly and add envelope to avoid pops
-		const volume = type === "hover" ? 0.25 : 0.3;
+		const volume = type === "hover" ? 0.4 : 0.45;
 
 		// Start at 0
 		gainNode.gain.setValueAtTime(0, context.currentTime);

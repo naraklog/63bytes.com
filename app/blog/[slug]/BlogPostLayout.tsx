@@ -15,6 +15,7 @@ import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
 import { useLayoutContext } from "../../context/LayoutContext";
+import { useSound } from "../../context/SoundContext";
 
 type BlogPostLayoutProps = {
 	metadata: BlogPostMetadata;
@@ -31,6 +32,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const [isPreloaderDone, setIsPreloaderDone] = useState<boolean>(() => hasPreloaderRun());
 	const { startTransition, isTransitioning } = usePageTransition();
 	const { setMorphEnabled, setMorphProgress } = useLayoutContext();
+	const { playSound } = useSound();
 
 	const { outlineItems, outlineMode, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleToggleOutline, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
 		articleRef,
@@ -77,19 +79,22 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const theme = useMemo(() => (isDarkMode ? THEME_PRESETS.dark : THEME_PRESETS.light), [isDarkMode]);
 
 	const handleToggleTheme = useCallback(() => {
+		playSound("click");
 		const next = !isDarkMode;
 		setIsDarkMode(next);
-	}, [isDarkMode]);
+	}, [isDarkMode, playSound]);
 
 	const handleBackToBlog = useCallback(() => {
 		if (isTransitioning) return;
+		playSound("click");
 		startTransition({ href: "/blog", label: "Blog" });
-	}, [isTransitioning, startTransition]);
+	}, [isTransitioning, startTransition, playSound]);
 
 	const handleGoHome = useCallback(() => {
 		if (isTransitioning) return;
+		playSound("click");
 		startTransition({ href: "/", label: "Home" });
-	}, [isTransitioning, startTransition]);
+	}, [isTransitioning, startTransition, playSound]);
 
 	useEffect(() => {
 		if (!mounted) return;
@@ -137,6 +142,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											<button
 												type="button"
 												onClick={handleBackToBlog}
+												onMouseEnter={() => playSound("hover")}
 												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} gap-2 min-w-[105px] ${theme.linkButton}`}
 												disabled={isTransitioning}
 												aria-label="Back to blog"
@@ -147,6 +153,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											<button
 												type="button"
 												onClick={handleGoHome}
+												onMouseEnter={() => playSound("hover")}
 												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${theme.toggleButton}`}
 												disabled={isTransitioning}
 												aria-label="Go to homepage"
@@ -158,6 +165,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												type="button"
 												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden ${theme.toggleButton}`}
 												onClick={handleToggleTheme}
+												onMouseEnter={() => playSound("hover")}
 												aria-pressed={isDarkMode}
 												aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
 											>
@@ -168,7 +176,11 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												<button
 													type="button"
 													className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${outlineButtonVariant}`}
-													onClick={handleToggleOutline}
+													onClick={() => {
+														playSound("click");
+														handleToggleOutline();
+													}}
+													onMouseEnter={() => playSound("hover")}
 													aria-pressed={isOutlineOpen}
 													aria-label={isOutlineOpen ? "Hide page outline" : "Show page outline"}
 													title={outlineStateLabel}

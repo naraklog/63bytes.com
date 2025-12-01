@@ -78,6 +78,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
+									onAnimationComplete={() => playSound("hover")}
 									className="px-1.75"
 									onClick={() => {
 										playSound("click");
@@ -96,6 +97,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
+									onAnimationComplete={() => playSound("hover")}
 									className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 								>
 									<button

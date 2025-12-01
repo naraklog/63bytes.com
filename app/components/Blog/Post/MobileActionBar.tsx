@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
 import { useScrollDirection } from "../../../hooks";
+import { useSound } from "../../../context/SoundContext";
 
 type MobileActionBarProps = {
 	isDarkMode: boolean;
@@ -19,6 +20,7 @@ const ICON_SIZE = 18;
 
 export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
+	const { playSound } = useSound();
 	const isCollapsed = scrollDirection === "down";
 
 	return createPortal(
@@ -45,8 +47,13 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
+								onAnimationComplete={() => playSound("hover")}
 								className="px-1.75"
-								onClick={() => setScrollDirection("up")}
+								onClick={() => {
+									playSound("click");
+									setScrollDirection("up");
+								}}
+								onMouseEnter={() => playSound("hover")}
 								aria-label="Expand menu"
 							>
 								<DotsThreeOutlineIcon size={ICON_SIZE} weight="fill" />
@@ -59,6 +66,7 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
+								onAnimationComplete={() => playSound("hover")}
 								className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 							>
 								<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">
@@ -77,7 +85,11 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 
 								<button
 									type="button"
-									onClick={onToggleTheme}
+									onClick={() => {
+										playSound("click");
+										onToggleTheme();
+									}}
+									onMouseEnter={() => playSound("hover")}
 									className="flex items-center"
 									aria-pressed={isDarkMode}
 									aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -89,7 +101,17 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								{hasOutlineItems && (
 									<>
 										<div className="h-4 w-px shrink-0 bg-light-gray" />
-										<button type="button" onClick={onToggleOutline} className="flex items-center" aria-pressed={isOutlineOpen} aria-label="Toggle page outline">
+										<button
+											type="button"
+											onClick={() => {
+												playSound("click");
+												onToggleOutline();
+											}}
+											onMouseEnter={() => playSound("hover")}
+											className="flex items-center"
+											aria-pressed={isOutlineOpen}
+											aria-label="Toggle page outline"
+										>
 											<TreeViewIcon size={ICON_SIZE} weight="duotone" />
 											<span className="sr-only">Toggle page outline</span>
 										</button>

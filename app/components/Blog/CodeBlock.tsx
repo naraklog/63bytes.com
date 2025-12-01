@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 import { CheckIcon, CopyIcon } from "@phosphor-icons/react";
+import { useSound } from "../../context/SoundContext";
 
 type CodeBlockProps = ComponentPropsWithoutRef<"pre">;
 
@@ -11,6 +12,7 @@ export default function CodeBlock({ className, children, ...props }: CodeBlockPr
 	const preRef = useRef<HTMLPreElement>(null);
 	const [copied, setCopied] = useState(false);
 	const [codeText, setCodeText] = useState("");
+	const { playSound } = useSound();
 
 	useEffect(() => {
 		const codeNode = preRef.current?.querySelector("code");
@@ -34,9 +36,19 @@ export default function CodeBlock({ className, children, ...props }: CodeBlockPr
 
 	return (
 		<div className="code-block-shell">
-			<button type="button" className="code-copy-button" onClick={handleCopy} aria-live="polite" data-copied={copied ? "true" : "false"}>
-				{copied ? <CheckIcon size={16} aria-hidden="true" /> : <CopyIcon size={16} weight="duotone" aria-hidden="true" />}
-			</button>
+		<button
+			type="button"
+			className="code-copy-button"
+			onClick={() => {
+				playSound("click");
+				handleCopy();
+			}}
+			onMouseEnter={() => playSound("hover")}
+			aria-live="polite"
+			data-copied={copied ? "true" : "false"}
+		>
+			{copied ? <CheckIcon size={16} aria-hidden="true" /> : <CopyIcon size={16} weight="duotone" aria-hidden="true" />}
+		</button>
 			<pre ref={preRef} className={joinClassNames("code-block", className)} {...props}>
 				{children}
 			</pre>

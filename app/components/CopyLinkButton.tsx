@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { LinkIcon, CheckIcon } from "@phosphor-icons/react";
+import { useSound } from "../context/SoundContext";
 
 type CopyLinkButtonProps = {
 	href: string;
@@ -30,6 +31,7 @@ export default function CopyLinkButton({ href, className, variant = "light", sho
 	const [copied, setCopied] = useState(false);
 	const variantClasses = VARIANT_STYLES[variant];
 	const targetUrl = useMemo(() => buildAbsoluteUrl(href), [href]);
+	const { playSound } = useSound();
 
 	const handleCopy = useCallback(async () => {
 		try {
@@ -44,7 +46,11 @@ export default function CopyLinkButton({ href, className, variant = "light", sho
 	return (
 		<button
 			type="button"
-			onClick={handleCopy}
+			onClick={() => {
+				playSound("click");
+				handleCopy();
+			}}
+			onMouseEnter={() => playSound("hover")}
 			className={`inline-flex items-center gap-2 bg-transparent px-2 py-1 transition-opacity duration-200 ${variantClasses.button} ${className ?? ""}`}
 			aria-label={copied ? "Link copied" : "Copy post URL"}
 		>

@@ -3,6 +3,7 @@
 import { createPortal } from "react-dom";
 import { TreeViewIcon, XIcon } from "@phosphor-icons/react";
 import type { OutlineItem, OutlinePosition } from "./constants";
+import { useSound } from "../../../context/SoundContext";
 
 type OutlinePanelProps = {
 	isOpen: boolean;
@@ -20,6 +21,8 @@ type OutlinePanelProps = {
 };
 
 export default function OutlinePanel({ isOpen, mode, width, position, useHighlightBackground, borderClass, textClass, items, activeId, onClose, onNavigate, isDarkMode }: OutlinePanelProps) {
+	const { playSound } = useSound();
+
 	if (!isOpen || !items.length) return null;
 
 	const blurClass = useHighlightBackground ? "backdrop-blur-lg" : "backdrop-blur-sm";
@@ -56,7 +59,16 @@ export default function OutlinePanel({ isOpen, mode, width, position, useHighlig
 					<TreeViewIcon size={16} weight="duotone" aria-hidden="true" />
 					On This Page
 				</div>
-				<button type="button" onClick={onClose} className="flex items-center gap-1 text-xs font-mono uppercase tracking-tight opacity-80 transition-opacity" aria-label="Close outline">
+				<button
+					type="button"
+					onClick={() => {
+						playSound("click");
+						onClose();
+					}}
+					onMouseEnter={() => playSound("hover")}
+					className="flex items-center gap-1 text-xs font-mono uppercase tracking-tight opacity-80 transition-opacity"
+					aria-label="Close outline"
+				>
 					<XIcon size={16} aria-hidden="true" />
 				</button>
 			</div>
@@ -69,7 +81,11 @@ export default function OutlinePanel({ isOpen, mode, width, position, useHighlig
 								<li key={item.id}>
 									<a
 										href={`#${item.id}`}
-										onClick={onNavigate}
+										onClick={() => {
+											playSound("click");
+											onNavigate();
+										}}
+										onMouseEnter={() => playSound("hover")}
 										className={`group flex items-center gap-2 px-2 py-1.5 leading-snug transition-colors ${item.level === 3 ? "pl-6 text-[0.9em]" : "pl-2"} ${
 											isActive ? (isDarkMode ? "text-white" : "text-black") : "opacity-80"
 										}`}
