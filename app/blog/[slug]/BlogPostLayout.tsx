@@ -221,7 +221,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									</header>
 
 									<div
-										className={`text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 ${theme.content}`}
+										className={`text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
 									</div>
