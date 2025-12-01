@@ -23,7 +23,7 @@ export const LatestPostPreview = ({ latestPost }: LatestPostPreviewProps) => {
 			<div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/85 via-black/70 to-transparent" />
 
 			<div className="relative z-10 flex flex-col gap-3 p-4 md:p-6 w-full">
-				<h3 className="text-lg md:text-xl font-medium text-off-white line-clamp-1" title={latestPost.label}>
+				<h3 className="text-xl md:text-2xl font-medium text-off-white line-clamp-1" title={latestPost.label}>
 					<span aria-label={latestPost.label}>
 						<ScrambleText text={latestPost.label} scrambleOnHover />
 					</span>
