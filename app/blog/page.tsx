@@ -12,8 +12,7 @@ export const viewport: Viewport = {
 
 export default async function BlogPage() {
 	const articles = await getAllPosts();
-	const [latestArticle, ...restArticles] = articles;
-	const fallbackItems = latestArticle ? restArticles : articles;
+	const latestArticle = articles[0];
 
 	const header = (
 		<div className="flex flex-col gap-6">
@@ -59,7 +58,7 @@ export default async function BlogPage() {
 
 	return (
 		<main className="bg-foreground text-background min-h-screen">
-			<BlogSection header={header} limit={fallbackItems.length || undefined} showViewAllButton={false} items={fallbackItems} />
+			<BlogSection header={header} limit={articles.length || undefined} showViewAllButton={false} items={articles} />
 		</main>
 	);
 }
