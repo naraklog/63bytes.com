@@ -145,7 +145,7 @@ export default function DesktopCategories({
 							onViewModeChange(isListView ? "grid" : "list");
 						}}
 						onMouseEnter={() => playSound("hover")}
-						className="flex items-center justify-center w-9 h-8 border border-black bg-white text-black transition-colors duration-200"
+						className="flex items-center justify-center w-9 h-8 border border-black bg-black/90 text-off-white transition-colors duration-200"
 						aria-label={toggleAriaLabel}
 						title={toggleAriaLabel}
 					>
