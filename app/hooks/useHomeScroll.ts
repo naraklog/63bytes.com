@@ -53,14 +53,6 @@ export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref,
 
 		if (!containerRef.current || !section1Ref.current || !section2Ref.current) return;
 
-		// On touch devices, briefly gate native scroll while ScrollSmoother initializes
-		// This prevents both the "glitch" (normalizeScroll kicking in mid-gesture)
-		// and the "slip" (native scroll sneaking through before GSAP takes over)
-		const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-		if (isTouchDevice) {
-			document.documentElement.style.touchAction = "none";
-		}
-
 		const ctx = gsap.context(() => {
 			const leftDigit = leftDigitRef.current;
 			const rightDigit = rightDigitRef.current;
@@ -72,17 +64,22 @@ export function useHomeScroll({ mainRef, containerRef, section1Ref, section2Ref,
 				normalizeScroll: { ignore: ".mobile-nav-portal" },
 			});
 
-			// Prime normalizeScroll immediately after creation so it's fully active
-			// before any user interaction. This replaces the old touchstart hack.
-			smoother.scrollTo(0, false);
-			ScrollTrigger.refresh();
+			// Pre-initialize on first touchstart to prevent glitch
+			// The glitch happens because normalizeScroll initializes mid-scroll
+			// We pause very briefly then unpause in the same frame
+			let initialized = false;
+			const handleFirstTouch = () => {
+				if (initialized) return;
+				initialized = true;
 
-			// Release the touch gate after a short delay to ensure smoother is ready
-			if (isTouchDevice) {
-				requestAnimationFrame(() => {
-					document.documentElement.style.touchAction = "";
-				});
-			}
+				// Briefly pause and immediately unpause to let normalizeScroll initialize
+				// without affecting the current touch gesture
+				smoother.paused(true);
+				smoother.paused(false);
+
+				window.removeEventListener("touchstart", handleFirstTouch, true);
+			};
+			window.addEventListener("touchstart", handleFirstTouch, { capture: true, passive: true });
 
 			// Initial setup
 			gsap.set(section2Ref.current, { yPercent: 100, zIndex: 10 });
