@@ -217,7 +217,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											</span>
 											<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
 										</div>
-										{metadata.intro ? <p className={`leading-relaxed ${theme.content}`}>{metadata.intro}</p> : null}
+										{metadata.intro ? <p className={`text-[0.9375rem] sm:text-base leading-relaxed ${theme.content}`}>{metadata.intro}</p> : null}
 									</header>
 
 									<div
