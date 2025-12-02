@@ -156,8 +156,8 @@ body {
 .ul-cross::after {
 	content: "";
 	position: absolute;
-	top: calc(var(--cross-half-size) * -1);
-	left: calc(var(--cross-half-size) * -1);
+	top: calc(var(--cross-half-size) * -1 + var(--guide-width));
+	left: calc(var(--cross-half-size) * -1 + var(--guide-width));
 	pointer-events: none;
 	z-index: 2;
 }
