@@ -1,4 +1,7 @@
 export const CONTENT = {
+	hero: {
+		tagline: "I build things on the internet and write about my experiments in tech, philosophy, and travel. Currently web3 @andalusia-labs",
+	},
 	links: {
 		about: { label: "ABOUT", href: "/about" },
 		twitter: { label: "X(TWITTER)", href: process.env.NEXT_PUBLIC_X_URL || "#" },
