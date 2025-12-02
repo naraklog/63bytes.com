@@ -21,6 +21,8 @@ type BlogNavigationProps = {
 	showSearch?: boolean;
 	/** When true, the mobile menu will not collapse on scroll */
 	disableCollapse?: boolean;
+	/** When true, shows minimal UI: hides category/view toggles, shows "All Posts" label */
+	minimalMode?: boolean;
 };
 
 export default function BlogNavigation({
@@ -34,6 +36,7 @@ export default function BlogNavigation({
 	onSearchChange,
 	showSearch = true,
 	disableCollapse = false,
+	minimalMode = false,
 }: BlogNavigationProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -154,6 +157,7 @@ export default function BlogNavigation({
 					isMobileSearchOpen={isMobileSearchOpen}
 					setIsMobileSearchOpen={setIsMobileSearchOpen}
 					disableCollapse={disableCollapse}
+					minimalMode={minimalMode}
 				/>
 			)}
 		</>

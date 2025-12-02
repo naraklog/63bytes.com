@@ -41,7 +41,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 
 	const contentWrapperClasses = [
 		"flex h-full flex-col bg-foreground no-underline text-black transition-colors duration-200 touch-pan-y",
-		isListView ? "gap-2 p-3 sm:p-4" : "gap-4 md:gap-6 p-8 lg:p-10",
+		isListView ? "gap-2 p-3 sm:p-4" : "gap-4 md:gap-6 px-4 py-6 md:p-8 lg:p-10",
 	].join(" ");
 
 	const excerptClasses = isListView ? "hidden" : "relative mt-3 overflow-hidden lg:flex-grow";

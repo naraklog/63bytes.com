@@ -53,6 +53,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
 							showSearch={false}
 							useThemeColorOnly
 							disableCollapse
+							minimalMode
 						/>
 					</div>
 				</div>

@@ -28,6 +28,8 @@ type MobileMenuProps = {
 	setIsMobileSearchOpen: (open: boolean) => void;
 	/** When true, the menu will not collapse on scroll */
 	disableCollapse?: boolean;
+	/** When true, shows minimal UI: hides category/view toggles, shows "All Posts" label */
+	minimalMode?: boolean;
 };
 
 const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function MobileMenu(
@@ -46,6 +48,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 		isMobileSearchOpen,
 		setIsMobileSearchOpen,
 		disableCollapse = false,
+		minimalMode = false,
 	},
 	mobileSearchInputRef
 ) {
@@ -108,31 +111,35 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									onAnimationComplete={disableCollapse ? undefined : () => playSound("hover")}
 									className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 								>
-									<button
-										onClick={() => {
-											playSound("click");
-											setIsMobileMenuOpen(!isMobileMenuOpen);
-											setIsMobileSearchOpen(false);
-										}}
-										onMouseEnter={() => playSound("hover")}
-										className="flex items-center gap-2"
-										data-no-morph
-										aria-haspopup="menu"
-										aria-expanded={isMobileMenuOpen}
-									>
-										{(() => {
-											const activeCat = categories.find((cat) => cat.id === activeCategory);
-											const IconComponent = resolvePhosphorIcon(activeCat?.icon ?? "StackIcon");
-											return (
-												<>
-													{IconComponent && <IconComponent size={16} weight="duotone" />}
-													<span className="max-w-[40vw] truncate">{activeCat?.label}</span>
-												</>
-											);
-										})()}
-									</button>
+									{!minimalMode && (
+										<>
+											<button
+												onClick={() => {
+													playSound("click");
+													setIsMobileMenuOpen(!isMobileMenuOpen);
+													setIsMobileSearchOpen(false);
+												}}
+												onMouseEnter={() => playSound("hover")}
+												className="flex items-center gap-2"
+												data-no-morph
+												aria-haspopup="menu"
+												aria-expanded={isMobileMenuOpen}
+											>
+												{(() => {
+													const activeCat = categories.find((cat) => cat.id === activeCategory);
+													const IconComponent = resolvePhosphorIcon(activeCat?.icon ?? "StackIcon");
+													return (
+														<>
+															{IconComponent && <IconComponent size={16} weight="duotone" />}
+															<span className="max-w-[40vw] truncate">{activeCat?.label}</span>
+														</>
+													);
+												})()}
+											</button>
 
-									<div className="h-4 w-px shrink-0 bg-light-gray" />
+											<div className="h-4 w-px shrink-0 bg-light-gray" />
+										</>
+									)}
 
 									{showHomeButton && (
 										<>
@@ -159,24 +166,29 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									) : (
 										<TransitionLink href="/blog" className="flex items-center gap-2 no-underline" transitionLabel="Blog" aria-label="View all blog posts">
 											<BooksIcon size={ICON_SIZE} weight="duotone" />
+											{minimalMode && <span>All Posts</span>}
 										</TransitionLink>
 									)}
 
-									<div className="h-4 w-px shrink-0 bg-light-gray" />
+									{!minimalMode && <div className="h-4 w-px shrink-0 bg-light-gray" />}
 
-									<button
-										onClick={() => {
-											playSound("click");
-											onViewModeChange(isListView ? "grid" : "list");
-										}}
-										onMouseEnter={() => playSound("hover")}
-										className="flex items-center"
-										data-no-morph
-										aria-label={toggleAriaLabel}
-										title={toggleAriaLabel}
-									>
-										<ToggleIcon size={ICON_SIZE} weight="duotone" />
-									</button>
+									{!minimalMode && (
+										<>
+											<button
+												onClick={() => {
+													playSound("click");
+													onViewModeChange(isListView ? "grid" : "list");
+												}}
+												onMouseEnter={() => playSound("hover")}
+												className="flex items-center"
+												data-no-morph
+												aria-label={toggleAriaLabel}
+												title={toggleAriaLabel}
+											>
+												<ToggleIcon size={ICON_SIZE} weight="duotone" />
+											</button>
+										</>
+									)}
 								</motion.div>
 							)}
 						</AnimatePresence>
