@@ -9,7 +9,6 @@ export const DEFAULT_CATEGORY_ICON = "NewspaperIcon";
 
 export type ArticleAuthor = {
 	name: string;
-	imageSrc?: string;
 	url?: string;
 };
 

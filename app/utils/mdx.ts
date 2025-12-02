@@ -34,7 +34,6 @@ const normalizeAuthors = (authors?: ArticleAuthor[]): ArticleAuthor[] => {
 	if (!authors?.length) return [FALLBACK_AUTHOR];
 	return authors.map((author) => ({
 		name: author.name,
-		imageSrc: author.imageSrc,
 		url: author.url,
 	}));
 };
