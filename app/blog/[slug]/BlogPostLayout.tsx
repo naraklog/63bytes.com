@@ -27,7 +27,10 @@ type BlogPostLayoutProps = {
 };
 
 export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate, children }: BlogPostLayoutProps) {
-	const [isDarkMode, setIsDarkMode] = useState(false);
+	const [isDarkMode, setIsDarkMode] = useState(() => {
+		if (typeof window === "undefined") return false;
+		return localStorage.getItem("blog-theme") === "dark";
+	});
 	const [mounted, setMounted] = useState(false);
 	const articleRef = useRef<HTMLElement | null>(null);
 	const [isMobileBarActive, setIsMobileBarActive] = useState(false);
@@ -84,6 +87,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 		playSound("click");
 		const next = !isDarkMode;
 		setIsDarkMode(next);
+		localStorage.setItem("blog-theme", next ? "dark" : "light");
 	}, [isDarkMode, playSound]);
 
 	const handleBackToBlog = useCallback(() => {
@@ -143,7 +147,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 								</div>
-								<div className="relative z-10 flex flex-col gap-3">
+								<div className="relative z-10 flex flex-col gap-4">
 									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<div className="flex items-center gap-3">
 											<button
