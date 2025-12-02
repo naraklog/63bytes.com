@@ -293,6 +293,18 @@ pre.code-block {
 	outline-offset: 2px;
 }
 
+/* Language icon in title bar */
+.code-title-icon {
+	display: inline-flex;
+	align-items: center;
+}
+
+.code-title-icon-img {
+	width: 16px;
+	height: 16px;
+	object-fit: contain;
+}
+
 /* Line padding in code blocks */
 pre [data-line] {
 	padding: 0 1.5rem;
@@ -609,7 +621,7 @@ button:active,
 	align-items: center;
 	justify-content: flex-start;
 	gap: 0.5rem;
-	padding: 0.5rem 1.25rem;
+	padding: 0.5rem 0.75rem;
 	background-color: transparent;
 	border: 1px solid rgb(96 96 104 / 0.4);
 	border-radius: 0;
