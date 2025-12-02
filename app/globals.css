@@ -5,10 +5,10 @@
 
 :root {
 	--expo-out: cubic-bezier(0.16, 1, 0.3, 1);
-	--black: #050508;
-	--white: #fafafa;
+	--black: oklch(0.035 0.005 285);
+	--white: oklch(0.985 0 0);
 	--off-white: oklch(0.878 0.006 85);
-	--light-gray: #606068;
+	--light-gray: oklch(0.465 0.015 280);
 	--selection-background: var(--foreground);
 	--selection-color: var(--background);
 	--code-highlight-default: rgba(255, 255, 255, 0.08);
