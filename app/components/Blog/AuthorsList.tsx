@@ -7,11 +7,13 @@ type AuthorsListProps = {
 	disableLinks?: boolean;
 	prefix?: string;
 	linkClassName?: string;
+	onLinkHover?: () => void;
+	onLinkClick?: () => void;
 };
 
 const defaultLinkClass = "underline decoration-dotted underline-offset-4 transition-opacity";
 
-export default function AuthorsList({ authors, className, disableLinks = false, prefix = "", linkClassName }: AuthorsListProps) {
+export default function AuthorsList({ authors, className, disableLinks = false, prefix = "", linkClassName, onLinkHover, onLinkClick }: AuthorsListProps) {
 	if (!authors?.length) return null;
 	const resolvedLinkClass = linkClassName ?? defaultLinkClass;
 
@@ -22,7 +24,7 @@ export default function AuthorsList({ authors, className, disableLinks = false, 
 				const separator = index === 0 ? "" : " · ";
 				const content =
 					author.url && !disableLinks ? (
-						<a href={author.url} target="_blank" rel="noopener noreferrer" className={resolvedLinkClass}>
+						<a href={author.url} target="_blank" rel="noopener noreferrer" className={resolvedLinkClass} onMouseEnter={onLinkHover} onClick={onLinkClick}>
 							{author.name}
 						</a>
 					) : (

@@ -1,8 +1,8 @@
 import type { MDXComponents } from "mdx/types";
-import Link from "next/link";
 
 import CodeBlock from "./app/components/Blog/CodeBlock";
 import LinkedHeading from "./app/components/Blog/LinkedHeading";
+import MdxLink from "./app/components/Blog/MdxLink";
 
 const baseLinkClass = "underline decoration-dotted underline-offset-4 transition-opacity";
 
@@ -14,18 +14,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 		h4: (props) => <LinkedHeading as="h4" {...props} />,
 		h5: (props) => <LinkedHeading as="h5" {...props} />,
 		h6: (props) => <LinkedHeading as="h6" {...props} />,
-		a: ({ href = "", children, ...props }) => {
-			const isExternal = href.startsWith("http");
-			return isExternal ? (
-				<a href={href} target="_blank" rel="noopener noreferrer" className={baseLinkClass} {...props}>
-					{children}
-				</a>
-			) : (
-				<Link href={href} className={baseLinkClass} {...props}>
-					{children}
-				</Link>
-			);
-		},
+		a: ({ href = "", children, ...props }) => (
+			<MdxLink href={href} className={baseLinkClass} {...props}>
+				{children}
+			</MdxLink>
+		),
 		code: ({ className, ...props }) => <code className={className} {...props} />,
 		pre: ({ className, children, ...props }) => (
 			<CodeBlock className={className} {...props}>

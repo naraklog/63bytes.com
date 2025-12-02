@@ -226,6 +226,8 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												prefix="By "
 												className={`text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-center ${theme.muted}`}
 												linkClassName={`${theme.muted} underline decoration-dotted underline-offset-4 transition-colors`}
+												onLinkHover={() => playSound("hover")}
+												onLinkClick={() => playSound("click")}
 											/>
 										) : null}
 										<div className={`w-full flex flex-wrap items-center gap-3 text-sm ${theme.muted}`}>
