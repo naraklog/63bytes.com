@@ -148,13 +148,13 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 								</div>
 								<div className="relative z-10 flex flex-col gap-4">
-									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+									<div className="sticky top-24 z-20 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<div className="hidden md:flex items-center gap-3">
 											<button
 												type="button"
 												onClick={handleBackToBlog}
 												onMouseEnter={() => playSound("hover")}
-												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} gap-2 min-w-[105px] ${theme.linkButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} gap-2 min-w-[105px] backdrop-blur-lg ${theme.linkButton}`}
 												disabled={isTransitioning}
 												aria-label="Back to blog"
 											>
@@ -165,7 +165,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												type="button"
 												onClick={handleGoHome}
 												onMouseEnter={() => playSound("hover")}
-												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${theme.toggleButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 backdrop-blur-lg ${theme.toggleButton}`}
 												disabled={isTransitioning}
 												aria-label="Go to homepage"
 											>
@@ -176,7 +176,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 										<div className="hidden md:flex items-center gap-3">
 											<button
 												type="button"
-												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden ${theme.toggleButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${theme.toggleButton}`}
 												onClick={handleToggleTheme}
 												onMouseEnter={() => playSound("hover")}
 												aria-pressed={isDarkMode}
@@ -188,7 +188,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											{outlineItems.length ? (
 												<button
 													type="button"
-													className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${outlineButtonVariant}`}
+													className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 backdrop-blur-lg ${outlineButtonVariant}`}
 													onClick={() => {
 														playSound("click");
 														handleToggleOutline();

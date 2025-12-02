@@ -1,6 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
+import { useEffect, useRef } from "react";
 import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
@@ -22,10 +23,22 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
 	const { playSound } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
-
-	if (!isMobile) return null;
+	const isFirstRender = useRef(true);
 
 	const isCollapsed = scrollDirection === "down";
+
+	// Play sound when collapsed state changes (but not on initial render)
+	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return;
+		}
+		if (isMobile) {
+			playSound("hover");
+		}
+	}, [isCollapsed, isMobile, playSound]);
+
+	if (!isMobile) return null;
 
 	return createPortal(
 		<div className="md:hidden fixed bottom-2 left-0 right-0 z-100 flex justify-center px-4" style={{ fontFamily: BLOG_FONT_FAMILY }}>
@@ -51,12 +64,8 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
-								onAnimationComplete={() => playSound("hover")}
 								className="px-1.75"
-								onClick={() => {
-									playSound("click");
-									setScrollDirection("up");
-								}}
+								onClick={() => setScrollDirection("up")}
 								onMouseEnter={() => playSound("hover")}
 								aria-label="Expand menu"
 							>
@@ -70,7 +79,6 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
-								onAnimationComplete={() => playSound("hover")}
 								className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 							>
 								<TransitionLink href="/" className="flex items-center gap-2 no-underline" transitionLabel="Home" aria-label="Go to homepage">

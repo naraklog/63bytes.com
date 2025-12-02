@@ -1,7 +1,7 @@
 "use client";
 
 import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon, RowsIcon, SquaresFourIcon, StackIcon } from "@phosphor-icons/react";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { type CategoryOption } from "../../../types/posts";
@@ -55,10 +55,22 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
 	const { playSound } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
-
-	if (!isMobile) return null;
+	const isFirstRender = useRef(true);
 
 	const isCollapsed = !disableCollapse && scrollDirection === "down";
+
+	// Play sound when collapsed state changes (but not on initial render)
+	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return;
+		}
+		if (isMobile && !disableCollapse) {
+			playSound("hover");
+		}
+	}, [isCollapsed, isMobile, disableCollapse, playSound]);
+
+	if (!isMobile) return null;
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
 	const ToggleIcon = isListView ? RowsIcon : SquaresFourIcon;
@@ -89,12 +101,8 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
-									onAnimationComplete={disableCollapse ? undefined : () => playSound("hover")}
 									className="px-1.75"
-									onClick={() => {
-										playSound("click");
-										setScrollDirection("up");
-									}}
+									onClick={() => setScrollDirection("up")}
 									onMouseEnter={() => playSound("hover")}
 									aria-label="Expand menu"
 								>
@@ -108,7 +116,6 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
-									onAnimationComplete={disableCollapse ? undefined : () => playSound("hover")}
 									className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 								>
 									{!minimalMode && (
