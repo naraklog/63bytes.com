@@ -75,7 +75,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 								<span className="inline-flex h-16 w-16 items-center justify-center rounded-sm text-black" aria-hidden="true">
 									<PixelIconDisplay
 										svg={<IconComponent size={32} weight="regular" />}
-										gridSize={24}
+										gridSize={32}
 										dotScale={0.8}
 										sparkleDensity={0.75}
 										shape="square"
