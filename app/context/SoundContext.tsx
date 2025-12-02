@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
-type SoundType = "hover" | "click";
+type SoundType = "hover" | "click" | "unlock";
 
 interface SoundContextType {
 	playSound: (type: SoundType) => void;
@@ -15,11 +15,12 @@ const SoundContext = createContext<SoundContextType | undefined>(undefined);
 const SOUND_URLS = {
 	hover: "/sounds/hover.mp3",
 	click: "/sounds/click.mp3",
+	unlock: "/sounds/unlock.mp3",
 };
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
 	const audioContextRef = useRef<AudioContext | null>(null);
-	const buffersRef = useRef<Record<SoundType, AudioBuffer | null>>({ hover: null, click: null });
+	const buffersRef = useRef<Record<SoundType, AudioBuffer | null>>({ hover: null, click: null, unlock: null });
 	const [isMuted, setIsMuted] = useState(false);
 
 	useEffect(() => {
@@ -50,10 +51,11 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 			};
 
 			try {
-				const [hoverBuffer, clickBuffer] = await Promise.all([loadBuffer(SOUND_URLS.hover), loadBuffer(SOUND_URLS.click)]);
+				const [hoverBuffer, clickBuffer, unlockBuffer] = await Promise.all([loadBuffer(SOUND_URLS.hover), loadBuffer(SOUND_URLS.click), loadBuffer(SOUND_URLS.unlock)]);
 				buffersRef.current = {
 					hover: hoverBuffer,
 					click: clickBuffer,
+					unlock: unlockBuffer,
 				};
 			} catch (error) {
 				console.error("Failed to load sounds:", error);

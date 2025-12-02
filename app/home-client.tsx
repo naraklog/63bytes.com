@@ -52,6 +52,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
 							onLayoutChange={() => ScrollTrigger.refresh()}
 							showSearch={false}
 							useThemeColorOnly
+							disableCollapse
 						/>
 					</div>
 				</div>

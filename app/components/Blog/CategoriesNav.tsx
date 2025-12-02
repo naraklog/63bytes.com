@@ -19,6 +19,8 @@ type BlogNavigationProps = {
 	searchQuery: string;
 	onSearchChange: (value: string) => void;
 	showSearch?: boolean;
+	/** When true, the mobile menu will not collapse on scroll */
+	disableCollapse?: boolean;
 };
 
 export default function BlogNavigation({
@@ -31,6 +33,7 @@ export default function BlogNavigation({
 	searchQuery,
 	onSearchChange,
 	showSearch = true,
+	disableCollapse = false,
 }: BlogNavigationProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -150,6 +153,7 @@ export default function BlogNavigation({
 					setIsMobileMenuOpen={setIsMobileMenuOpen}
 					isMobileSearchOpen={isMobileSearchOpen}
 					setIsMobileSearchOpen={setIsMobileSearchOpen}
+					disableCollapse={disableCollapse}
 				/>
 			)}
 		</>

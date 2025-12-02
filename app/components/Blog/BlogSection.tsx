@@ -17,9 +17,11 @@ type BlogSectionProps = {
 	showSearch?: boolean;
 	/** When true, skips desktop theme inversion for overscroll background */
 	useThemeColorOnly?: boolean;
+	/** When true, the mobile menu will not collapse on scroll */
+	disableCollapse?: boolean;
 };
 
-const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ categories, limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false }, ref) => {
+const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ categories, limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false, disableCollapse = false }, ref) => {
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -107,6 +109,7 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(({ categories, lim
 					searchQuery={effectiveSearchQuery}
 					onSearchChange={setSearchQuery}
 					showSearch={showSearch}
+					disableCollapse={disableCollapse}
 				/>
 				<Articles activeCategory={activeCategory} limit={limit} showViewAllButton={showViewAllButton} items={items} viewMode={viewMode} searchQuery={effectiveSearchQuery} />
 			</div>

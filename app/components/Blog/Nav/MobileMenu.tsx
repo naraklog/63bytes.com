@@ -26,6 +26,8 @@ type MobileMenuProps = {
 	setIsMobileMenuOpen: (open: boolean) => void;
 	isMobileSearchOpen: boolean;
 	setIsMobileSearchOpen: (open: boolean) => void;
+	/** When true, the menu will not collapse on scroll */
+	disableCollapse?: boolean;
 };
 
 const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function MobileMenu(
@@ -43,6 +45,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 		setIsMobileMenuOpen,
 		isMobileSearchOpen,
 		setIsMobileSearchOpen,
+		disableCollapse = false,
 	},
 	mobileSearchInputRef
 ) {
@@ -52,7 +55,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 
 	if (!isMobile) return null;
 
-	const isCollapsed = scrollDirection === "down";
+	const isCollapsed = !disableCollapse && scrollDirection === "down";
 	const isListView = viewMode === "list";
 	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
 	const ToggleIcon = isListView ? RowsIcon : SquaresFourIcon;
@@ -83,7 +86,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
-									onAnimationComplete={() => playSound("hover")}
+									onAnimationComplete={disableCollapse ? undefined : () => playSound("hover")}
 									className="px-1.75"
 									onClick={() => {
 										playSound("click");
@@ -102,7 +105,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={{ duration: 0.15, layout: { duration: 0 } }}
-									onAnimationComplete={() => playSound("hover")}
+									onAnimationComplete={disableCollapse ? undefined : () => playSound("hover")}
 									className="flex items-center gap-3 px-3 py-2 font-semi-mono text-sm whitespace-nowrap"
 								>
 									<button
