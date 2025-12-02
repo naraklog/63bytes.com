@@ -212,7 +212,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												svg={<IconComponent size={48} weight="regular" />}
 												gridSize={32}
 												dotScale={0.8}
-												sparkleDensity={0.65}
+												sparkleDensity={0.8}
 												shape="square"
 												color="currentColor"
 												sparkleEnabled
