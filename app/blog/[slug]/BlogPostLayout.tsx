@@ -6,7 +6,9 @@ import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon } from "@phosphor-ic
 
 import CopyLinkButton from "../../components/CopyLinkButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
+import PixelIconDisplay from "../../components/Blog/DotMatrixIcon";
 import Dither from "../../components/Dither";
+import { resolvePhosphorIcon } from "../../utils/icons";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
@@ -124,6 +126,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const hasContactEmail = Boolean(CONTACT_EMAIL);
 	const outlineStateLabel = isOutlineOpen ? "Outline visible" : "Outline hidden";
 	const outlineButtonVariant = isOutlineOpen ? theme.linkButton : theme.toggleButton;
+	const IconComponent = resolvePhosphorIcon(metadata.icon);
 
 	return (
 		<>
@@ -131,19 +134,23 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 				<div className="flex justify-center">
 					<div className="relative flex w-full max-w-[1080px] min-w-[368px] mt-px ml-px flex-col">
 						<div className="ul-cross w-full">
-							<article ref={articleRef} data-code-theme={isDarkMode ? "dark" : "light"} className={`relative border ${theme.articleSurface} px-6 py-6 sm:px-12 sm:py-12 lg:p-24`}>
+							<article
+								ref={articleRef}
+								data-code-theme={isDarkMode ? "dark" : "light"}
+								className={`relative border ${theme.articleSurface} px-6 pt-2 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
+							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 								</div>
-								<div className="relative z-10 flex flex-col gap-6">
+								<div className="relative z-10 flex flex-col gap-3">
 									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<div className="flex items-center gap-3">
 											<button
 												type="button"
 												onClick={handleBackToBlog}
 												onMouseEnter={() => playSound("hover")}
-												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} gap-2 min-w-[105px] ${theme.linkButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} gap-2 min-w-[105px] ${theme.linkButton}`}
 												disabled={isTransitioning}
 												aria-label="Back to blog"
 											>
@@ -154,16 +161,18 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												type="button"
 												onClick={handleGoHome}
 												onMouseEnter={() => playSound("hover")}
-												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${theme.toggleButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${theme.toggleButton}`}
 												disabled={isTransitioning}
 												aria-label="Go to homepage"
 											>
 												<HouseIcon className="h-6 w-6" strokeWidth={1.5} />
 												<span className="sr-only">Go to homepage</span>
 											</button>
+										</div>
+										<div className="flex items-center gap-3">
 											<button
 												type="button"
-												className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden ${theme.toggleButton}`}
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden ${theme.toggleButton}`}
 												onClick={handleToggleTheme}
 												onMouseEnter={() => playSound("hover")}
 												aria-pressed={isDarkMode}
@@ -175,7 +184,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											{outlineItems.length ? (
 												<button
 													type="button"
-													className={`hidden sm:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${outlineButtonVariant}`}
+													className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 ${outlineButtonVariant}`}
 													onClick={() => {
 														playSound("click");
 														handleToggleOutline();
@@ -195,33 +204,45 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												</button>
 											) : null}
 										</div>
-										<time className={`text-xs uppercase tracking-[0.2em] ${theme.muted}`} dateTime={metadata.dateTime}>
-											{formattedDate}
-										</time>
 									</div>
 
-									<header className="flex flex-col gap-4">
-										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold ${theme.heading}`}>{metadata.label}</h1>
+									<header className="flex flex-col gap-3 items-center">
+										<span className="inline-flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center" aria-hidden="true">
+											<PixelIconDisplay
+												svg={<IconComponent size={48} weight="regular" />}
+												gridSize={32}
+												dotScale={0.8}
+												sparkleDensity={0.65}
+												shape="square"
+												color="currentColor"
+												sparkleEnabled
+												className={`w-full h-full ${theme.heading}`}
+											/>
+										</span>
+										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center ${theme.heading}`}>{metadata.label}</h1>
 										{metadata.authors.length ? (
 											<AuthorsList
 												authors={metadata.authors}
 												prefix="By "
-												className={`text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] ${theme.muted}`}
+												className={`text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-center ${theme.muted}`}
 												linkClassName={`${theme.muted} underline decoration-dotted underline-offset-4 transition-colors`}
 											/>
 										) : null}
-										<div className={`flex flex-wrap items-center gap-3 text-sm ${theme.muted}`}>
+										<div className={`w-full flex flex-wrap items-center gap-3 text-sm ${theme.muted}`}>
 											<span className="inline-flex items-center gap-2">
 												<ClockFading className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
 												{readTimeLabel}
 											</span>
 											<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
+											<time className={`w-full sm:w-auto sm:ml-auto text-xs uppercase tracking-[0.2em] ${theme.muted}`} dateTime={metadata.dateTime}>
+												{formattedDate}
+											</time>
 										</div>
-										{metadata.intro ? <p className={`text-[0.9375rem] sm:text-base leading-relaxed ${theme.content}`}>{metadata.intro}</p> : null}
+										{metadata.intro ? <p className={`w-full text-[0.9375rem] sm:text-base leading-relaxed ${theme.content}`}>{metadata.intro}</p> : null}
 									</header>
 
 									<div
-										className={`text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
+										className={`mt-3 text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
 									</div>
