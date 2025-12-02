@@ -29,6 +29,8 @@ export interface PixelIconDisplayProps {
 	enableOnHover?: boolean;
 	sparkleDensity?: number;
 	className?: string;
+	alignX?: "left" | "center" | "right";
+	alignY?: "top" | "center" | "bottom";
 }
 
 // --- PIXEL DISPLAY COMPONENT ---
@@ -44,6 +46,8 @@ const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
 	enableOnHover = false,
 	sparkleDensity = 0.2,
 	className = "",
+	alignX = "center",
+	alignY = "center",
 }) => {
 	const [pixelData, setPixelData] = useState<PixelData[]>([]);
 	const [isHovered, setIsHovered] = useState(false);
@@ -83,11 +87,43 @@ const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
 				}
 			}
 
-			setPixelData(newPixels);
+			if (newPixels.length > 0) {
+				// Calculate bounding box of sampled pixels
+				const minX = Math.min(...newPixels.map((p) => p.x));
+				const maxX = Math.max(...newPixels.map((p) => p.x));
+				const minY = Math.min(...newPixels.map((p) => p.y));
+				const maxY = Math.max(...newPixels.map((p) => p.y));
+
+				const contentWidth = maxX - minX + 1;
+				const contentHeight = maxY - minY + 1;
+
+				// Calculate offsets based on alignment
+				let offsetX = 0;
+				let offsetY = 0;
+
+				if (alignX === "left") offsetX = -minX;
+				else if (alignX === "right") offsetX = gridSize - 1 - maxX;
+				else offsetX = Math.floor((gridSize - contentWidth) / 2) - minX;
+
+				if (alignY === "top") offsetY = -minY;
+				else if (alignY === "bottom") offsetY = gridSize - 1 - maxY;
+				else offsetY = Math.floor((gridSize - contentHeight) / 2) - minY;
+
+				// Apply offsets to all pixels
+				const alignedPixels = newPixels.map((p) => ({
+					...p,
+					x: p.x + offsetX,
+					y: p.y + offsetY,
+				}));
+
+				setPixelData(alignedPixels);
+			} else {
+				setPixelData([]);
+			}
 		};
 
 		img.src = imageUrl;
-	}, [imageUrl, gridSize]);
+	}, [imageUrl, gridSize, alignX, alignY]);
 
 	// 2. Partition Phase: Split pixels into Static vs Sparkling
 	const { staticPath, sparkles } = useMemo(() => {
