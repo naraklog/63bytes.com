@@ -17,8 +17,7 @@ type HomeClientProps = {
 
 export default function HomeClient({ articles, categories }: HomeClientProps) {
 	const sortedArticles = [...articles].sort((a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime());
-	const [latestArticle, ...restArticles] = sortedArticles;
-	const fallbackItems = latestArticle ? restArticles : sortedArticles;
+	const latestArticle = sortedArticles[0];
 
 	const mainRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -48,7 +47,7 @@ export default function HomeClient({ articles, categories }: HomeClientProps) {
 						<BlogSection
 							ref={section2Ref}
 							limit={ARTICLES_PER_LOAD}
-							items={fallbackItems}
+							items={sortedArticles}
 							categories={categories}
 							onLayoutChange={() => ScrollTrigger.refresh()}
 							showSearch={false}
