@@ -14,8 +14,10 @@ export function LandingHero({ isLoaded }: LandingHeroProps) {
 
 	return (
 		<div className="flex flex-col gap-4 md:gap-6 mb-4 md:mb-12 w-full max-w-2xl">
-			<h1 className="text-sm md:text-lg font-sans tracking-tighter leading-tighter text-off-white/70">
+			<h1 className="text-sm md:text-base font-sans tracking-tighter text-off-white/70">
 				<ScrambleText text={CONTENT.hero.tagline} scrambleOnMount={isLoaded} />
+				<br />
+				<ScrambleText text={CONTENT.hero.work} scrambleOnMount={isLoaded} />
 			</h1>
 
 			<div className="flex flex-col gap-4 w-full">
