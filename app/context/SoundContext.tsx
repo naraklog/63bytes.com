@@ -45,6 +45,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 
 			// Attach listeners to resume context on first interaction
 			window.addEventListener("click", resumeAudio);
+			window.addEventListener("mousedown", resumeAudio);
 			window.addEventListener("keydown", resumeAudio);
 			window.addEventListener("touchstart", resumeAudio);
 
@@ -69,6 +70,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 			// Cleanup listeners
 			return () => {
 				window.removeEventListener("click", resumeAudio);
+				window.removeEventListener("mousedown", resumeAudio);
 				window.removeEventListener("keydown", resumeAudio);
 				window.removeEventListener("touchstart", resumeAudio);
 				context.close();
@@ -124,7 +126,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 		// Try to resume if suspended (though the global listener should catch this)
 		if (context.state === "suspended") {
 			context.resume().catch(() => {});
-			return; // Skip this playback if context was suspended to avoid "pop" on resume
 		}
 
 		const source = context.createBufferSource();
