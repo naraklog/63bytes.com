@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretDownIcon, StackIcon, SquaresFourIcon, ListDashesIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, StackIcon, SquaresFourIcon, ListDashesIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import { type CategoryOption } from "../../../types/posts";
 import { useOverflowMeasurement } from "../../../hooks/useOverflowMeasurement";
@@ -36,7 +36,7 @@ export default function DesktopCategories({
 	searchInputRef,
 }: DesktopCategoriesProps) {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const { playSound } = useSound();
+	const { playSound, isMuted, toggleMute } = useSound();
 
 	const navRef = useRef<HTMLDivElement | null>(null);
 	const measureListRef = useRef<HTMLUListElement | null>(null);
@@ -139,6 +139,19 @@ export default function DesktopCategories({
 					</ul>
 				</div>
 				<div ref={searchRef} className="flex items-center gap-3">
+					<button
+						type="button"
+						onClick={() => toggleMute()}
+						onMouseEnter={() => playSound("hover")}
+						className={`flex items-center justify-center w-9 h-8 border transition-colors duration-200 ${
+							isMuted ? "border-black bg-transparent text-black" : "border-black bg-black/90 text-off-white"
+						}`}
+						aria-pressed={!isMuted}
+						aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+						title={isMuted ? "Unmute sounds" : "Mute sounds"}
+					>
+						{isMuted ? <SpeakerSlashIcon size={16} weight="regular" /> : <SpeakerHighIcon size={16} weight="regular" />}
+					</button>
 					<button
 						type="button"
 						onClick={() => {

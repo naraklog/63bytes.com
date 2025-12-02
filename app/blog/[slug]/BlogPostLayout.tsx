@@ -177,6 +177,17 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 										<div className="hidden md:flex items-center gap-3">
 											<button
 												type="button"
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${theme.toggleButton}`}
+												onClick={handleToggleTheme}
+												onMouseEnter={() => playSound("hover")}
+												aria-pressed={isDarkMode}
+												aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+											>
+												{isDarkMode ? <SunIcon size={24} /> : <MoonIcon size={24} />}
+												<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
+											</button>
+											<button
+												type="button"
 												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${soundButtonVariant}`}
 												onClick={() => {
 													toggleMute();
@@ -187,17 +198,6 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											>
 												{isMuted ? <SpeakerSlashIcon size={24} /> : <SpeakerHighIcon size={24} />}
 												<span className="sr-only">{isMuted ? "Unmute sounds" : "Mute sounds"}</span>
-											</button>
-											<button
-												type="button"
-												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${theme.toggleButton}`}
-												onClick={handleToggleTheme}
-												onMouseEnter={() => playSound("hover")}
-												aria-pressed={isDarkMode}
-												aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-											>
-												{isDarkMode ? <SunIcon size={24} /> : <MoonIcon size={24} />}
-												<span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
 											</button>
 											{outlineItems.length ? (
 												<button
