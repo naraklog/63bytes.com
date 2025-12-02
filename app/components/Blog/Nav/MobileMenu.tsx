@@ -1,6 +1,6 @@
 "use client";
 
-import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon, RowsIcon, SquaresFourIcon, StackIcon } from "@phosphor-icons/react";
+import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon, RowsIcon, SquaresFourIcon, StackIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 import { forwardRef, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,7 +53,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	mobileSearchInputRef
 ) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
-	const { playSound } = useSound();
+	const { playSound, isMuted, toggleMute } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
 	const isFirstRender = useRef(true);
 
@@ -176,6 +176,22 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 											{minimalMode && <span>All Posts</span>}
 										</TransitionLink>
 									)}
+
+									<div className="h-4 w-px shrink-0 bg-light-gray" />
+
+									<button
+										onClick={() => {
+											toggleMute();
+										}}
+										onMouseEnter={() => playSound("hover")}
+										className="flex items-center"
+										data-no-morph
+										aria-pressed={!isMuted}
+										aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+									>
+										{isMuted ? <SpeakerSlashIcon size={ICON_SIZE} weight="duotone" /> : <SpeakerHighIcon size={ICON_SIZE} weight="duotone" />}
+										<span className="sr-only">{isMuted ? "Unmute sounds" : "Mute sounds"}</span>
+									</button>
 
 									{!minimalMode && <div className="h-4 w-px shrink-0 bg-light-gray" />}
 

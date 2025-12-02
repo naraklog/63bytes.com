@@ -2,7 +2,7 @@
 
 import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
-import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon } from "@phosphor-icons/react";
+import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
@@ -21,7 +21,7 @@ const ICON_SIZE = 18;
 
 export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
-	const { playSound } = useSound();
+	const { playSound, isMuted, toggleMute } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
 	const isFirstRender = useRef(true);
 
@@ -92,6 +92,22 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 									<BooksIcon size={ICON_SIZE} weight="duotone" />
 									<span className="sr-only">View all blogs</span>
 								</TransitionLink>
+
+								<div className="h-4 w-px shrink-0 bg-light-gray" />
+
+								<button
+									type="button"
+									onClick={() => {
+										toggleMute();
+									}}
+									onMouseEnter={() => playSound("hover")}
+									className="flex items-center"
+									aria-pressed={!isMuted}
+									aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+								>
+									{isMuted ? <SpeakerSlashIcon size={ICON_SIZE} weight="duotone" /> : <SpeakerHighIcon size={ICON_SIZE} weight="duotone" />}
+									<span className="sr-only">{isMuted ? "Unmute sounds" : "Mute sounds"}</span>
+								</button>
 
 								<div className="h-4 w-px shrink-0 bg-light-gray" />
 

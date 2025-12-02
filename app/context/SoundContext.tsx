@@ -18,10 +18,15 @@ const SOUND_URLS = {
 	unlock: "/sounds/unlock.mp3",
 };
 
+const SOUND_MUTED_KEY = "sound-muted";
+
 export function SoundProvider({ children }: { children: React.ReactNode }) {
 	const audioContextRef = useRef<AudioContext | null>(null);
 	const buffersRef = useRef<Record<SoundType, AudioBuffer | null>>({ hover: null, click: null, unlock: null });
-	const [isMuted, setIsMuted] = useState(false);
+	const [isMuted, setIsMuted] = useState(() => {
+		if (typeof window === "undefined") return false;
+		return localStorage.getItem(SOUND_MUTED_KEY) === "true";
+	});
 
 	useEffect(() => {
 		const initAudio = async () => {
@@ -146,7 +151,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 		source.start(0);
 	};
 
-	const toggleMute = () => setIsMuted((prev) => !prev);
+	const toggleMute = () => {
+		setIsMuted((prev) => {
+			const next = !prev;
+			localStorage.setItem(SOUND_MUTED_KEY, String(next));
+			return next;
+		});
+	};
 
 	return <SoundContext.Provider value={{ playSound, isMuted, toggleMute }}>{children}</SoundContext.Provider>;
 }

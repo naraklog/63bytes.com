@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ClockFading } from "lucide-react";
-import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon } from "@phosphor-icons/react";
+import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 
 import CopyLinkButton from "../../components/CopyLinkButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
@@ -37,7 +37,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const [isPreloaderDone, setIsPreloaderDone] = useState<boolean>(() => hasPreloaderRun());
 	const { startTransition, isTransitioning } = usePageTransition();
 	const { setMorphEnabled, setMorphProgress } = useLayoutContext();
-	const { playSound } = useSound();
+	const { playSound, isMuted, toggleMute } = useSound();
 
 	const { outlineItems, outlineMode, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleToggleOutline, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
 		articleRef,
@@ -130,6 +130,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const hasContactEmail = Boolean(CONTACT_EMAIL);
 	const outlineStateLabel = isOutlineOpen ? "Outline visible" : "Outline hidden";
 	const outlineButtonVariant = isOutlineOpen ? theme.linkButton : theme.toggleButton;
+	const soundButtonVariant = isMuted ? theme.toggleButton : theme.linkButton;
 	const IconComponent = resolvePhosphorIcon(metadata.icon);
 
 	return (
@@ -174,6 +175,19 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											</button>
 										</div>
 										<div className="hidden md:flex items-center gap-3">
+											<button
+												type="button"
+												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${soundButtonVariant}`}
+												onClick={() => {
+													toggleMute();
+												}}
+												onMouseEnter={() => playSound("hover")}
+												aria-pressed={!isMuted}
+												aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+											>
+												{isMuted ? <SpeakerSlashIcon size={24} /> : <SpeakerHighIcon size={24} />}
+												<span className="sr-only">{isMuted ? "Unmute sounds" : "Mute sounds"}</span>
+											</button>
 											<button
 												type="button"
 												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden backdrop-blur-lg ${theme.toggleButton}`}
