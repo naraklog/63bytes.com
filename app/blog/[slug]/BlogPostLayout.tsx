@@ -141,7 +141,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 							<article
 								ref={articleRef}
 								data-code-theme={isDarkMode ? "dark" : "light"}
-								className={`relative border ${theme.articleSurface} px-6 pt-2 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
+								className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
 							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
@@ -149,7 +149,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 								</div>
 								<div className="relative z-10 flex flex-col gap-4">
 									<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-										<div className="flex items-center gap-3">
+										<div className="hidden md:flex items-center gap-3">
 											<button
 												type="button"
 												onClick={handleBackToBlog}
@@ -173,7 +173,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												<span className="sr-only">Go to homepage</span>
 											</button>
 										</div>
-										<div className="flex items-center gap-3">
+										<div className="hidden md:flex items-center gap-3">
 											<button
 												type="button"
 												className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 overflow-hidden ${theme.toggleButton}`}
@@ -221,6 +221,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												color="currentColor"
 												sparkleEnabled
 												className={`w-full h-full ${theme.heading}`}
+												alignY="bottom"
 											/>
 										</span>
 										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center ${theme.heading}`}>{metadata.label}</h1>
@@ -234,13 +235,13 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												onLinkClick={() => playSound("click")}
 											/>
 										) : null}
-										<div className={`w-full flex flex-wrap items-center gap-3 text-sm ${theme.muted}`}>
-											<span className="inline-flex items-center gap-2">
-												<ClockFading className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+										<div className={`w-full flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
+											<span className="inline-flex items-center gap-1.5 sm:gap-2">
+												<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
 												{readTimeLabel}
 											</span>
 											<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
-											<time className={`w-full sm:w-auto sm:ml-auto text-xs uppercase tracking-[0.2em] ${theme.muted}`} dateTime={metadata.dateTime}>
+											<time className={`w-full sm:w-auto sm:ml-auto text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] ${theme.muted}`} dateTime={metadata.dateTime}>
 												{formattedDate}
 											</time>
 										</div>

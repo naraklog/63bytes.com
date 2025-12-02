@@ -54,8 +54,8 @@ export default function CopyLinkButton({ href, className, variant = "light", sho
 			className={`inline-flex items-center gap-2 bg-transparent px-2 py-1 transition-opacity duration-200 ${variantClasses.button} ${className ?? ""}`}
 			aria-label={copied ? "Link copied" : "Copy post URL"}
 		>
-			{copied ? <CheckIcon size={16} weight="bold" /> : <LinkIcon size={16} weight="bold" />}
-			{showLabel && <span className={`text-sm font-semibold ${variantClasses.label}`}>Copy URL</span>}
+			{copied ? <CheckIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" weight="bold" /> : <LinkIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" weight="bold" />}
+			{showLabel && <span className={`text-xs sm:text-sm font-semibold ${variantClasses.label}`}>Copy URL</span>}
 		</button>
 	);
 }
