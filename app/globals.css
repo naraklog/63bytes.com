@@ -7,7 +7,7 @@
 	--expo-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--black: #050508;
 	--white: #fafafa;
-	--off-white: #dbdad7;
+	--off-white: oklch(0.878 0.006 85);
 	--light-gray: #606068;
 	--selection-background: var(--foreground);
 	--selection-color: var(--background);
@@ -374,13 +374,13 @@ table td {
 
 table thead {
 	background-color: var(--color-black, #050508);
-	color: var(--color-off-white, #dbdad7);
+	color: var(--color-off-white);
 	font-weight: 600;
 	font-size: 0.8rem;
 }
 
 [data-code-theme="dark"] table thead {
-	background-color: var(--color-off-white, #dbdad7);
+	background-color: var(--color-off-white);
 	color: var(--color-black, #050508);
 }
 
