@@ -23,7 +23,7 @@ export function LandingHero({ isLoaded }: LandingHeroProps) {
 
 			<div className="flex flex-col gap-4 w-full">
 				<div className="w-full h-px bg-light-gray/20" />
-				<div className="flex justify-between items-center text-xs md:text-sm font-mono text-light-gray/90 tracking-tighter uppercase">
+				<div className="flex justify-between items-center text-xs md:text-sm font-mono text-off-white/60 tracking-tighter uppercase">
 					<span className="flex items-center gap-2">
 						<TerminalIcon size={16} />
 						<ScrambleText text="naraklog" scrambleOnMount={isLoaded} scrambleOnHover />

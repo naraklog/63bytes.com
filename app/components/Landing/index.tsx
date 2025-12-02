@@ -103,7 +103,7 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 				</>
 			)}
 			{/* Coordinates */}
-			<div ref={coordinatesRef} className="hidden md:block absolute bottom-8 left-8 font-mono text-10xs text-off-white/70 pointer-events-none z-20 tabular-nums">
+			<div ref={coordinatesRef} className="hidden md:block absolute bottom-8 left-8 font-mono text-10xs text-off-white/50 pointer-events-none z-20 tabular-nums">
 				<ScrambleText text="[ 0° E , 0° N ]" scrambleOnMount={isLoaded} />
 			</div>
 
