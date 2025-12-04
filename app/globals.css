@@ -210,8 +210,8 @@ body {
 
 /* CSS Variables used by CodeBlock */
 :root {
-	--background: #050508;
-	--foreground: #fafafa;
+	--background: oklch(0.035 0.005 285);
+	--foreground: oklch(0.985 0 0);
 	--code-highlight-default: rgba(255, 255, 255, 0.08);
 	--code-highlight-light: rgba(5, 5, 8, 0.08);
 	--code-highlight-dark: rgba(255, 255, 255, 0.12);
