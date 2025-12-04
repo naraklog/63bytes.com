@@ -622,7 +622,7 @@ button:active,
 	justify-content: flex-start;
 	gap: 0.5rem;
 	padding: 0.5rem 0.75rem;
-	background-color: transparent;
+	background-color: var(--foreground);
 	border: 1px solid rgb(96 96 104 / 0.4);
 	border-radius: 0;
 	font-size: 0.8rem;
@@ -630,20 +630,20 @@ button:active,
 	font-family: var(--font-mono), monospace;
 	text-transform: none;
 	letter-spacing: 0.02em;
-	color: var(--foreground);
+	color: var(--background);
 	position: relative;
 }
 
 [data-code-theme="light"] .rehype-code-title,
 [data-code-theme="light"] [data-rehype-pretty-code-title] {
-	color: var(--background);
-	background-color: var(--color-foreground, #fafafa);
+	color: var(--color-off-white);
+	background-color: var(--color-black, #050508);
 }
 
 [data-code-theme="dark"] .rehype-code-title,
 [data-code-theme="dark"] [data-rehype-pretty-code-title] {
-	color: var(--foreground);
-	background-color: var(--color-black, #050508);
+	color: var(--color-black);
+	background-color: var(--color-off-white);
 }
 
 .rehype-code-title::after,
