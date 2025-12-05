@@ -53,6 +53,7 @@ export default function LikeButton({ slug, title, theme }: { slug: string; title
 		<div className={`w-full flex items-center justify-center pt-6 border-t ${borderColor} transition-opacity duration-500 ${isExiting ? "opacity-50" : "opacity-100"}`}>
 			<button
 				onClick={handleLike}
+				onMouseEnter={() => !isExiting && playSound("hover")}
 				disabled={isExiting}
 				className={`
 					group inline-flex items-center justify-center gap-3 px-4 py-2
