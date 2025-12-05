@@ -26,7 +26,7 @@ export default function LikeButton({ slug, title, theme }: { slug: string; title
 	const handleLike = () => {
 		if (isExiting) return;
 
-		playSound("click");
+		playSound("unlock");
 		setIsExiting(true);
 		localStorage.setItem(`liked_${slug}`, "true");
 
