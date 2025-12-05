@@ -32,7 +32,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 		return localStorage.getItem("blog-theme") === "dark";
 	});
 	const [mounted, setMounted] = useState(false);
-	const articleRef = useRef<HTMLElement | null>(null);
+	const articleRef = useRef<HTMLDivElement | null>(null);
 	const [isMobileBarActive, setIsMobileBarActive] = useState(false);
 	const [isPreloaderDone, setIsPreloaderDone] = useState<boolean>(() => hasPreloaderRun());
 	const { startTransition, isTransitioning } = usePageTransition();
