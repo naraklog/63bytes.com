@@ -237,7 +237,13 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												alignY="bottom"
 											/>
 										</span>
-										<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{metadata.category}</span>
+										<span
+											className={`border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide ${
+												isDarkMode ? "text-black/80 bg-white/90" : "text-white/80 bg-black/90"
+											}`}
+										>
+											{metadata.category}
+										</span>
 										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center ${theme.heading}`}>{metadata.label}</h1>
 										{metadata.authors.length ? (
 											<AuthorsList
