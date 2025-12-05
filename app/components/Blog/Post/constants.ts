@@ -23,7 +23,7 @@ export type SocialLink = {
 
 export const CONTROL_BUTTON_BASE = "items-center justify-center h-8 px-2.5 font-mono text-[0.6rem] uppercase tracking-tight border transition-colors duration-200";
 export const LIGHT_THEME_COLOR = "#fafafa";
-export const DARK_THEME_COLOR = "#050508";
+export const DARK_THEME_COLOR = "oklch(0.035 0.005 285)";
 export const OUTLINE_SIDE_WIDTH = 240;
 export const OUTLINE_MIN_WIDTH = 190;
 export const OUTLINE_SIDE_GAP = 28;
