@@ -138,11 +138,11 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 			<main className={`${theme.main} min-h-screen px-4 pt-20 pb-16 sm:pt-28 sm:px-8 lg:px-12`} style={{ fontFamily: BLOG_FONT_FAMILY }}>
 				<div className="flex justify-center">
 					<div className="relative flex w-full max-w-[1080px] min-w-[368px] mt-px ml-px flex-col">
-					<div ref={articleRef} className="ul-cross w-full">
-						<article
-							data-code-theme={isDarkMode ? "dark" : "light"}
-							className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
-						>
+						<div ref={articleRef} className="ul-cross w-full">
+							<article
+								data-code-theme={isDarkMode ? "dark" : "light"}
+								className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
+							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
@@ -237,6 +237,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												alignY="bottom"
 											/>
 										</span>
+										<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{metadata.category}</span>
 										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center ${theme.heading}`}>{metadata.label}</h1>
 										{metadata.authors.length ? (
 											<AuthorsList
@@ -271,7 +272,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 
 							<section className={`relative ul-cross-br border ${theme.articleSurface} border-t-0 mb-20 p-6 sm:p-8`} aria-label="Article footer">
 								<h2 id="footer" className="sr-only">
-									Footer
+									EOF
 								</h2>
 								<div className="pointer-events-none absolute inset-0 overflow-hidden">
 									<div className={`absolute inset-0 opacity-80 ${theme.ditherBlendMode}`}>
