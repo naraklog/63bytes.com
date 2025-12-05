@@ -5,6 +5,7 @@ import { ClockFading } from "lucide-react";
 import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 
 import CopyLinkButton from "../../components/CopyLinkButton";
+import LikeButton from "../../components/Blog/LikeButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
 import PixelIconDisplay from "../../components/Blog/DotMatrixIcon";
 import Dither from "../../components/Dither";
@@ -141,13 +142,13 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 						<div ref={articleRef} className="ul-cross w-full">
 							<article
 								data-code-theme={isDarkMode ? "dark" : "light"}
-								className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-12 lg:px-24 lg:pt-20 lg:pb-24`}
+								className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-4 lg:px-24 lg:pt-20 lg:pb-8`}
 							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
 								</div>
-								<div className="relative z-10 flex flex-col gap-4">
+								<div className="relative z-10 flex flex-col gap-0">
 									<div className="sticky top-24 z-20 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 										<div className="hidden md:flex items-center gap-3">
 											<button
@@ -272,6 +273,10 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 										className={`mt-3 text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
+									</div>
+
+									<div className="mt-20 print:hidden">
+										<LikeButton slug={metadata.href} title={metadata.label} theme={theme} />
 									</div>
 								</div>
 							</article>
