@@ -225,7 +225,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									</div>
 
 									<header className="flex flex-col gap-4 items-center">
-										<span className="inline-flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center" aria-hidden="true">
+										<div className="inline-flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center" aria-hidden="true">
 											<PixelIconDisplay
 												svg={<IconComponent size={48} weight="regular" />}
 												gridSize={32}
@@ -237,7 +237,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												className={`w-full h-full ${theme.heading}`}
 												alignY="bottom"
 											/>
-										</span>
+										</div>
 										<span
 											className={`border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide ${
 												isDarkMode ? "text-black/80 bg-white/90" : "text-white/80 bg-black/90"

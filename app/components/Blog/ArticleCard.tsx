@@ -72,7 +72,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 					) : (
 						<>
 							<div className="flex items-center justify-between">
-								<span className="inline-flex h-20 w-20 items-center justify-center rounded-sm text-black" aria-hidden="true">
+								<div className="inline-flex h-20 w-20 items-center justify-center rounded-sm text-black" aria-hidden="true">
 									<PixelIconDisplay
 										svg={<IconComponent size={48} weight="regular" />}
 										gridSize={32}
@@ -84,7 +84,7 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 										className="w-full h-full"
 										alignX="left"
 									/>
-								</span>
+								</div>
 								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{item.category}</span>
 							</div>
 							<h2 className="text-black text-2xl leading-tight font-bold tracking-tight">{item.label}</h2>
