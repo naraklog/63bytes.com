@@ -37,7 +37,7 @@ export default async function BlogPage() {
 							<span className="border border-white/40 px-3 py-0.5 text-xs uppercase tracking-wide text-black bg-white/80">{latestArticle.category}</span>
 						</div>
 						<h2 className="text-2xl md:text-4xl font-semibold text-off-white">{latestArticle.label}</h2>
-						<p className="text-sm md:text-lg text-off-white/70 leading-relaxed max-w-3xl">{latestArticle.intro}</p>
+						<p className="text-sm md:text-base text-off-white/70 leading-relaxed max-w-3xl line-clamp-3">{latestArticle.intro}</p>
 						<div className="flex flex-wrap items-center justify-between gap-4">
 							<span className="text-sm text-off-white/70">
 								By {latestArticle.authors.map((a) => a.name).join(" and ")} · {formatFullDate(latestArticle.dateTime)}
