@@ -29,14 +29,14 @@ export const LatestPostPreview = ({ latestPost }: LatestPostPreviewProps) => {
 					</span>
 				</h3>
 
-				<p className="text-off-white/70 text-xs md:text-sm leading-relaxed line-clamp-2">{latestPost.intro}</p>
+				<p className="text-off-white/50 text-xs md:text-sm leading-relaxed line-clamp-2">{latestPost.intro}</p>
 
 				<div className="flex items-center justify-between text-[10px] md:text-xs pt-1 mt-auto">
 					<div className="flex items-center gap-2 font-mono text-off-white/50">
 						<span className="group-hover:text-off-white transition-colors mix-blend-difference">READ POST</span>
 						<span className="transition-transform group-hover:translate-x-1">→</span>
 					</div>
-					<span className="uppercase tracking-wide text-light-gray/60">{formatFullDate(latestPost.dateTime)}</span>
+					<span className="uppercase tracking-wide text-light-gray/90">{formatFullDate(latestPost.dateTime)}</span>
 				</div>
 			</div>
 		</TransitionLink>
