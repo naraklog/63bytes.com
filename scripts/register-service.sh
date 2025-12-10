@@ -109,6 +109,60 @@ BUN_VERSION=$("$BUN_PATH" --version 2>/dev/null) || {
 echo -e "  Bun version: ${GREEN}$BUN_VERSION${NC}"
 echo ""
 
+# Read environment variables from .env.local
+echo -e "${BLUE}Reading environment variables...${NC}"
+ENV_FILE="$PROJECT_PATH/.env.local"
+declare -a ENV_KEYS
+declare -a ENV_VALUES
+
+if [ -f "$ENV_FILE" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Skip empty lines and comments
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+        # Skip lines without =
+        [[ ! "$line" =~ = ]] && continue
+        
+        # Extract key and value
+        key="${line%%=*}"
+        value="${line#*=}"
+        
+        # Trim whitespace from key
+        key="$(echo "$key" | xargs)"
+        
+        # Skip if key is empty
+        [[ -z "$key" ]] && continue
+        
+        ENV_KEYS+=("$key")
+        ENV_VALUES+=("$value")
+        echo -e "  ${GREEN}✓${NC} $key"
+    done < "$ENV_FILE"
+    echo -e "  Loaded ${GREEN}${#ENV_KEYS[@]}${NC} environment variables from .env.local"
+else
+    echo -e "  ${YELLOW}Warning: .env.local not found, using defaults only${NC}"
+fi
+echo ""
+
+# Function to generate plist environment entries
+generate_plist_env() {
+    local output=""
+    for i in "${!ENV_KEYS[@]}"; do
+        output+="        <key>${ENV_KEYS[$i]}</key>
+        <string>${ENV_VALUES[$i]}</string>
+"
+    done
+    echo "$output"
+}
+
+# Function to generate systemd environment entries
+generate_systemd_env() {
+    local output=""
+    for i in "${!ENV_KEYS[@]}"; do
+        output+="Environment=${ENV_KEYS[$i]}=${ENV_VALUES[$i]}
+"
+    done
+    echo "$output"
+}
+
 # Verify project structure
 echo -e "${BLUE}Verifying project structure...${NC}"
 if [ ! -f "$PROJECT_PATH/package.json" ]; then
@@ -147,11 +201,29 @@ install_macos_service() {
     fi
     
     # Generate plist with actual values
+    PLIST_ENV_VARS=$(generate_plist_env)
     sed -e "s|__PROJECT_PATH__|$PROJECT_PATH|g" \
         -e "s|__BUN_PATH__|$BUN_PATH|g" \
         -e "s|__PORT__|$PORT|g" \
         -e "s|__LOG_DIR__|$LOG_DIR|g" \
         "$PLIST_TEMPLATE" > "$PLIST_DEST"
+    
+    # Insert custom environment variables into plist
+    if [ -n "$PLIST_ENV_VARS" ]; then
+        # Create temp file for awk processing
+        TEMP_PLIST=$(mktemp)
+        awk -v env_vars="$PLIST_ENV_VARS" '
+            /<key>NODE_ENV<\/key>/ {
+                print
+                getline
+                print
+                printf "%s", env_vars
+                next
+            }
+            { print }
+        ' "$PLIST_DEST" > "$TEMP_PLIST"
+        mv "$TEMP_PLIST" "$PLIST_DEST"
+    fi
     
     echo -e "  ${GREEN}✓${NC} Service file installed: $PLIST_DEST"
     
@@ -190,10 +262,26 @@ install_linux_service() {
     fi
     
     # Generate service file with actual values
+    SYSTEMD_ENV_VARS=$(generate_systemd_env)
     sed -e "s|__PROJECT_PATH__|$PROJECT_PATH|g" \
         -e "s|__BUN_PATH__|$BUN_PATH|g" \
         -e "s|__PORT__|$PORT|g" \
         "$SERVICE_TEMPLATE" > "$SERVICE_DEST"
+    
+    # Insert custom environment variables into service file
+    if [ -n "$SYSTEMD_ENV_VARS" ]; then
+        # Create temp file for awk processing
+        TEMP_SERVICE=$(mktemp)
+        awk -v env_vars="$SYSTEMD_ENV_VARS" '
+            /^Environment=NODE_ENV=/ {
+                print
+                printf "%s", env_vars
+                next
+            }
+            { print }
+        ' "$SERVICE_DEST" > "$TEMP_SERVICE"
+        mv "$TEMP_SERVICE" "$SERVICE_DEST"
+    fi
     
     echo -e "  ${GREEN}✓${NC} Service file installed: $SERVICE_DEST"
     
