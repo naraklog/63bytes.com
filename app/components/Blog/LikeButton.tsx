@@ -62,8 +62,9 @@ export default function LikeButton({ slug, title, theme }: { slug: string; title
 					${theme?.muted || "text-gray-500 dark:text-gray-400"}
 					${isExiting ? "cursor-default" : ""}
 				`}
-				aria-label={isExiting ? "Post liked" : "Like this post"}
+				aria-label={isExiting ? "Post liked" : "Like"}
 			>
+				<span>{isExiting ? <ScrambleText text="Liked" scrambleOnMount /> : "Liked this post?"}</span>
 				<span className={`w-5 h-5 transition-transform duration-300  ${isExiting ? "scale-100" : "group-hover:scale-110"}`}>
 					<PixelIconDisplay
 						svg={<HeartStraightIcon size={20} weight="fill" />}
@@ -75,7 +76,6 @@ export default function LikeButton({ slug, title, theme }: { slug: string; title
 						sparkleEnabled={true}
 					/>
 				</span>
-				<span>{isExiting ? <ScrambleText text="Liked" scrambleOnMount /> : "Like this post"}</span>
 			</button>
 		</div>
 	);
