@@ -26,7 +26,7 @@ type BlogSectionProps = {
 const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(
 	({ categories, limit = 6, showViewAllButton = true, header, items = [], onLayoutChange, showSearch = true, useThemeColorOnly = false, disableCollapse = false, minimalMode = false }, ref) => {
 		const [activeCategory, setActiveCategory] = useState("all");
-		const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+		const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
 		const [searchQuery, setSearchQuery] = useState("");
 		const sectionRef = useRef<HTMLElement | null>(null);
 		const isSmallScreen = useMediaQuery("(max-width: 1023px)");
@@ -106,7 +106,7 @@ const BlogSection = forwardRef<HTMLElement, BlogSectionProps>(
     px-0 sm:py-4 md:py-8 lg:py-[20px] xl:py-[30px]
     gap-0"
 				>
-					{header ? (
+					{header && viewMode !== "timeline" ? (
 						<div className="mb-10 flex justify-center">
 							<div className="relative flex w-full max-w-[1080px] min-w-[368px] mt-px ml-px flex-col">{header}</div>
 						</div>

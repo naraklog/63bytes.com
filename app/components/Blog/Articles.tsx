@@ -5,13 +5,14 @@ import { useArticleFilter, useInfiniteLoader } from "../../hooks";
 import TransitionLink from "../TransitionLink";
 import ArticleCard from "./ArticleCard";
 import LoadingIndicator from "./LoadingIndicator";
+import { TimeMachine } from "./TimeMachine";
 
 type ArticlesProps = {
 	activeCategory: string;
 	items?: ArticleItem[];
 	limit?: number;
 	showViewAllButton?: boolean;
-	viewMode?: "grid" | "list";
+	viewMode?: "grid" | "list" | "timeline";
 	searchQuery?: string;
 };
 
@@ -39,6 +40,14 @@ export default function Articles({ activeCategory, items = [], limit, showViewAl
 		batchSize: ARTICLES_PER_LOAD,
 		loadDelayMs: LOAD_DELAY_MS,
 	});
+
+	if (viewMode === "timeline") {
+		return (
+			<div className="w-full">
+				<TimeMachine items={filteredItems} />
+			</div>
+		);
+	}
 
 	const visibleItems = filteredItems.slice(0, visibleCount);
 	const isListView = viewMode === "list";

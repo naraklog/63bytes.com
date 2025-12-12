@@ -14,8 +14,8 @@ type BlogNavigationProps = {
 	activeCategory: string;
 	onCategoryChange: (category: string) => void;
 	showFloating?: boolean;
-	viewMode: "grid" | "list";
-	onViewModeChange: (mode: "grid" | "list") => void;
+	viewMode: "grid" | "list" | "timeline";
+	onViewModeChange: (mode: "grid" | "list" | "timeline") => void;
 	searchQuery: string;
 	onSearchChange: (value: string) => void;
 	showSearch?: boolean;
@@ -137,6 +137,7 @@ export default function BlogNavigation({
 					showSearch={showSearch}
 					shortcutLabel={shortcutLabel}
 					searchInputRef={searchInputRef}
+					minimalMode={minimalMode}
 				/>
 			</nav>
 

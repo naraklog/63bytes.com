@@ -1,6 +1,18 @@
 "use client";
 
-import { HouseIcon, BooksIcon, DotsThreeOutlineIcon, XIcon, MagnifyingGlassIcon, RowsIcon, SquaresFourIcon, StackIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
+import {
+	HouseIcon,
+	BooksIcon,
+	DotsThreeOutlineIcon,
+	XIcon,
+	MagnifyingGlassIcon,
+	RowsIcon,
+	SquaresFourIcon,
+	StackIcon,
+	SpeakerHighIcon,
+	SpeakerSlashIcon,
+	ClockCounterClockwiseIcon,
+} from "@phosphor-icons/react";
 import { forwardRef, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,8 +28,8 @@ type MobileMenuProps = {
 	categories: CategoryOption[];
 	activeCategory: string;
 	onCategoryChange: (category: string) => void;
-	viewMode: "grid" | "list";
-	onViewModeChange: (mode: "grid" | "list") => void;
+	viewMode: "grid" | "list" | "timeline";
+	onViewModeChange: (mode: "grid" | "list" | "timeline") => void;
 	searchQuery: string;
 	onSearchChange: (value: string) => void;
 	showSearch: boolean;
@@ -71,9 +83,36 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 	}, [isCollapsed, isMobile, disableCollapse, playSound]);
 
 	if (!isMobile) return null;
+
 	const isListView = viewMode === "list";
-	const toggleAriaLabel = isListView ? "Switch to grid view" : "Switch to list view";
-	const ToggleIcon = isListView ? RowsIcon : SquaresFourIcon;
+	const isGridView = viewMode === "grid";
+	const isTimelineView = viewMode === "timeline";
+
+	let toggleAriaLabel = "Switch view";
+	let ToggleIcon = SquaresFourIcon;
+	let nextViewMode: "grid" | "list" | "timeline" = "grid";
+
+	if (isGridView) {
+		toggleAriaLabel = "Switch to list view";
+		ToggleIcon = RowsIcon; // Use RowsIcon for list view on mobile instead of ListDashesIcon if that was the preference, preserving existing logic where RowsIcon was used.
+		nextViewMode = "list";
+	} else if (isListView) {
+		// Skip timeline if in minimal mode
+		if (minimalMode) {
+			toggleAriaLabel = "Switch to grid view";
+			ToggleIcon = SquaresFourIcon;
+			nextViewMode = "grid";
+		} else {
+			toggleAriaLabel = "Switch to timeline view";
+			ToggleIcon = ClockCounterClockwiseIcon;
+			nextViewMode = "timeline";
+		}
+	} else {
+		// Timeline view
+		toggleAriaLabel = "Switch to grid view";
+		ToggleIcon = SquaresFourIcon;
+		nextViewMode = "grid";
+	}
 
 	return createPortal(
 		<div className="mobile-nav-portal">
@@ -200,7 +239,7 @@ const MobileMenu = forwardRef<HTMLInputElement, MobileMenuProps>(function Mobile
 											<button
 												onClick={() => {
 													playSound("click");
-													onViewModeChange(isListView ? "grid" : "list");
+													onViewModeChange(nextViewMode);
 												}}
 												onMouseEnter={() => playSound("hover")}
 												className="flex items-center"
