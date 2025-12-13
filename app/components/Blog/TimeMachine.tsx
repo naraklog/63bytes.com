@@ -8,12 +8,14 @@ import PixelIconDisplay from "./DotMatrixIcon";
 import { resolvePhosphorIcon } from "../../utils/icons";
 import AuthorsList from "./AuthorsList";
 import { LinearBlur } from "progressive-blur";
+import { useSound } from "../../context/SoundContext";
 
 interface TimeMachineProps {
 	items: ArticleItem[];
 }
 
 export function TimeMachine({ items }: TimeMachineProps) {
+	const { playSound } = useSound();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [dragProgress, setDragProgress] = useState(0); // -1 to 1, tension before snap
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +24,16 @@ export function TimeMachine({ items }: TimeMachineProps) {
 	const [isHovered, setIsHovered] = useState<number | null>(null);
 	const [showTimeline, setShowTimeline] = useState(false);
 	const timelineTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const hasMounted = useRef(false);
+
+	// Play click sound when active index changes
+	useEffect(() => {
+		if (hasMounted.current) {
+			playSound("tick");
+		} else {
+			hasMounted.current = true;
+		}
+	}, [activeIndex, playSound]);
 
 	// Show timeline when scrolling, hide after a delay
 	useEffect(() => {
@@ -440,11 +452,14 @@ export function TimeMachine({ items }: TimeMachineProps) {
 							{/* Timeline track */}
 							<div className="relative h-full w-24 cursor-pointer">
 								{/* Background week tick marks */}
-								{ticks.map((tick, i) => (
-									<div key={`week-${i}`} className="absolute right-0" style={{ top: `${tick.position * 100}%`, transform: "translateY(-50%)" }}>
-										<div className="w-2 h-px bg-light-gray/50" />
-									</div>
-								))}
+								{ticks.map((tick, i) => {
+									if (i === 0 || i === ticks.length - 1) return null;
+									return (
+										<div key={`week-${i}`} className="absolute right-0" style={{ top: `${tick.position * 100}%`, transform: "translateY(-50%)" }}>
+											<div className="w-2 h-px bg-light-gray/50" />
+										</div>
+									);
+								})}
 
 								{/* Post tick marks at their actual positions (inverted) */}
 								{items.map((post, index) => {

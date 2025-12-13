@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
-type SoundType = "hover" | "click" | "unlock";
+type SoundType = "hover" | "click" | "unlock" | "tick";
 
 interface SoundContextType {
 	playSound: (type: SoundType) => void;
@@ -16,13 +16,14 @@ const SOUND_URLS = {
 	hover: "/sounds/hover.mp3",
 	click: "/sounds/click.mp3",
 	unlock: "/sounds/unlock.mp3",
+	tick: "/sounds/tick.mp3",
 };
 
 const SOUND_MUTED_KEY = "sound-muted";
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
 	const audioContextRef = useRef<AudioContext | null>(null);
-	const buffersRef = useRef<Record<SoundType, AudioBuffer | null>>({ hover: null, click: null, unlock: null });
+	const buffersRef = useRef<Record<SoundType, AudioBuffer | null>>({ hover: null, click: null, unlock: null, tick: null });
 	const [isMuted, setIsMuted] = useState(() => {
 		if (typeof window === "undefined") return false;
 		return localStorage.getItem(SOUND_MUTED_KEY) === "true";
@@ -57,11 +58,17 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 			};
 
 			try {
-				const [hoverBuffer, clickBuffer, unlockBuffer] = await Promise.all([loadBuffer(SOUND_URLS.hover), loadBuffer(SOUND_URLS.click), loadBuffer(SOUND_URLS.unlock)]);
+				const [hoverBuffer, clickBuffer, unlockBuffer, tickBuffer] = await Promise.all([
+					loadBuffer(SOUND_URLS.hover),
+					loadBuffer(SOUND_URLS.click),
+					loadBuffer(SOUND_URLS.unlock),
+					loadBuffer(SOUND_URLS.tick),
+				]);
 				buffersRef.current = {
 					hover: hoverBuffer,
 					click: clickBuffer,
 					unlock: unlockBuffer,
+					tick: tickBuffer,
 				};
 			} catch (error) {
 				console.error("Failed to load sounds:", error);
@@ -138,7 +145,8 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 		const gainNode = context.createGain();
 
 		// Reduce volume significantly and add envelope to avoid pops
-		const volume = type === "hover" ? 0.4 : 0.45;
+		let volume = type === "hover" ? 0.4 : 0.45;
+		if (type === "tick") volume = 0.8;
 
 		// Start at 0
 		gainNode.gain.setValueAtTime(0, context.currentTime);
