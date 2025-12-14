@@ -246,6 +246,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 								style={{
 									top: `${sectionPercent}%`,
 									transform: "translateY(-50%)",
+									zIndex: 1000,
 								}}
 							>
 								{/* Section tick - more prominent than regular ticks */}
@@ -254,7 +255,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 									data-morph-width={isActive ? "32px" : "20px"}
 									data-morph-height="1px"
 									data-morph-align="right"
-									className="py-2 w-32 flex items-center justify-end cursor-pointer"
+									className="py-4 w-64 flex items-center justify-end cursor-pointer"
 								>
 									<motion.div
 										className="h-px bg-current group-hover:opacity-0"
