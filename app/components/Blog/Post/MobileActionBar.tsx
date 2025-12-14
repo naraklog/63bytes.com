@@ -20,7 +20,7 @@ type MobileActionBarProps = {
 const ICON_SIZE = 18;
 
 function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, onToggleTheme, onToggleProgressWheel }: MobileActionBarProps) {
-	const { scrollDirection } = useScrollDirection({ upThreshold: 100, disabled: isProgressWheelVisible });
+	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100, disabled: isProgressWheelVisible });
 	const { playSound, isMuted, toggleMute } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
 	const isFirstRender = useRef(true);
@@ -37,6 +37,14 @@ function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, 
 	// When progress wheel is active: collapsed unless manually expanded
 	// Otherwise: use scroll direction
 	const isCollapsed = isProgressWheelVisible ? !manualExpanded : scrollDirection === "down";
+
+	const handleExpand = () => {
+		if (isProgressWheelVisible) {
+			setManualExpanded(true);
+		} else {
+			setScrollDirection("up");
+		}
+	};
 
 	// Play sound when collapsed state changes (but not on initial render)
 	useEffect(() => {
@@ -76,13 +84,7 @@ function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, 
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
 								className="px-1.75"
-								onClick={() => {
-									if (isProgressWheelVisible) {
-										setManualExpanded(true);
-									} else {
-										setManualExpanded(true);
-									}
-								}}
+								onClick={handleExpand}
 								onMouseEnter={() => playSound("hover")}
 								aria-label="Expand menu"
 							>
