@@ -8,6 +8,7 @@ import CopyLinkButton from "../../components/CopyLinkButton";
 import LikeButton from "../../components/Blog/LikeButton";
 import AuthorsList from "../../components/Blog/AuthorsList";
 import PixelIconDisplay from "../../components/Blog/DotMatrixIcon";
+import { ScrollProgressWheel } from "../../components/Blog/ScrollProgressWheel";
 import Dither from "../../components/Dither";
 import { resolvePhosphorIcon } from "../../utils/icons";
 import { ScrambleText } from "../../components/ScrambleText";
@@ -36,6 +37,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const articleRef = useRef<HTMLDivElement | null>(null);
 	const [isMobileBarActive, setIsMobileBarActive] = useState(false);
 	const [isPreloaderDone, setIsPreloaderDone] = useState<boolean>(() => hasPreloaderRun());
+	const [scrollProgress, setScrollProgress] = useState(0);
 	const { startTransition, isTransitioning } = usePageTransition();
 	const { setMorphEnabled, setMorphProgress } = useLayoutContext();
 	const { playSound, isMuted, toggleMute } = useSound();
@@ -64,6 +66,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 			const scrollPercent = Math.min(1, Math.max(0, scrollTop / scrollable));
 
 			setMorphProgress(scrollPercent);
+			setScrollProgress(scrollPercent);
 		};
 
 		window.addEventListener("scroll", handleScroll, { passive: true });
@@ -77,6 +80,14 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 			setMorphProgress(0);
 		};
 	}, [setMorphEnabled, setMorphProgress]);
+
+	const handleScrub = useCallback((newProgress: number) => {
+		const docHeight = document.documentElement.scrollHeight;
+		const winHeight = window.innerHeight;
+		const scrollable = Math.max(1, docHeight - winHeight);
+		window.scrollTo({ top: newProgress * scrollable, behavior: "instant" });
+		setScrollProgress(newProgress);
+	}, []);
 
 	useEffect(() => {
 		setMounted(true);
@@ -345,13 +356,16 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 				) : null}
 
 				{mounted && !isTransitioning && isPreloaderDone && (
-					<MobileActionBar
-						isDarkMode={isDarkMode}
-						hasOutlineItems={outlineItems.length > 0}
-						isOutlineOpen={isOutlineOpen}
-						onToggleTheme={handleToggleTheme}
-						onToggleOutline={handleToggleOutline}
-					/>
+					<>
+						<ScrollProgressWheel progress={scrollProgress} onScrub={handleScrub} isDarkMode={isDarkMode} theme={{ bg: theme.main }} />
+						<MobileActionBar
+							isDarkMode={isDarkMode}
+							hasOutlineItems={outlineItems.length > 0}
+							isOutlineOpen={isOutlineOpen}
+							onToggleTheme={handleToggleTheme}
+							onToggleOutline={handleToggleOutline}
+						/>
+					</>
 				)}
 			</main>
 		</>
