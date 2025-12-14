@@ -1,8 +1,8 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
-import { HouseIcon, TreeViewIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
+import { memo, useEffect, useRef } from "react";
+import { HouseIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
 import { BLOG_FONT_FAMILY } from "./constants";
@@ -12,14 +12,14 @@ import { useSound } from "../../../context/SoundContext";
 type MobileActionBarProps = {
 	isDarkMode: boolean;
 	hasOutlineItems: boolean;
-	isOutlineOpen: boolean;
+	isProgressWheelVisible: boolean;
 	onToggleTheme: () => void;
-	onToggleOutline: () => void;
+	onToggleProgressWheel: () => void;
 };
 
 const ICON_SIZE = 18;
 
-export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutlineOpen, onToggleTheme, onToggleOutline }: MobileActionBarProps) {
+function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, onToggleTheme, onToggleProgressWheel }: MobileActionBarProps) {
 	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
 	const { playSound, isMuted, toggleMute } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
@@ -131,17 +131,16 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 										<div className="h-4 w-px shrink-0 bg-light-gray" />
 										<button
 											type="button"
-											onClick={() => {
-												playSound("click");
-												onToggleOutline();
-											}}
+											onClick={onToggleProgressWheel}
 											onMouseEnter={() => playSound("hover")}
 											className="flex items-center"
-											aria-pressed={isOutlineOpen}
-											aria-label="Toggle page outline"
+											aria-pressed={isProgressWheelVisible}
+											aria-label="Toggle progress wheel"
 										>
-											<TreeViewIcon size={ICON_SIZE} weight="duotone" />
-											<span className="sr-only">Toggle page outline</span>
+											<svg viewBox="4 5 16 14" fill="none" className="h-[18px] w-[18px]">
+												<path d="M13.5 18.5L9 18.5M13.5 15.5L9 15.5M13.5 9L9 9M13.5 6L9 6M16.5 12.25L6 12.25" stroke="currentColor" strokeLinecap="square" />
+											</svg>
+											<span className="sr-only">Toggle progress wheel</span>
 										</button>
 									</>
 								)}
@@ -154,3 +153,5 @@ export default function MobileActionBar({ isDarkMode, hasOutlineItems, isOutline
 		document.body
 	);
 }
+
+export default memo(MobileActionBar);

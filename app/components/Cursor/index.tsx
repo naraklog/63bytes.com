@@ -12,6 +12,7 @@ export default function Cursor() {
 	const isCursorLockedRef = useRef(false);
 	const isScrollingRef = useRef(false);
 	const transitionActiveRef = useRef(false);
+	const isScrubbingRef = useRef(false);
 
 	// Visual State
 	const [isTransitionActive, setIsTransitionActive] = useState(false);
@@ -31,6 +32,7 @@ export default function Cursor() {
 		isCursorLockedRef,
 		transitionActiveRef,
 		isScrollingRef,
+		isScrubbingRef,
 		enabled,
 	});
 
@@ -38,6 +40,7 @@ export default function Cursor() {
 		unlockAndReset,
 		isScrollingRef,
 		transitionActiveRef,
+		isScrubbingRef,
 		lastPointerRef,
 		enabled,
 	});

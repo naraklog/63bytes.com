@@ -38,12 +38,13 @@ export default function LinkedHeading({ as: Component, id, children, className =
 	}, [href]);
 
 	return (
-		<Component id={id} onClick={handleCopy} onMouseEnter={() => playSound("hover")} className={`group flex items-center gap-2 cursor-pointer ${className}`}>
+		<Component id={id} onClick={handleCopy} className={`group flex items-center gap-2 cursor-pointer ${className}`}>
 			{children}
 			<span
 				className="text-current opacity-0 group-hover:opacity-100 focus:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity p-1 inline-flex items-center justify-center"
 				aria-label={copied ? "Link copied" : "Copy post URL"}
 				role="button"
+				onMouseEnter={() => playSound("hover")}
 			>
 				{copied ? <CheckIcon size={16} weight="bold" /> : <LinkIcon size={16} weight="bold" />}
 			</span>

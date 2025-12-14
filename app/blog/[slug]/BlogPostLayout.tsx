@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ClockFading } from "lucide-react";
-import { TreeViewIcon, AtIcon, HouseIcon, MoonIcon, SunIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
+import { AtIcon, HouseIcon, MoonIcon, SunIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 
 import CopyLinkButton from "../../components/CopyLinkButton";
 import LikeButton from "../../components/Blog/LikeButton";
@@ -28,6 +28,9 @@ type BlogPostLayoutProps = {
 	children: ReactNode;
 };
 
+// Minimum viewport width (px) for the progress wheel to be visible by default
+const PROGRESS_WHEEL_MIN_WIDTH = 1280;
+
 export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate, children }: BlogPostLayoutProps) {
 	const [isDarkMode, setIsDarkMode] = useState(() => {
 		if (typeof window === "undefined") return false;
@@ -37,12 +40,18 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const articleRef = useRef<HTMLDivElement | null>(null);
 	const [isMobileBarActive, setIsMobileBarActive] = useState(false);
 	const [isPreloaderDone, setIsPreloaderDone] = useState<boolean>(() => hasPreloaderRun());
-	const [scrollProgress, setScrollProgress] = useState(0);
+	// const [scrollProgress, setScrollProgress] = useState(0); // Removed state to prevent re-renders
 	const { startTransition, isTransitioning } = usePageTransition();
 	const { setMorphEnabled, setMorphProgress } = useLayoutContext();
 	const { playSound, isMuted, toggleMute } = useSound();
 
-	const { outlineItems, outlineMode, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleToggleOutline, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
+	const [isProgressWheelVisible, setIsProgressWheelVisible] = useState(() => {
+		if (typeof window === "undefined") return true;
+		return window.innerWidth >= PROGRESS_WHEEL_MIN_WIDTH;
+	});
+	const userToggledWheel = useRef(false);
+
+	const { outlineItems, outlineMode, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
 		articleRef,
 		mounted,
 		isMobileBarActive,
@@ -50,6 +59,12 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 		isTransitioning,
 		postHref: metadata.href,
 	});
+
+	const handleToggleProgressWheel = useCallback(() => {
+		playSound("click");
+		userToggledWheel.current = true;
+		setIsProgressWheelVisible((prev) => !prev);
+	}, [playSound]);
 
 	useThemeSync({ isDarkMode, mounted });
 
@@ -66,7 +81,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 			const scrollPercent = Math.min(1, Math.max(0, scrollTop / scrollable));
 
 			setMorphProgress(scrollPercent);
-			setScrollProgress(scrollPercent);
+			// setScrollProgress(scrollPercent);
 		};
 
 		window.addEventListener("scroll", handleScroll, { passive: true });
@@ -86,14 +101,46 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 		const winHeight = window.innerHeight;
 		const scrollable = Math.max(1, docHeight - winHeight);
 		window.scrollTo({ top: newProgress * scrollable, behavior: "instant" });
-		setScrollProgress(newProgress);
+		// setScrollProgress(newProgress);
 	}, []);
 
 	useEffect(() => {
 		setMounted(true);
 	}, []);
 
+	// Auto-hide progress wheel on narrow screens
+	useEffect(() => {
+		if (!mounted) return;
+		const handleResize = () => {
+			const isWideEnough = window.innerWidth >= PROGRESS_WHEEL_MIN_WIDTH;
+			// Only auto-hide, don't force show (respect user's manual toggle)
+			if (!isWideEnough && !userToggledWheel.current) {
+				setIsProgressWheelVisible(false);
+			}
+		};
+		handleResize(); // Check on mount
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, [mounted]);
+
 	const theme = useMemo(() => (isDarkMode ? THEME_PRESETS.dark : THEME_PRESETS.light), [isDarkMode]);
+
+	// Calculate section positions as scroll percentages for the progress wheel
+	const sectionsWithPositions = useMemo(() => {
+		if (!mounted || !outlineItems.length) return [];
+		const docHeight = document.documentElement.scrollHeight;
+
+		return outlineItems.map((item) => {
+			const el = document.getElementById(item.id);
+			// Use getBoundingClientRect + scrollY for absolute document position
+			// (offsetTop is relative to offsetParent, not document root)
+			const absoluteTop = (el?.getBoundingClientRect().top ?? 0) + window.scrollY;
+			// Divide by docHeight to get position as % of document
+			const position = Math.min(1, Math.max(0, absoluteTop / docHeight));
+			return { ...item, position };
+		});
+		// Removed scrollProgress dependency
+	}, [mounted, outlineItems]);
 
 	const handleToggleTheme = useCallback(() => {
 		playSound("click");
@@ -140,8 +187,8 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	}, [isPreloaderDone]);
 
 	const hasContactEmail = Boolean(CONTACT_EMAIL);
-	const outlineStateLabel = isOutlineOpen ? "Outline visible" : "Outline hidden";
-	const outlineButtonVariant = isOutlineOpen ? theme.linkButton : theme.toggleButton;
+	const progressWheelStateLabel = isProgressWheelVisible ? "Progress wheel visible" : "Progress wheel hidden";
+	const progressWheelButtonVariant = isProgressWheelVisible ? theme.linkButton : theme.toggleButton;
 	const soundButtonVariant = isMuted ? theme.toggleButton : theme.linkButton;
 	const IconComponent = resolvePhosphorIcon(metadata.icon);
 
@@ -213,23 +260,22 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											{outlineItems.length ? (
 												<button
 													type="button"
-													className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 backdrop-blur-lg ${outlineButtonVariant}`}
-													onClick={() => {
-														playSound("click");
-														handleToggleOutline();
-													}}
+													className={`hidden md:inline-flex ${CONTROL_BUTTON_BASE} w-9 px-0 backdrop-blur-lg ${progressWheelButtonVariant}`}
+													onClick={handleToggleProgressWheel}
 													onMouseEnter={() => playSound("hover")}
-													aria-pressed={isOutlineOpen}
-													aria-label={isOutlineOpen ? "Hide page outline" : "Show page outline"}
-													title={outlineStateLabel}
-													data-state={isOutlineOpen ? "open" : "closed"}
-													data-variant="outline-toggle"
+													aria-pressed={isProgressWheelVisible}
+													aria-label={isProgressWheelVisible ? "Hide progress wheel" : "Show progress wheel"}
+													title={progressWheelStateLabel}
+													data-state={isProgressWheelVisible ? "open" : "closed"}
+													data-variant="progress-toggle"
 													aria-live="polite"
 													aria-atomic="true"
 													style={{ touchAction: "manipulation" }}
 												>
-													<TreeViewIcon size={24} className={`h-6 w-6 ${isOutlineOpen ? "text-current" : ""}`} />
-													<span className="sr-only">Toggle outline</span>
+													<svg viewBox="4 5 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${isProgressWheelVisible ? "text-current" : ""}`}>
+														<path d="M13.5 18.5L9 18.5M13.5 15.5L9 15.5M13.5 9L9 9M13.5 6L9 6M16.5 12.25L6 12.25" stroke="currentColor" strokeLinecap="square" />
+													</svg>
+													<span className="sr-only">Toggle progress wheel</span>
 												</button>
 											) : null}
 										</div>
@@ -344,7 +390,6 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 						mode={outlineMode}
 						width={outlineWidth}
 						position={outlinePosition}
-						useHighlightBackground={isMobileBarActive && outlineMode === "overlay"}
 						borderClass={theme.outlineBorder}
 						textClass={theme.outlineText}
 						items={outlineItems}
@@ -357,13 +402,15 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 
 				{mounted && !isTransitioning && isPreloaderDone && (
 					<>
-						<ScrollProgressWheel progress={scrollProgress} onScrub={handleScrub} isDarkMode={isDarkMode} theme={{ bg: theme.main }} />
+						{isProgressWheelVisible && (
+							<ScrollProgressWheel onScrub={handleScrub} onClose={handleToggleProgressWheel} isDarkMode={isDarkMode} theme={{ bg: theme.main }} sections={sectionsWithPositions} />
+						)}
 						<MobileActionBar
 							isDarkMode={isDarkMode}
 							hasOutlineItems={outlineItems.length > 0}
-							isOutlineOpen={isOutlineOpen}
+							isProgressWheelVisible={isProgressWheelVisible}
 							onToggleTheme={handleToggleTheme}
-							onToggleOutline={handleToggleOutline}
+							onToggleProgressWheel={handleToggleProgressWheel}
 						/>
 					</>
 				)}

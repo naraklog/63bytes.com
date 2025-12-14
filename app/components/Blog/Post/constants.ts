@@ -27,6 +27,8 @@ export const DARK_THEME_COLOR = "oklch(0.035 0.005 285)";
 export const OUTLINE_SIDE_WIDTH = 240;
 export const OUTLINE_MIN_WIDTH = 190;
 export const OUTLINE_SIDE_GAP = 28;
+export const OUTLINE_ARTICLE_GAP = 24; // Gap between outline right edge and article left edge (accounts for ul-cross decoration)
+export const OUTLINE_MIN_VIEWPORT_WIDTH = 1400;
 export const STICKY_TOP_OFFSET = 113;
 export const BLOG_FONT_FAMILY = "var(--font-semi-mono), var(--font-sans), sans-serif";
 

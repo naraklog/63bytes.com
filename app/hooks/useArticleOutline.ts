@@ -1,5 +1,15 @@
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { OUTLINE_SIDE_WIDTH, OUTLINE_MIN_WIDTH, OUTLINE_SIDE_GAP, STICKY_TOP_OFFSET, slugifyHeading, type OutlineItem, type OutlinePosition } from "../components/Blog/Post/constants";
+import { useCallback, useEffect, useState, type RefObject } from "react";
+import {
+	OUTLINE_SIDE_WIDTH,
+	OUTLINE_MIN_WIDTH,
+	OUTLINE_SIDE_GAP,
+	OUTLINE_ARTICLE_GAP,
+	OUTLINE_MIN_VIEWPORT_WIDTH,
+	STICKY_TOP_OFFSET,
+	slugifyHeading,
+	type OutlineItem,
+	type OutlinePosition,
+} from "../components/Blog/Post/constants";
 
 type UseArticleOutlineOptions = {
 	articleRef: RefObject<HTMLElement | null>;
@@ -12,24 +22,21 @@ type UseArticleOutlineOptions = {
 
 type UseArticleOutlineReturn = {
 	outlineItems: OutlineItem[];
-	outlineMode: "side" | "overlay";
+	outlineMode: "side";
 	outlineWidth: number;
 	outlinePosition: OutlinePosition;
 	activeHeadingId: string | null;
 	isOutlineOpen: boolean;
-	handleToggleOutline: () => void;
 	handleCloseOutline: () => void;
 	handleNavigateFromOutline: () => void;
 };
 
-export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPreloaderDone, isTransitioning, postHref }: UseArticleOutlineOptions): UseArticleOutlineReturn {
+export function useArticleOutline({ articleRef, mounted, isPreloaderDone, isTransitioning, postHref }: UseArticleOutlineOptions): UseArticleOutlineReturn {
 	const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([]);
-	const [outlineMode, setOutlineMode] = useState<"side" | "overlay">("overlay");
 	const [outlineWidth, setOutlineWidth] = useState<number>(OUTLINE_SIDE_WIDTH);
-	const [outlinePosition, setOutlinePosition] = useState<OutlinePosition>({ top: 120, right: OUTLINE_SIDE_GAP });
+	const [outlinePosition, setOutlinePosition] = useState<OutlinePosition>({ top: 120, left: OUTLINE_SIDE_GAP });
 	const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
 	const [isOutlineOpen, setIsOutlineOpen] = useState(false);
-	const outlineUserToggledRef = useRef(false);
 
 	// Parse headings from article
 	useEffect(() => {
@@ -89,7 +96,7 @@ export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPr
 		};
 	}, [mounted, outlineItems]);
 
-	// Update outline mode and position based on viewport
+	// Update outline position based on viewport - show on left side when there's space
 	useEffect(() => {
 		if (!mounted) return;
 
@@ -98,30 +105,20 @@ export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPr
 			if (!articleEl) return;
 			const rect = articleEl.getBoundingClientRect();
 			const articleTop = Math.round(rect.top);
-			const availableRight = window.innerWidth - rect.right - OUTLINE_SIDE_GAP;
-			const safeAvailable = Math.max(0, Math.floor(availableRight));
+			// Check available space on the LEFT side (accounting for gap to article)
+			const availableLeft = rect.left - OUTLINE_SIDE_GAP - OUTLINE_ARTICLE_GAP;
+			const safeAvailable = Math.max(0, Math.floor(availableLeft));
 			const sideWidth = Math.min(OUTLINE_SIDE_WIDTH, Math.max(OUTLINE_MIN_WIDTH, safeAvailable));
-			const canSitBesideArticle = window.innerWidth >= 1200 && safeAvailable >= OUTLINE_MIN_WIDTH;
+			const canSitBesideArticle = window.innerWidth >= OUTLINE_MIN_VIEWPORT_WIDTH && safeAvailable >= OUTLINE_MIN_WIDTH;
 
 			if (canSitBesideArticle) {
-				setOutlineMode("side");
 				setOutlineWidth(sideWidth);
-				setOutlinePosition({ top: Math.max(STICKY_TOP_OFFSET, articleTop), left: Math.round(rect.right + OUTLINE_SIDE_GAP) });
-				if (!outlineUserToggledRef.current) {
-					setIsOutlineOpen(true);
-				}
+				// Position on the left side of the article
+				setOutlinePosition({ top: Math.max(STICKY_TOP_OFFSET, articleTop), left: OUTLINE_SIDE_GAP });
+				setIsOutlineOpen(true);
 			} else {
-				const overlayWidth = Math.min(320, Math.max(200, Math.floor(window.innerWidth - 36)));
-				setOutlineMode("overlay");
-				setOutlineWidth(overlayWidth);
-				if (isMobileBarActive) {
-					setOutlinePosition({ bottom: 65, left: "50%", translateX: "-50%" });
-				} else {
-					setOutlinePosition({ top: Math.max(STICKY_TOP_OFFSET, articleTop), right: 18 });
-				}
-				if (!outlineUserToggledRef.current) {
-					setIsOutlineOpen(false);
-				}
+				// No space - hide the outline on smaller screens
+				setIsOutlineOpen(false);
 			}
 		};
 
@@ -130,7 +127,7 @@ export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPr
 		return () => {
 			window.removeEventListener("resize", updateMode);
 		};
-	}, [mounted, isMobileBarActive, articleRef]);
+	}, [mounted, articleRef]);
 
 	// Close outline during transitions
 	useEffect(() => {
@@ -146,35 +143,20 @@ export function useArticleOutline({ articleRef, mounted, isMobileBarActive, isPr
 		}
 	}, [isPreloaderDone]);
 
-	// Auto-open outline in side mode after preloader
-	useEffect(() => {
-		if (!isPreloaderDone || outlineUserToggledRef.current) return;
-		setIsOutlineOpen(outlineMode === "side");
-	}, [isPreloaderDone, outlineMode]);
-
-	const handleToggleOutline = useCallback(() => {
-		outlineUserToggledRef.current = true;
-		setIsOutlineOpen((prev) => !prev);
-	}, []);
-
 	const handleCloseOutline = useCallback(() => {
 		setIsOutlineOpen(false);
 	}, []);
 
-	const handleNavigateFromOutline = useCallback(() => {
-		if (outlineMode === "overlay") {
-			setIsOutlineOpen(false);
-		}
-	}, [outlineMode]);
+	// No-op since outline is persistent on left side (no overlay mode)
+	const handleNavigateFromOutline = useCallback(() => {}, []);
 
 	return {
 		outlineItems,
-		outlineMode,
+		outlineMode: "side" as const,
 		outlineWidth,
 		outlinePosition,
 		activeHeadingId,
 		isOutlineOpen,
-		handleToggleOutline,
 		handleCloseOutline,
 		handleNavigateFromOutline,
 	};

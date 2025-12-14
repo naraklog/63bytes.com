@@ -67,10 +67,11 @@ interface ElementHandlersProps {
 	isCursorLockedRef: React.RefObject<boolean>;
 	transitionActiveRef: React.RefObject<boolean>;
 	isScrollingRef: React.RefObject<boolean>;
+	isScrubbingRef: React.RefObject<boolean>;
 	enabled: boolean;
 }
 
-export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, enabled }: ElementHandlersProps) {
+export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, isScrubbingRef, enabled }: ElementHandlersProps) {
 	const currentHostRef = useRef<HTMLElement | null>(null);
 
 	const unlockAndReset = useCallback(() => {
@@ -109,11 +110,27 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 				rect = host.getBoundingClientRect();
 				currentHostRef.current = host;
 
+				// Check for override attributes
+				const overrideWidth = host.dataset.morphWidth;
+				const overrideHeight = host.dataset.morphHeight;
+				const morphAlign = host.dataset.morphAlign;
+
+				// Calculate cursor width and position
+				const cursorWidth = overrideWidth ? parseFloat(overrideWidth) : rect.width;
+				let cursorLeft = rect.left + rect.width / 2;
+
+				// Adjust position based on alignment
+				if (morphAlign === "right" && overrideWidth) {
+					cursorLeft = rect.right - cursorWidth / 2;
+				} else if (morphAlign === "left" && overrideWidth) {
+					cursorLeft = rect.left + cursorWidth / 2;
+				}
+
 				cursor.classList.add("is-locked");
 				cursor.style.setProperty("--cursor-top", `${rect.top + rect.height / 2}px`);
-				cursor.style.setProperty("--cursor-left", `${rect.left + rect.width / 2}px`);
-				cursor.style.setProperty("--cursor-width", `${rect.width}px`);
-				cursor.style.setProperty("--cursor-height", `${rect.height}px`);
+				cursor.style.setProperty("--cursor-left", `${cursorLeft}px`);
+				cursor.style.setProperty("--cursor-width", overrideWidth ?? `${rect.width}px`);
+				cursor.style.setProperty("--cursor-height", overrideHeight ?? `${rect.height}px`);
 			};
 
 			const handleMouseMove = (e: MouseEvent) => {
@@ -132,6 +149,9 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 			};
 
 			const handleMouseLeave = () => {
+				// Skip reset while scrubbing - cursor should maintain morph state during drag
+				if (isScrubbingRef.current) return;
+
 				isCursorLockedRef.current = false;
 				rect = null;
 				if (currentHostRef.current === host) {
@@ -273,7 +293,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 			interactiveCleanupMap.forEach((cleanup) => cleanup());
 			textCleanupMap.forEach((cleanup) => cleanup());
 		};
-	}, [cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, enabled]);
+	}, [cursorRef, isCursorLockedRef, transitionActiveRef, isScrollingRef, isScrubbingRef, enabled]);
 
 	return { unlockAndReset };
 }
@@ -282,11 +302,12 @@ interface ScrollMonitorProps {
 	unlockAndReset: () => void;
 	isScrollingRef: React.RefObject<boolean>;
 	transitionActiveRef: React.RefObject<boolean>;
+	isScrubbingRef: React.RefObject<boolean>;
 	lastPointerRef: React.RefObject<{ x: number; y: number } | null>;
 	enabled: boolean;
 }
 
-export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef, enabled }: ScrollMonitorProps) {
+export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionActiveRef, isScrubbingRef, lastPointerRef, enabled }: ScrollMonitorProps) {
 	useEffect(() => {
 		if (!enabled) return;
 		let scrollTimeoutId: number | null = null;
@@ -294,7 +315,7 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 		let rafId: number | null = null;
 
 		const reapplyHoverStateUnderPointer = () => {
-			if (isScrollingRef.current || transitionActiveRef.current || !lastPointerRef.current) return;
+			if (isScrollingRef.current || transitionActiveRef.current || isScrubbingRef.current || !lastPointerRef.current) return;
 			const { x, y } = lastPointerRef.current;
 			const el = document.elementFromPoint(x, y);
 			if (!el) return;
@@ -310,6 +331,9 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 		};
 
 		const handleScroll = () => {
+			// Skip scroll handling while scrubbing (scrubbing controls its own cursor state)
+			if (isScrubbingRef.current) return;
+
 			// Mark as scrolling and reset any morph state
 			if (!isScrollingRef.current) {
 				isScrollingRef.current = true;
@@ -336,6 +360,12 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 		const MOVE_EPSILON = 0.2;
 
 		const sampleMotion = (now: number) => {
+			// Skip motion sampling while scrubbing
+			if (isScrubbingRef.current) {
+				rafId = window.requestAnimationFrame(sampleMotion);
+				return;
+			}
+
 			const currentWindowY = window.scrollY;
 			const currentContentTop = smoothContent ? smoothContent.getBoundingClientRect().top : 0;
 			const windowMoved = Math.abs(currentWindowY - lastWindowY) > MOVE_EPSILON;
@@ -375,13 +405,26 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 			reapplyHoverStateUnderPointer();
 		};
 
+		// Scrub listeners - prevent cursor reset while scrubbing scroll wheel
+		const handleScrubStart = () => {
+			isScrubbingRef.current = true;
+		};
+
+		const handleScrubEnd = () => {
+			isScrubbingRef.current = false;
+		};
+
 		window.addEventListener("app:transition-start", handleTransitionStart);
 		window.addEventListener("app:transition-end", handleTransitionEnd);
+		window.addEventListener("app:scrub-start", handleScrubStart);
+		window.addEventListener("app:scrub-end", handleScrubEnd);
 
 		return () => {
 			window.removeEventListener("scroll", handleScroll, { capture: true } as AddEventListenerOptions);
 			window.removeEventListener("app:transition-start", handleTransitionStart);
 			window.removeEventListener("app:transition-end", handleTransitionEnd);
+			window.removeEventListener("app:scrub-start", handleScrubStart);
+			window.removeEventListener("app:scrub-end", handleScrubEnd);
 			if (rafId) {
 				window.cancelAnimationFrame(rafId);
 			}
@@ -389,5 +432,5 @@ export function useScrollMonitor({ unlockAndReset, isScrollingRef, transitionAct
 				window.clearTimeout(scrollTimeoutId);
 			}
 		};
-	}, [unlockAndReset, isScrollingRef, transitionActiveRef, lastPointerRef, enabled]);
+	}, [unlockAndReset, isScrollingRef, transitionActiveRef, isScrubbingRef, lastPointerRef, enabled]);
 }

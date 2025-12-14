@@ -1,16 +1,15 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { TreeViewIcon, XIcon } from "@phosphor-icons/react";
+import { TreeViewIcon } from "@phosphor-icons/react";
 import type { OutlineItem, OutlinePosition } from "./constants";
 import { useSound } from "../../../context/SoundContext";
 
 type OutlinePanelProps = {
 	isOpen: boolean;
-	mode: "side" | "overlay";
+	mode: "side";
 	width: number;
 	position: OutlinePosition;
-	useHighlightBackground: boolean;
 	borderClass: string;
 	textClass: string;
 	items: OutlineItem[];
@@ -20,57 +19,30 @@ type OutlinePanelProps = {
 	isDarkMode: boolean;
 };
 
-export default function OutlinePanel({ isOpen, mode, width, position, useHighlightBackground, borderClass, textClass, items, activeId, onClose, onNavigate, isDarkMode }: OutlinePanelProps) {
+export default function OutlinePanel({ isOpen, width, position, borderClass, textClass, items, activeId, onNavigate, isDarkMode }: OutlinePanelProps) {
 	const { playSound } = useSound();
 
 	if (!isOpen || !items.length) return null;
 
-	const blurClass = useHighlightBackground ? "backdrop-blur-lg" : "backdrop-blur-sm";
-	const baseClasses = [
-		"border",
-		borderClass,
-		textClass,
-		blurClass,
-		useHighlightBackground ? "" : isDarkMode ? "bg-black/85" : "bg-white/80",
-		mode === "overlay" ? (isDarkMode ? "shadow-2xl" : "shadow-[0_12px_50px_rgba(0,0,0,0.12)]") : "",
-	]
-		.filter(Boolean)
-		.join(" ");
+	const baseClasses = ["border", borderClass, textClass, "backdrop-blur-sm", isDarkMode ? "bg-black/85" : "bg-white/80"].filter(Boolean).join(" ");
 
-	const { top, right, bottom, left, translateX } = position;
-	const highlightBg = isDarkMode ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.8)";
+	const { top, left } = position;
 
 	const aside = (
 		<aside
 			className={`fixed z-90 flex flex-col gap-3 ${baseClasses}`}
 			style={{
 				top: typeof top === "number" ? top : undefined,
-				right: typeof right === "number" ? right : undefined,
 				left: typeof left === "number" || typeof left === "string" ? left : undefined,
-				bottom: typeof bottom === "number" ? bottom : undefined,
-				transform: translateX ? `translateX(${translateX})` : undefined,
 				width,
-				maxHeight: mode === "side" ? "72vh" : "70vh",
-				backgroundColor: useHighlightBackground ? highlightBg : undefined,
+				maxHeight: "72vh",
 			}}
 		>
-			<div className="flex items-center justify-between gap-2 px-4 pt-3">
+			<div className="flex items-center gap-2 px-4 pt-3">
 				<div className="flex items-center gap-2 font-semi-mono text-[0.75rem] uppercase tracking-[0.16em]">
 					<TreeViewIcon size={16} weight="duotone" aria-hidden="true" />
 					On This Page
 				</div>
-				<button
-					type="button"
-					onClick={() => {
-						playSound("click");
-						onClose();
-					}}
-					onMouseEnter={() => playSound("hover")}
-					className="flex items-center gap-1 text-xs font-mono uppercase tracking-tight opacity-80 transition-opacity"
-					aria-label="Close outline"
-				>
-					<XIcon size={16} aria-hidden="true" />
-				</button>
 			</div>
 			<div className="flex-1 overflow-y-auto px-2 pb-2">
 				<nav aria-label="Page outline">
