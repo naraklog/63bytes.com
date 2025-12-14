@@ -6,6 +6,7 @@ interface UseScrollDirectionOptions {
 	threshold?: number;
 	downThreshold?: number;
 	upThreshold?: number;
+	disabled?: boolean;
 }
 
 export function useScrollDirection(options: UseScrollDirectionOptions = {}) {
@@ -14,8 +15,11 @@ export function useScrollDirection(options: UseScrollDirectionOptions = {}) {
 	const threshold = options.threshold ?? 10;
 	const downThreshold = options.downThreshold ?? threshold;
 	const upThreshold = options.upThreshold ?? threshold;
+	const disabled = options.disabled ?? false;
 
 	useEffect(() => {
+		if (disabled) return;
+
 		let lastScrollY = window.scrollY;
 		let ticking = false;
 
@@ -51,7 +55,7 @@ export function useScrollDirection(options: UseScrollDirectionOptions = {}) {
 		window.addEventListener("scroll", onScroll);
 
 		return () => window.removeEventListener("scroll", onScroll);
-	}, [downThreshold, upThreshold]);
+	}, [downThreshold, upThreshold, disabled]);
 
 	const setDirection = useCallback((direction: "up" | "down") => {
 		setScrollDirection(direction);

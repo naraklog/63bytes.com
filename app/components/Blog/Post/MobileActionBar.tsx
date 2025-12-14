@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { HouseIcon, MoonIcon, SunIcon, DotsThreeOutlineIcon, BooksIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import TransitionLink from "../../TransitionLink";
@@ -20,12 +20,23 @@ type MobileActionBarProps = {
 const ICON_SIZE = 18;
 
 function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, onToggleTheme, onToggleProgressWheel }: MobileActionBarProps) {
-	const { scrollDirection, setScrollDirection } = useScrollDirection({ upThreshold: 100 });
+	const { scrollDirection } = useScrollDirection({ upThreshold: 100, disabled: isProgressWheelVisible });
 	const { playSound, isMuted, toggleMute } = useSound();
 	const isMobile = useMediaQuery("(max-width: 767px)");
 	const isFirstRender = useRef(true);
+	// Manual expand override when progress wheel is visible
+	const [manualExpanded, setManualExpanded] = useState(false);
 
-	const isCollapsed = scrollDirection === "down";
+	// Reset manual expand state when progress wheel becomes visible
+	useEffect(() => {
+		if (isProgressWheelVisible) {
+			setManualExpanded(false);
+		}
+	}, [isProgressWheelVisible]);
+
+	// When progress wheel is active: collapsed unless manually expanded
+	// Otherwise: use scroll direction
+	const isCollapsed = isProgressWheelVisible ? !manualExpanded : scrollDirection === "down";
 
 	// Play sound when collapsed state changes (but not on initial render)
 	useEffect(() => {
@@ -65,7 +76,13 @@ function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, 
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.15, layout: { duration: 0 } }}
 								className="px-1.75"
-								onClick={() => setScrollDirection("up")}
+								onClick={() => {
+									if (isProgressWheelVisible) {
+										setManualExpanded(true);
+									} else {
+										setManualExpanded(true);
+									}
+								}}
 								onMouseEnter={() => playSound("hover")}
 								aria-label="Expand menu"
 							>
