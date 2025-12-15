@@ -268,7 +268,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 								</div>
 								{/* Section label */}
 								<span
-									className={`absolute right-12 text-sm font-mono whitespace-nowrap truncate max-w-40 transition-all duration-200 pointer-events-none ${
+									className={`absolute right-12 text-sm uppercase font-mono whitespace-nowrap truncate max-w-40 transition-all duration-200 pointer-events-none ${
 										section.level === 3 ? "text-[10px] group-hover:text-sm" : ""
 									} ${isActive ? "opacity-100 font-medium" : isAbove ? "opacity-30" : "opacity-50"} ${!isActive ? "text-xs group-hover:text-sm" : ""}`}
 								>
