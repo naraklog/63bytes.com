@@ -104,8 +104,12 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 	// Generate 100 ticks for 1% intervals
 	const ticks = Array.from({ length: 101 }, (_, i) => i);
 
-	// Check if current position overlaps with a section marker
-	const isAtSectionMarker = sections?.some((section) => Math.round(section.position * 100) === roundedProgress) ?? false;
+	// Check if current position is near a section marker (within 3 ticks)
+	const isNearSectionMarker =
+		sections?.some((section) => {
+			const sectionPercent = Math.round(section.position * 100);
+			return Math.abs(sectionPercent - roundedProgress) <= 2;
+		}) ?? false;
 
 	const handleInteractionStart = (y: number, rect: DOMRect) => {
 		isDragging.current = true;
@@ -291,8 +295,8 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 						/>
 					</div>
 
-					{/* Floating active label - hidden when at a section marker */}
-					{!isAtSectionMarker && (
+					{/* Floating active label - hidden when near a section marker */}
+					{!isNearSectionMarker && (
 						<motion.div
 							className="absolute right-12 pointer-events-none"
 							style={{ top: `${roundedProgress}%`, transform: "translateY(-50%)" }}
