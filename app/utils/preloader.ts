@@ -1,9 +1,15 @@
 const STORAGE_KEY = "app:preloader-complete";
+const EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 1 week
 
 export const hasPreloaderRun = () => {
 	if (typeof window === "undefined") return false;
 	try {
-		return window.sessionStorage.getItem(STORAGE_KEY) === "true";
+		const timestamp = window.localStorage.getItem(STORAGE_KEY);
+		if (!timestamp) return false;
+		const elapsed = Date.now() - Number(timestamp);
+		if (elapsed < EXPIRY_MS) return true;
+		window.localStorage.removeItem(STORAGE_KEY);
+		return false;
 	} catch {
 		return false;
 	}
@@ -12,9 +18,9 @@ export const hasPreloaderRun = () => {
 export const markPreloaderComplete = () => {
 	if (typeof window === "undefined") return;
 	try {
-		window.sessionStorage.setItem(STORAGE_KEY, "true");
+		window.localStorage.setItem(STORAGE_KEY, Date.now().toString());
 	} catch {
-		// Ignore sessionStorage failures (e.g. Safari private mode)
+		// Ignore localStorage failures (e.g. Safari private mode)
 	}
 };
 
