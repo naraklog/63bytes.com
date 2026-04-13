@@ -35,7 +35,7 @@ export const BLOG_FONT_FAMILY = "var(--font-fixel-text), var(--font-sans), serif
 export const THEME_PRESETS = {
 	light: {
 		main: "bg-foreground text-black",
-		articleSurface: "border-light-gray/15 bg-foreground",
+		articleSurface: "border-light-gray/15 bg-[#ffffff]",
 		gridLine: "border-light-gray/10",
 		heading: "text-black",
 		muted: "text-light-gray",
@@ -53,7 +53,7 @@ export const THEME_PRESETS = {
 	},
 	dark: {
 		main: "bg-background text-off-white",
-		articleSurface: "border-light-gray/30 bg-black/70",
+		articleSurface: "border-light-gray/30 bg-white/5",
 		gridLine: "border-light-gray/25",
 		heading: "text-off-white",
 		muted: "text-off-white/65",

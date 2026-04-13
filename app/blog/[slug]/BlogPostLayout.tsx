@@ -11,6 +11,7 @@ import PixelIconDisplay from "../../components/Blog/DotMatrixIcon";
 import { ScrollProgressWheel } from "../../components/Blog/ScrollProgressWheel";
 import Dither from "../../components/Dither";
 import { resolvePhosphorIcon } from "../../utils/icons";
+import { formatShortDate } from "../../utils/date";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
@@ -200,7 +201,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 						<div ref={articleRef} className="ul-cross w-full">
 							<article
 								data-code-theme={isDarkMode ? "dark" : "light"}
-								className={`relative border ${theme.articleSurface} px-6 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-4 lg:px-24 lg:pt-20 lg:pb-8`}
+								className={`relative border ${theme.articleSurface} px-8 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-4 lg:px-32 lg:pt-20 lg:pb-8`}
 							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
@@ -301,28 +302,32 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 										{metadata.authors.length ? (
 											<AuthorsList
 												authors={metadata.authors}
-												prefix="By "
+												prefix=" "
 												className={`text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-center ${theme.muted}`}
 												linkClassName={`${theme.muted} underline decoration-dotted underline-offset-4 transition-colors`}
 												onLinkHover={() => playSound("hover")}
 												onLinkClick={() => playSound("click")}
 											/>
 										) : null}
-										<div className={`w-full flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
-											<span className="inline-flex items-center gap-1.5 sm:gap-2">
-												<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
-												{readTimeLabel}
-											</span>
-											<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
-											<time className={`w-full sm:w-auto sm:ml-auto text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] ${theme.muted}`} dateTime={metadata.dateTime}>
-												{formattedDate}
-											</time>
-										</div>
-										{metadata.intro ? <p className={`w-full text-sm sm:text-[0.9375rem] leading-relaxed tracking-[-0.025em] ${theme.content}`}>{metadata.intro}</p> : null}
+									<div className={`w-full flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
+										<span className="inline-flex items-center gap-1.5 sm:gap-2 shrink-0">
+											<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
+											<span className="sm:hidden">{readTimeLabel.replace(/ read$/i, "")}</span>
+											<span className="hidden sm:inline">{readTimeLabel}</span>
+										</span>
+										<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
+										<time className={`ml-auto text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] shrink-0 ${theme.muted}`} dateTime={metadata.dateTime}>
+											<span className="sm:hidden">{formatShortDate(metadata.dateTime)}</span>
+											<span className="hidden sm:inline">{formattedDate}</span>
+										</time>
+									</div>
+										{metadata.intro ? (
+											<p className={`w-full text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] ${theme.content}`}>{metadata.intro}</p>
+										) : null}
 									</header>
 
 									<div
-										className={`mt-3 text-sm sm:text-[0.9375rem] leading-relaxed tracking-[-0.025em] space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h2]:font-fixel-display [&>h2]:tracking-[-0.03em] [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&>h3]:font-fixel-display [&>h3]:tracking-[-0.03em] [&>h4]:font-fixel-display [&>h4]:tracking-[-0.03em] [&>h5]:font-fixel-display [&>h5]:tracking-[-0.03em] [&>h6]:font-fixel-display [&>h6]:tracking-[-0.03em] [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_a]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
+										className={`mt-3 text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h2]:font-fixel-display [&>h2]:tracking-[-0.03em] [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&>h3]:font-fixel-display [&>h3]:tracking-[-0.03em] [&>h4]:font-fixel-display [&>h4]:tracking-[-0.03em] [&>h5]:font-fixel-display [&>h5]:tracking-[-0.03em] [&>h6]:font-fixel-display [&>h6]:tracking-[-0.03em] [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_a]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
 									</div>
@@ -379,7 +384,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 					</div>
 				</div>
 
-							{mounted && !isTransitioning && isPreloaderDone && (
+				{mounted && !isTransitioning && isPreloaderDone && (
 					<>
 						{isProgressWheelVisible && (
 							<ScrollProgressWheel onScrub={handleScrub} onClose={handleToggleProgressWheel} isDarkMode={isDarkMode} theme={{ bg: theme.main }} sections={sectionsWithPositions} />
