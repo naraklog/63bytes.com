@@ -201,7 +201,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 						<div ref={articleRef} className="ul-cross w-full">
 							<article
 								data-code-theme={isDarkMode ? "dark" : "light"}
-								className={`relative border ${theme.articleSurface} px-8 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-4 lg:px-32 lg:pt-20 lg:pb-8`}
+								className={`relative border ${theme.articleSurface} px-8 pt-0 pb-6 sm:px-12 sm:pt-10 sm:pb-4 lg:px-36 lg:pt-20 lg:pb-8`}
 							>
 								<div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3 pointer-events-none select-none">
 									<div className={`hidden lg:block border-r border-dashed ${theme.gridLine}`} />
@@ -309,18 +309,18 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												onLinkClick={() => playSound("click")}
 											/>
 										) : null}
-									<div className={`w-full flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
-										<span className="inline-flex items-center gap-1.5 sm:gap-2 shrink-0">
-											<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
-											<span className="sm:hidden">{readTimeLabel.replace(/ read$/i, "")}</span>
-											<span className="hidden sm:inline">{readTimeLabel}</span>
-										</span>
-										<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
-										<time className={`ml-auto text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] shrink-0 ${theme.muted}`} dateTime={metadata.dateTime}>
-											<span className="sm:hidden">{formatShortDate(metadata.dateTime)}</span>
-											<span className="hidden sm:inline">{formattedDate}</span>
-										</time>
-									</div>
+										<div className={`w-full flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
+											<span className="inline-flex items-center gap-1.5 sm:gap-2 shrink-0">
+												<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
+												<span className="sm:hidden">{readTimeLabel.replace(/ read$/i, "")}</span>
+												<span className="hidden sm:inline">{readTimeLabel}</span>
+											</span>
+											<CopyLinkButton href={metadata.href} variant={theme.copyVariant} />
+											<time className={`ml-auto text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] shrink-0 ${theme.muted}`} dateTime={metadata.dateTime}>
+												<span className="sm:hidden">{formatShortDate(metadata.dateTime)}</span>
+												<span className="hidden sm:inline">{formattedDate}</span>
+											</time>
+										</div>
 										{metadata.intro ? (
 											<p className={`w-full text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] ${theme.content}`}>{metadata.intro}</p>
 										) : null}
