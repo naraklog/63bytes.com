@@ -14,7 +14,7 @@ import { resolvePhosphorIcon } from "../../utils/icons";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
-import { OutlinePanel, MobileActionBar, SocialLinkItem, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
+import { MobileActionBar, SocialLinkItem, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
 import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
@@ -51,7 +51,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	});
 	const userToggledWheel = useRef(false);
 
-	const { outlineItems, outlineMode, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
+	const { outlineItems } = useArticleOutline({
 		articleRef,
 		mounted,
 		isMobileBarActive,
@@ -295,14 +295,9 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												alignY="bottom"
 											/>
 										</div>
-										<span
-											className={`border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide ${
-												isDarkMode ? "text-black/80 bg-white/90" : "text-white/80 bg-black/90"
-											}`}
-										>
-											{metadata.category}
-										</span>
-										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center ${theme.heading}`}>{metadata.label}</h1>
+										<h1 className={`text-[1.75rem] sm:text-4xl md:text-5xl leading-tight font-semibold text-center font-fixel-display tracking-[-0.03em] ${theme.heading}`}>
+											{metadata.label}
+										</h1>
 										{metadata.authors.length ? (
 											<AuthorsList
 												authors={metadata.authors}
@@ -323,11 +318,11 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												{formattedDate}
 											</time>
 										</div>
-										{metadata.intro ? <p className={`w-full text-[0.9375rem] sm:text-base leading-relaxed ${theme.content}`}>{metadata.intro}</p> : null}
+										{metadata.intro ? <p className={`w-full text-sm sm:text-[0.9375rem] leading-relaxed tracking-[-0.025em] ${theme.content}`}>{metadata.intro}</p> : null}
 									</header>
 
 									<div
-										className={`mt-3 text-[0.9375rem] sm:text-base leading-relaxed space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
+										className={`mt-3 text-sm sm:text-[0.9375rem] leading-relaxed tracking-[-0.025em] space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h2]:font-fixel-display [&>h2]:tracking-[-0.03em] [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&>h3]:font-fixel-display [&>h3]:tracking-[-0.03em] [&>h4]:font-fixel-display [&>h4]:tracking-[-0.03em] [&>h5]:font-fixel-display [&>h5]:tracking-[-0.03em] [&>h6]:font-fixel-display [&>h6]:tracking-[-0.03em] [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_a]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
 									</div>
@@ -384,23 +379,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 					</div>
 				</div>
 
-				{mounted && outlineItems.length && !isTransitioning && isPreloaderDone ? (
-					<OutlinePanel
-						isOpen={isOutlineOpen}
-						mode={outlineMode}
-						width={outlineWidth}
-						position={outlinePosition}
-						borderClass={theme.outlineBorder}
-						textClass={theme.outlineText}
-						items={outlineItems}
-						activeId={activeHeadingId}
-						onClose={handleCloseOutline}
-						onNavigate={handleNavigateFromOutline}
-						isDarkMode={isDarkMode}
-					/>
-				) : null}
-
-				{mounted && !isTransitioning && isPreloaderDone && (
+							{mounted && !isTransitioning && isPreloaderDone && (
 					<>
 						{isProgressWheelVisible && (
 							<ScrollProgressWheel onScrub={handleScrub} onClose={handleToggleProgressWheel} isDarkMode={isDarkMode} theme={{ bg: theme.main }} sections={sectionsWithPositions} />

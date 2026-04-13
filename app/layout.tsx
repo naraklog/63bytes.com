@@ -141,6 +141,98 @@ const roobertMono = localFont({
 	variable: "--font-roobert-mono",
 });
 
+const fixelDisplay = localFont({
+	src: [
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-Regular.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-RegularItalic.woff2",
+			weight: "400",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-Medium.woff2",
+			weight: "500",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-MediumItalic.woff2",
+			weight: "500",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-SemiBold.woff2",
+			weight: "600",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-SemiBoldItalic.woff2",
+			weight: "600",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-Bold.woff2",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelDisplay/FixelDisplay-BoldItalic.woff2",
+			weight: "700",
+			style: "italic",
+		},
+	],
+	variable: "--font-fixel-display",
+});
+
+const fixelText = localFont({
+	src: [
+		{
+			path: "../public/fonts/FixelText/FixelText-Regular.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-RegularItalic.woff2",
+			weight: "400",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-Medium.woff2",
+			weight: "500",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-MediumItalic.woff2",
+			weight: "500",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-SemiBold.woff2",
+			weight: "600",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-SemiBoldItalic.woff2",
+			weight: "600",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-Bold.woff2",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/FixelText/FixelText-BoldItalic.woff2",
+			weight: "700",
+			style: "italic",
+		},
+	],
+	variable: "--font-fixel-text",
+});
+
 const roobertSemiMono = localFont({
 	src: [
 		{
@@ -231,8 +323,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} antialiased`}>
+		<html lang="en" className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} ${fixelDisplay.variable} ${fixelText.variable}`}>
+			<body className="antialiased">
 				<CSPostHogProvider>
 					<PageTransitionProvider>
 						<SoundProvider>

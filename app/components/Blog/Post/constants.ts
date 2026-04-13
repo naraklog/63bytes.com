@@ -30,7 +30,7 @@ export const OUTLINE_SIDE_GAP = 28;
 export const OUTLINE_ARTICLE_GAP = 24; // Gap between outline right edge and article left edge (accounts for ul-cross decoration)
 export const OUTLINE_MIN_VIEWPORT_WIDTH = 1400;
 export const STICKY_TOP_OFFSET = 113;
-export const BLOG_FONT_FAMILY = "var(--font-semi-mono), var(--font-sans), sans-serif";
+export const BLOG_FONT_FAMILY = "var(--font-fixel-text), var(--font-sans), serif";
 
 export const THEME_PRESETS = {
 	light: {

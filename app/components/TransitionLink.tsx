@@ -12,7 +12,7 @@ type TransitionLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 	};
 
 const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>(function TransitionLink(
-	{ href, onClick, transitionLabel, children, target, prefetch = false, ...rest },
+	{ href, onClick, transitionLabel, children, target, prefetch, ...rest },
 	ref
 ) {
 	const { startTransition, isTransitioning } = usePageTransition();
