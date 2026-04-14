@@ -108,6 +108,12 @@
 html {
 	background: var(--background);
 	height: 100%;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+	display: none;
 }
 
 body {
@@ -225,7 +231,7 @@ body {
 /* Base pre styles */
 pre {
 	background-color: rgb(255 255 255 / 0.04);
-	border: 1px solid rgb(96 96 104 / 0.4);
+	border: 1px dashed oklch(0.465 0.015 280 / 0.4);
 	border-radius: 0;
 	margin: 1.5rem 0;
 	padding: 0.25rem 0;
@@ -264,7 +270,7 @@ pre.code-block {
 	display: inline-flex;
 	align-items: center;
 	padding: 0.4rem 0.6rem;
-	border: 1px solid rgb(96 96 104 / 0.35);
+	border: 1px solid oklch(0.465 0.015 280 / 0.2);
 	background: rgba(5, 5, 8, 0.85);
 	color: var(--foreground);
 	z-index: 2;
@@ -280,13 +286,13 @@ pre.code-block {
 [data-code-theme="light"] .code-copy-button {
 	background: var(--foreground);
 	color: var(--background);
-	border-color: rgb(5 5 8 / 0.2);
+	border-color: oklch(0.465 0.015 280 / 0.2);
 }
 
 [data-code-theme="dark"] .code-copy-button {
 	background: var(--background);
 	color: var(--foreground);
-	border-color: rgb(255 255 255 / 0.2);
+	border-color: rgb(255 255 255 / 0.3);
 }
 
 .code-copy-button[data-copied="true"] {
@@ -454,10 +460,12 @@ code[data-theme] span {
 /* Theme-specific pre backgrounds */
 [data-code-theme="light"] pre {
 	background-color: var(--color-foreground, #fafafa);
+	border-color: oklch(0.465 0.015 280 / 0.25);
 }
 
 [data-code-theme="dark"] pre {
 	background-color: var(--color-black, #050508);
+	border-color: oklch(0.465 0.015 280 / 0.4);
 }
 
 /* Pixel blink animation for loading indicator */
@@ -636,7 +644,7 @@ button:active,
 	gap: 0.5rem;
 	padding: 0.5rem 0.75rem;
 	background-color: var(--foreground);
-	border: 1px solid rgb(96 96 104 / 0.4);
+	border: 1px dashed oklch(0.465 0.015 280 / 0.4);
 	border-radius: 0;
 	font-size: 0.8rem;
 	font-weight: 600;
@@ -651,12 +659,14 @@ button:active,
 [data-code-theme="light"] [data-rehype-pretty-code-title] {
 	color: var(--color-off-white);
 	background-color: var(--color-black, #050508);
+	border-color: oklch(0.465 0.015 280 / 0.25);
 }
 
 [data-code-theme="dark"] .rehype-code-title,
 [data-code-theme="dark"] [data-rehype-pretty-code-title] {
 	color: var(--color-black);
 	background-color: var(--color-off-white);
+	border-color: oklch(0.465 0.015 280 / 0.4);
 }
 
 .rehype-code-title::after,
