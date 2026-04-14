@@ -54,6 +54,7 @@
 	--font-semi-mono: var(--font-roobert-semi-mono);
 	--font-fixel-display: var(--font-fixel-display);
 	--font-fixel-text: var(--font-fixel-text);
+	--font-departure-mono: var(--font-departure-mono);
 }
 
 @theme inline {

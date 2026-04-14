@@ -299,6 +299,13 @@ const roobertSemiMono = localFont({
 	variable: "--font-roobert-semi-mono",
 });
 
+const departureMono = localFont({
+	src: "../public/fonts/DepartureMono-Regular.woff2",
+	weight: "400",
+	style: "normal",
+	variable: "--font-departure-mono",
+});
+
 export const metadata: Metadata = {
 	title: {
 		default: "63bytes",
@@ -323,7 +330,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} ${fixelDisplay.variable} ${fixelText.variable}`}>
+		<html lang="en" className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} ${fixelDisplay.variable} ${fixelText.variable} ${departureMono.variable}`}>
 			<body className="antialiased">
 				<CSPostHogProvider>
 					<PageTransitionProvider>

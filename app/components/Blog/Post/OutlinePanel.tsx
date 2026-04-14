@@ -24,29 +24,28 @@ export default function OutlinePanel({ isOpen, width, position, borderClass, tex
 
 	if (!isOpen || !items.length) return null;
 
-	const baseClasses = ["border", borderClass, textClass, "backdrop-blur-sm", isDarkMode ? "bg-black/85" : "bg-white/80"].filter(Boolean).join(" ");
-
 	const { top, left } = position;
+
+	const separatorClass = isDarkMode ? "border-white/10" : "border-black/10";
 
 	const aside = (
 		<aside
-			className={`fixed z-90 flex flex-col gap-3 ${baseClasses}`}
+			data-no-morph
+			className={`fixed inset-y-0 z-90 flex flex-col ${textClass} border-r ${separatorClass}`}
 			style={{
-				top: typeof top === "number" ? top : undefined,
 				left: typeof left === "number" || typeof left === "string" ? left : undefined,
 				width,
-				maxHeight: "72vh",
 			}}
 		>
-			<div className="flex items-center gap-2 px-4 pt-3">
+			<div className="flex items-center gap-2 px-4 pb-3" style={{ paddingTop: typeof top === "number" ? top : undefined }}>
 				<div className="flex items-center gap-2 font-semi-mono text-[0.75rem] uppercase tracking-[0.16em]">
 					<TreeViewIcon size={16} weight="duotone" aria-hidden="true" />
 					On This Page
 				</div>
 			</div>
-			<div className="flex-1 overflow-y-auto px-2 pb-2">
+			<div className="flex-1 overflow-y-auto px-2">
 				<nav aria-label="Page outline">
-					<ul className="flex flex-col gap-1.5 text-sm">
+					<ul className="flex flex-col gap-1.5 font-mono uppercase">
 						{items.map((item) => {
 							const isActive = item.id === activeId;
 							return (
@@ -58,9 +57,9 @@ export default function OutlinePanel({ isOpen, width, position, borderClass, tex
 											onNavigate();
 										}}
 										onMouseEnter={() => playSound("hover")}
-										className={`group flex items-center gap-2 px-2 py-1.5 leading-snug transition-colors ${item.level === 3 ? "pl-6 text-[0.9em]" : "pl-2"} ${
-											isActive ? (isDarkMode ? "text-white" : "text-black") : "opacity-80"
-										}`}
+									className={`group flex items-center gap-2 px-2 py-1.5 leading-snug transition-colors ${item.level === 3 ? "pl-6" : "pl-2"} ${
+										isActive ? `font-medium text-[10px] xl:text-xs 2xl:text-sm ${isDarkMode ? "text-white" : "text-black"}` : `text-[9px] xl:text-[10px] 2xl:text-xs opacity-80`
+									}`}
 									>
 										<span
 											className={`font-mono text-xs transition-all duration-200 ${
@@ -68,7 +67,7 @@ export default function OutlinePanel({ isOpen, width, position, borderClass, tex
 											}`}
 											aria-hidden="true"
 										>
-											+
+											{item.level === 3 ? "–" : "+"}
 										</span>
 										<span className="block overflow-hidden text-ellipsis">{item.title}</span>
 									</a>

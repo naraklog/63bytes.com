@@ -15,7 +15,7 @@ import { formatShortDate } from "../../utils/date";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
-import { MobileActionBar, SocialLinkItem, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
+import { MobileActionBar, SocialLinkItem, OutlinePanel, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
 import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
@@ -52,7 +52,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	});
 	const userToggledWheel = useRef(false);
 
-	const { outlineItems } = useArticleOutline({
+	const { outlineItems, outlineWidth, outlinePosition, activeHeadingId, isOutlineOpen, handleCloseOutline, handleNavigateFromOutline } = useArticleOutline({
 		articleRef,
 		mounted,
 		isMobileBarActive,
@@ -303,15 +303,15 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 											<AuthorsList
 												authors={metadata.authors}
 												prefix=" "
-												className={`text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-center ${theme.muted}`}
+												className={`text-xs uppercase tracking-[0.2em] text-center font-departure-mono ${theme.muted}`}
 												linkClassName={`${theme.muted} underline decoration-dotted underline-offset-4 transition-colors`}
 												onLinkHover={() => playSound("hover")}
 												onLinkClick={() => playSound("click")}
 											/>
 										) : null}
-										<div className={`w-full flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${theme.muted}`}>
+										<div className={`w-full flex items-center gap-2 sm:gap-3 text-[0.65rem] sm:text-xs ${theme.muted}`}>
 											<span className="inline-flex items-center gap-1.5 sm:gap-2 shrink-0">
-												<ClockFading className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} aria-hidden="true" />
+												<ClockFading className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={1.5} aria-hidden="true" />
 												<span className="sm:hidden">{readTimeLabel.replace(/ read$/i, "")}</span>
 												<span className="hidden sm:inline">{readTimeLabel}</span>
 											</span>
@@ -386,8 +386,28 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 
 				{mounted && !isTransitioning && isPreloaderDone && (
 					<>
+						<OutlinePanel
+							isOpen={isOutlineOpen}
+							mode="side"
+							width={outlineWidth}
+							position={outlinePosition}
+							borderClass={theme.outlineBorder}
+							textClass={theme.outlineText}
+							items={outlineItems}
+							activeId={activeHeadingId}
+							onClose={handleCloseOutline}
+							onNavigate={handleNavigateFromOutline}
+							isDarkMode={isDarkMode}
+						/>
 						{isProgressWheelVisible && (
-							<ScrollProgressWheel onScrub={handleScrub} onClose={handleToggleProgressWheel} isDarkMode={isDarkMode} theme={{ bg: theme.main }} sections={sectionsWithPositions} />
+							<ScrollProgressWheel
+								onScrub={handleScrub}
+								onClose={handleToggleProgressWheel}
+								isDarkMode={isDarkMode}
+								theme={{ bg: theme.main }}
+								sections={sectionsWithPositions}
+								labelsHidden={isOutlineOpen}
+							/>
 						)}
 						<MobileActionBar
 							isDarkMode={isDarkMode}

@@ -27,6 +27,7 @@ interface ScrollProgressWheelProps {
 		border?: string;
 	};
 	sections?: SectionMarker[];
+	labelsHidden?: boolean;
 }
 
 function getTickStep(): number {
@@ -39,7 +40,7 @@ function getTickStep(): number {
 
 const MIN_TICK_INTERVAL = 64;
 
-export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, sections }: ScrollProgressWheelProps) {
+export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, sections, labelsHidden }: ScrollProgressWheelProps) {
 	const [progress, setProgress] = useState(0);
 	const roundedProgress = Math.round(progress * 100);
 	const isDragging = useRef(false);
@@ -307,18 +308,26 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 					{sections?.length && <div className="absolute top-0 bottom-0 right-12 w-[500px] pointer-events-auto" style={{ zIndex: 999 }} />}
 
 					{/* Section labels — rendered separately so they don't extend the morph group's hover zone */}
-					{sections?.map((section) => {
+					{sections?.map((section, index) => {
 						const isActive = section.id === activeSection;
 						const sectionPercent = Math.round(section.position * 100);
 						const isAbove = sectionPercent < roundedProgress;
-						const isLabelExpanded = isWheelHovered || isActive || (isTouchDevice && expandedLabelId === section.id);
+					const isLabelExpanded = labelsHidden
+						? isWheelHovered || (isTouchDevice && expandedLabelId === section.id)
+						: isWheelHovered || isActive || (isTouchDevice && expandedLabelId === section.id);
 
-						return (
-							<motion.span
-								key={`label-${section.id}`}
-								className={`absolute right-12 uppercase font-mono whitespace-nowrap pointer-events-auto cursor-pointer ${
-									isActive ? "opacity-100 font-medium text-[10px] xl:text-xs 2xl:text-sm" : `text-[9px] xl:text-[10px] 2xl:text-xs ${isAbove ? "opacity-30" : "opacity-50"}`
-								}`}
+					const shouldHideLabel = labelsHidden && !isWheelHovered && !(isTouchDevice && expandedLabelId === section.id);
+
+					return (
+						<motion.span
+							key={`label-${section.id}`}
+							className={`absolute right-12 uppercase font-mono whitespace-nowrap pointer-events-auto cursor-pointer transition-opacity duration-200 ${
+								isActive ? "font-medium text-[10px] xl:text-xs 2xl:text-sm" : "text-[9px] xl:text-[10px] 2xl:text-xs"
+							} ${
+								shouldHideLabel
+									? "opacity-0"
+									: isActive ? "opacity-100" : isAbove ? "opacity-30" : "opacity-50"
+							}`}
 								onTouchStart={(e) => e.stopPropagation()}
 								onClick={isTouchDevice ? () => setExpandedLabelId((prev) => (prev === section.id ? null : section.id)) : undefined}
 								animate={{
@@ -331,6 +340,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 									zIndex: 1000,
 									overflow: "hidden",
 									textOverflow: "ellipsis",
+									transitionDelay: shouldHideLabel ? "0ms" : `${index * 40}ms`,
 								}}
 							>
 								{section.title}
@@ -351,8 +361,8 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 						/>
 					</div>
 
-					{/* Floating active label - hidden when near a section marker */}
-					{!isNearSectionMarker && (
+				{/* Floating active label - hidden when near a section marker (unless labels are hidden) */}
+				{(!isNearSectionMarker || (labelsHidden && !isWheelHovered)) && (
 						<motion.div
 							className="absolute right-12 pointer-events-none"
 							style={{ top: `${roundedProgress}%`, transform: "translateY(-50%)" }}

@@ -98,7 +98,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 
 		const setupInteractiveElement = (element: HTMLElement) => {
 			// Skip elements that opt-out of morph effect
-			if (element.hasAttribute("data-no-morph")) return () => {};
+			if (element.closest("[data-no-morph]")) return () => {};
 
 			let rect: DOMRect | null = null;
 			const host = element; // lock to the interactive element
