@@ -78,11 +78,10 @@ function MobileActionBar({ isDarkMode, hasOutlineItems, isProgressWheelVisible, 
 						{isCollapsed ? (
 							<motion.button
 								key="collapsed"
-								layout
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								transition={{ duration: 0.15, layout: { duration: 0 } }}
+								transition={{ duration: 0.15 }}
 								className="px-1.75"
 								onClick={handleExpand}
 								onMouseEnter={() => playSound("hover")}
