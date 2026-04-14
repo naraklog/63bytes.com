@@ -29,12 +29,27 @@ interface ScrollProgressWheelProps {
 	sections?: SectionMarker[];
 }
 
+function getTickStep(): number {
+	const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+	if (scrollable > 12000) return 1;
+	if (scrollable > 6000) return 2;
+	if (scrollable > 3000) return 5;
+	return 10;
+}
+
+const MIN_TICK_INTERVAL = 64;
+
 export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, sections }: ScrollProgressWheelProps) {
 	const [progress, setProgress] = useState(0);
 	const roundedProgress = Math.round(progress * 100);
 	const isDragging = useRef(false);
 	const { playSound } = useSound();
 	const prevProgressRef = useRef<number | null>(null);
+	const tickStepRef = useRef<number | null>(null);
+	const lastTickTimeRef = useRef(0);
+	const [isWheelHovered, setIsWheelHovered] = useState(false);
+	const [isTouchDevice, setIsTouchDevice] = useState(false);
+	const [expandedLabelId, setExpandedLabelId] = useState<string | null>(null);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -70,18 +85,27 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 		return () => window.removeEventListener("resize", checkOverlap);
 	}, []);
 
-	// Play tick sound on every 10% progress step
 	useEffect(() => {
-		const currentTenth = Math.floor(roundedProgress / 10);
-		// Skip initial render
-		if (prevProgressRef.current === null) {
-			prevProgressRef.current = currentTenth;
+		setIsTouchDevice(window.matchMedia("(hover: none)").matches);
+	}, []);
+
+	useEffect(() => {
+		const step = getTickStep();
+		const currentBucket = Math.floor(roundedProgress / step);
+
+		if (prevProgressRef.current === null || tickStepRef.current !== step) {
+			prevProgressRef.current = currentBucket;
+			tickStepRef.current = step;
 			return;
 		}
-		// Play tick when crossing a 10% boundary
-		if (prevProgressRef.current !== currentTenth) {
-			playSound("tick");
-			prevProgressRef.current = currentTenth;
+
+		if (prevProgressRef.current !== currentBucket) {
+			const now = performance.now();
+			if (now - lastTickTimeRef.current >= MIN_TICK_INTERVAL) {
+				playSound("tick");
+				lastTickTimeRef.current = now;
+			}
+			prevProgressRef.current = currentBucket;
 		}
 	}, [roundedProgress, playSound]);
 
@@ -113,6 +137,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 
 	const handleInteractionStart = (y: number, rect: DOMRect) => {
 		isDragging.current = true;
+		setExpandedLabelId(null);
 		window.dispatchEvent(new CustomEvent("app:scrub-start"));
 		const percentage = Math.max(0, Math.min(1, y / rect.height));
 		setProgress(percentage);
@@ -130,6 +155,8 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 		isDragging.current = false;
 		window.dispatchEvent(new CustomEvent("app:scrub-end"));
 	};
+
+	const expandedMaxWidth = typeof window !== "undefined" ? Math.min(500, window.innerWidth - 80) : 500;
 
 	// Calculate scale for magnification effect
 	const currentPercent = progress * 100;
@@ -159,6 +186,8 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 
 			<div
 				className="fixed right-4 top-[55%] -translate-y-1/2 h-[85%] flex flex-col items-end select-none z-50"
+				onMouseEnter={() => setIsWheelHovered(true)}
+				onMouseLeave={() => setIsWheelHovered(false)}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					const rect = e.currentTarget.getBoundingClientRect();
@@ -222,14 +251,14 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 							>
 								{/* Major ticks (10%) */}
 								{isMajor && (
-									<div data-morph data-morph-width="20px" data-morph-height="1px" data-morph-align="right" className="group py-2 w-32 flex items-center justify-end cursor-pointer">
+									<div data-morph data-morph-width="20px" data-morph-height="1px" data-morph-align="right" className="group py-2 w-12 flex items-center justify-end cursor-pointer relative after:content-[''] after:absolute after:top-0 after:bottom-0 after:-right-4 after:w-4">
 										<div className={`h-px bg-current w-4 transition-all duration-300 group-hover:opacity-0 ${isAbove ? "opacity-25" : "opacity-60"}`} />
 									</div>
 								)}
 
 								{/* Minor ticks (1%) - Visual only */}
 								{isMinor && (
-									<div data-morph data-morph-width="12px" data-morph-height="1px" data-morph-align="right" className="group py-2 w-32 flex items-center justify-end cursor-pointer">
+									<div data-morph data-morph-width="12px" data-morph-height="1px" data-morph-align="right" className="group py-2 w-12 flex items-center justify-end cursor-pointer relative after:content-[''] after:absolute after:top-0 after:bottom-0 after:-right-4 after:w-4">
 										<div className={`h-px bg-current w-2 transition-all duration-300 group-hover:opacity-0 ${isAbove ? "opacity-10" : "opacity-25"}`} />
 									</div>
 								)}
@@ -259,7 +288,7 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 									data-morph-width={isActive ? "32px" : "20px"}
 									data-morph-height="1px"
 									data-morph-align="right"
-									className="py-4 w-64 flex items-center justify-end cursor-pointer"
+									className="py-4 w-12 flex items-center justify-end cursor-pointer relative after:content-[''] after:absolute after:top-0 after:bottom-0 after:-right-4 after:w-4"
 								>
 									<motion.div
 										className="h-px bg-current group-hover:opacity-0"
@@ -270,15 +299,42 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 										transition={{ type: "spring", stiffness: 400, damping: 25 }}
 									/>
 								</div>
-								{/* Section label */}
-								<span
-									className={`absolute right-12 text-base uppercase font-mono whitespace-nowrap truncate max-w-40 transition-all duration-200 pointer-events-none ${
-										section.level === 3 ? "group-hover:text-sm" : ""
-									} ${isActive ? "opacity-100 font-medium" : isAbove ? "opacity-30" : "opacity-50"} ${!isActive ? "text-sm group-hover:text-base" : ""}`}
-								>
-									{section.title}
-								</span>
 							</div>
+						);
+					})}
+
+					{/* Shield to prevent morph cursor flicker in the label column area */}
+					{sections?.length && <div className="absolute top-0 bottom-0 right-12 w-[500px] pointer-events-auto" style={{ zIndex: 999 }} />}
+
+					{/* Section labels — rendered separately so they don't extend the morph group's hover zone */}
+					{sections?.map((section) => {
+						const isActive = section.id === activeSection;
+						const sectionPercent = Math.round(section.position * 100);
+						const isAbove = sectionPercent < roundedProgress;
+						const isLabelExpanded = isWheelHovered || isActive || (isTouchDevice && expandedLabelId === section.id);
+
+						return (
+							<motion.span
+								key={`label-${section.id}`}
+								className={`absolute right-12 uppercase font-mono whitespace-nowrap pointer-events-auto cursor-pointer ${
+									isActive ? "opacity-100 font-medium text-[10px] xl:text-xs 2xl:text-sm" : `text-[9px] xl:text-[10px] 2xl:text-xs ${isAbove ? "opacity-30" : "opacity-50"}`
+								}`}
+								onTouchStart={(e) => e.stopPropagation()}
+								onClick={isTouchDevice ? () => setExpandedLabelId((prev) => (prev === section.id ? null : section.id)) : undefined}
+								animate={{
+									maxWidth: isLabelExpanded ? expandedMaxWidth : 160,
+								}}
+								transition={{ type: "spring", stiffness: 400, damping: 30 }}
+								style={{
+									top: `${sectionPercent}%`,
+									transform: "translateY(-50%)",
+									zIndex: 1000,
+									overflow: "hidden",
+									textOverflow: "ellipsis",
+								}}
+							>
+								{section.title}
+							</motion.span>
 						);
 					})}
 
