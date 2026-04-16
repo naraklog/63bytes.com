@@ -327,7 +327,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									</header>
 
 									<div
-										className={`mt-3 text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h2]:font-fixel-display [&>h2]:tracking-[-0.03em] [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&>h3]:font-fixel-display [&>h3]:tracking-[-0.03em] [&>h4]:font-fixel-display [&>h4]:tracking-[-0.03em] [&>h5]:font-fixel-display [&>h5]:tracking-[-0.03em] [&>h6]:font-fixel-display [&>h6]:tracking-[-0.03em] [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_a]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
+										className={`mt-3 text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] space-y-4 [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-semibold [&>h2]:font-fixel-display [&>h2]:tracking-[-0.03em] [&>h3]:text-lg [&>h3]:sm:text-xl [&>h3]:font-semibold [&>h3]:font-fixel-display [&>h3]:tracking-[-0.03em] [&>h4]:font-fixel-display [&>h4]:tracking-[-0.03em] [&>h5]:font-fixel-display [&>h5]:tracking-[-0.03em] [&>h6]:font-fixel-display [&>h6]:tracking-[-0.03em] [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_a]:italic [&_:not(pre)>code]:text-[0.9em] ${theme.content}`}
 									>
 										{children}
 									</div>

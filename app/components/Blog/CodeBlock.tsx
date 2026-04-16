@@ -33,12 +33,9 @@ export default function CodeBlock({ className, children, ...props }: CodeBlockPr
 			if (!titleElement.querySelector(".code-title-icon")) {
 				const iconWrapper = document.createElement("span");
 				iconWrapper.className = "code-title-icon";
-
-				const img = document.createElement("img");
-				img.src = iconPath || fallbackIconSvg;
-				img.alt = lang || "code";
-				img.className = "code-title-icon-img";
-				iconWrapper.appendChild(img);
+				iconWrapper.setAttribute("role", "img");
+				iconWrapper.setAttribute("aria-label", lang || "code");
+				iconWrapper.style.setProperty("--code-title-icon-url", `url("${iconPath || fallbackIconSvg}")`);
 
 				titleElement.prepend(iconWrapper);
 			}
