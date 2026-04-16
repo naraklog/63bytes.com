@@ -271,7 +271,7 @@ pre.code-block {
 	display: inline-flex;
 	align-items: center;
 	padding: 0.4rem 0.6rem;
-	border: 1px solid oklch(0.465 0.015 280 / 0.2);
+	border: 1px solid oklch(0.465 0.015 280 / 0.15);
 	background: rgba(5, 5, 8, 0.85);
 	color: var(--foreground);
 	z-index: 2;
@@ -287,13 +287,13 @@ pre.code-block {
 [data-code-theme="light"] .code-copy-button {
 	background: var(--foreground);
 	color: var(--background);
-	border-color: oklch(0.465 0.015 280 / 0.2);
+	border-color: oklch(0.465 0.015 280 / 0.15);
 }
 
 [data-code-theme="dark"] .code-copy-button {
 	background: var(--background);
 	color: var(--foreground);
-	border-color: rgb(255 255 255 / 0.3);
+	border-color: oklch(0.465 0.015 280 / 0.3);
 }
 
 .code-copy-button[data-copied="true"] {
