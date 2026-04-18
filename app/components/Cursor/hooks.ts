@@ -184,7 +184,7 @@ export function useElementHandlers({ cursorRef, isCursorLockedRef, transitionAct
 
 		const setupTextElement = (element: HTMLElement) => {
 			const handleMouseOver = () => {
-				// Prevent morphing while scrolling or during transitions
+				if (element.closest("[data-no-morph]")) return;
 				if (!isCursorLockedRef.current && !isScrollingRef.current && !transitionActiveRef.current) {
 					cursor.style.setProperty("--cursor-width", "2px");
 					cursor.style.setProperty("--cursor-height", "1.2em");

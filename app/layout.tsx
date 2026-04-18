@@ -306,6 +306,62 @@ const departureMono = localFont({
 	variable: "--font-departure-mono",
 });
 
+const monaspaceNeon = localFont({
+	src: [
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-Light.woff2",
+			weight: "300",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-LightItalic.woff2",
+			weight: "300",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-Regular.woff2",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-Italic.woff2",
+			weight: "400",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-Medium.woff2",
+			weight: "500",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-MediumItalic.woff2",
+			weight: "500",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-SemiBold.woff2",
+			weight: "600",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-SemiBoldItalic.woff2",
+			weight: "600",
+			style: "italic",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-Bold.woff2",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "../public/fonts/code/MonaspaceNeonNF-BoldItalic.woff2",
+			weight: "700",
+			style: "italic",
+		},
+	],
+	variable: "--font-code",
+});
+
 export const metadata: Metadata = {
 	title: {
 		default: "63bytes",
@@ -330,7 +386,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} ${fixelDisplay.variable} ${fixelText.variable} ${departureMono.variable}`}>
+		<html lang="en" className={`${roobertSans.variable} ${roobertMono.variable} ${roobertSemiMono.variable} ${fixelDisplay.variable} ${fixelText.variable} ${departureMono.variable} ${monaspaceNeon.variable}`}>
 			<body className="antialiased">
 				<CSPostHogProvider>
 					<PageTransitionProvider>

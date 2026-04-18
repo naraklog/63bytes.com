@@ -9,7 +9,7 @@ const prettyCodeOptions: PrettyCodeOptions = {
 	keepBackground: false,
 	theme: {
 		dark: "github-dark",
-		light: "github-light-high-contrast",
+		light: "github-light-default",
 	},
 };
 

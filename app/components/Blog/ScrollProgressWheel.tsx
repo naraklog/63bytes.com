@@ -177,7 +177,14 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 	return (
 		<motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} className="contents">
 			{/* Clickable backdrop to close wheel when blur is active */}
-			{isOverlapping && onClose && <div className="fixed inset-0 z-30" onClick={onClose} aria-hidden="true" />}
+			{isOverlapping && onClose && (
+				<div
+					className="fixed inset-0 z-30 cursor-pointer"
+					onClick={onClose}
+					onTouchEnd={(e) => { e.preventDefault(); onClose(); }}
+					aria-hidden="true"
+				/>
+			)}
 			{/* Linear blur background for entire right side - only when overlapping with article */}
 			{isOverlapping && (
 				<div className="fixed right-0 top-0 bottom-0 w-[150%] pointer-events-none z-40">
@@ -304,8 +311,8 @@ export function ScrollProgressWheel({ onScrub, onClose, isDarkMode, theme, secti
 						);
 					})}
 
-					{/* Shield to prevent morph cursor flicker in the label column area */}
-					{sections?.length && <div className="absolute top-0 bottom-0 right-12 w-[500px] pointer-events-auto" style={{ zIndex: 999 }} />}
+					{/* Shield to prevent morph cursor flicker in the label column area (desktop only, overlapping only) */}
+					{isOverlapping && sections?.length && !isTouchDevice && <div className="absolute top-0 bottom-0 right-12 w-[500px] pointer-events-auto" style={{ zIndex: 999 }} />}
 
 					{/* Section labels — rendered separately so they don't extend the morph group's hover zone */}
 					{sections?.map((section, index) => {

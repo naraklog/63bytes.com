@@ -176,6 +176,38 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 		}
 	}, [mounted]);
 
+	// Prevent cursor morph on images inside the article
+	useEffect(() => {
+		const article = articleRef.current;
+		if (!mounted || !article) return;
+
+		const mark = () => {
+			for (const img of article.querySelectorAll("img")) {
+				img.setAttribute("data-no-morph", "");
+				const parent = img.parentElement;
+				if (!parent) continue;
+				// Mark wrapping <a> that contains only the image
+				if (parent.tagName === "A" && parent.children.length === 1) {
+					parent.setAttribute("data-no-morph", "");
+					const grandparent = parent.parentElement;
+					if (grandparent?.tagName === "P" && grandparent.children.length === 1) {
+						grandparent.setAttribute("data-no-morph", "");
+					}
+				}
+				// Mark wrapping <p> that contains only the image
+				if (parent.tagName === "P" && parent.children.length === 1) {
+					parent.setAttribute("data-no-morph", "");
+				}
+			}
+		};
+
+		mark();
+
+		const observer = new MutationObserver(mark);
+		observer.observe(article, { childList: true, subtree: true });
+		return () => observer.disconnect();
+	}, [mounted]);
+
 	useEffect(() => {
 		if (isPreloaderDone) return;
 		const handlePreloaderComplete = () => setIsPreloaderDone(true);
