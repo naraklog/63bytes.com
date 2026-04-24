@@ -23,11 +23,28 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
 	pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+	skipTrailingSlashRedirect: true,
 	env: {
 		NEXT_TELEMETRY_DISABLED: "1",
 	},
 	images: {
 		qualities: [70, 75, 100],
+	},
+	async rewrites() {
+		return [
+			{
+				source: "/ingest/static/:path*",
+				destination: "https://us-assets.i.posthog.com/static/:path*",
+			},
+			{
+				source: "/ingest/:path*",
+				destination: "https://us.i.posthog.com/:path*",
+			},
+			{
+				source: "/ingest/decide",
+				destination: "https://us.i.posthog.com/decide",
+			},
+		];
 	},
 };
 

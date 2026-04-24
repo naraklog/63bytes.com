@@ -4,12 +4,12 @@ import { PostHogProvider } from "posthog-js/react";
 import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export function PostHogPageview() {
+function PostHogPageview() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
 	useEffect(() => {
-		if (pathname) {
+		if (pathname && posthog.__loaded) {
 			let url = window.origin + pathname;
 			if (searchParams && searchParams.toString()) {
 				url = url + `?${searchParams.toString()}`;
@@ -24,13 +24,9 @@ export function PostHogPageview() {
 }
 
 export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
-	useEffect(() => {
-		posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-			api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
-			person_profiles: "identified_only",
-			capture_pageview: false, // We handle pageviews manually for better control in Next.js
-		});
-	}, []);
+	if (!posthog.__loaded) {
+		return <>{children}</>;
+	}
 
 	return (
 		<PostHogProvider client={posthog}>
