@@ -764,23 +764,23 @@ article blockquote > * + * {
 	margin-top: 0.5rem;
 }
 
-[data-code-theme="light"] article blockquote {
+article[data-code-theme="light"] blockquote {
 	border-color: oklch(0.465 0.015 280 / 0.3);
 	background-color: oklch(0.035 0.005 285 / 0.03);
 	color: oklch(0.035 0.005 285 / 0.7);
 }
 
-[data-code-theme="light"] article blockquote::before {
+article[data-code-theme="light"] blockquote::before {
 	color: oklch(0.035 0.005 285 / 0.35);
 }
 
-[data-code-theme="dark"] article blockquote {
+article[data-code-theme="dark"] blockquote {
 	border-color: oklch(0.465 0.015 280 / 0.5);
 	background-color: rgb(255 255 255 / 0.04);
 	color: oklch(0.985 0 0 / 0.75);
 }
 
-[data-code-theme="dark"] article blockquote::before {
+article[data-code-theme="dark"] blockquote::before {
 	color: oklch(0.985 0 0 / 0.4);
 }
 

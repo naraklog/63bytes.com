@@ -15,7 +15,7 @@ import { formatShortDate } from "../../utils/date";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
 import TransitionLink from "../../components/TransitionLink";
-import { MobileActionBar, SocialLinkItem, OutlinePanel, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
+import { MobileActionBar, SocialLinkItem, OutlinePanel, InlineOutline, CONTROL_BUTTON_BASE, THEME_PRESETS, BLOG_FONT_FAMILY, CONTACT_EMAIL, SOCIAL_LINKS } from "../../components/Blog/Post";
 import { useArticleOutline, useThemeSync } from "../../hooks";
 import type { BlogPostMetadata } from "../../utils/mdx";
 import { hasPreloaderRun } from "../../utils/preloader";
@@ -353,6 +353,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 												<span className="hidden sm:inline">{formattedDate}</span>
 											</time>
 										</div>
+										{!isOutlineOpen && outlineItems.length > 0 && <InlineOutline items={outlineItems} isDarkMode={isDarkMode} />}
 										{metadata.intro ? (
 											<p className={`w-full text-[0.8rem] sm:text-sm md:text-[0.9375rem] leading-[1.8] tracking-[-0.025em] ${theme.content}`}>{metadata.intro}</p>
 										) : null}
