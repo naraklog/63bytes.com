@@ -2,7 +2,7 @@
 
 import { useRef, useState, type MouseEvent, type PointerEvent } from "react";
 import { type ArticleItem } from "../../types/posts";
-import { resolvePhosphorIcon } from "../../utils/icons";
+import { resolveIcon } from "../../utils/icons";
 import TransitionLink from "../TransitionLink";
 import AuthorsList from "./AuthorsList";
 import PixelIconDisplay from "../Blog/DotMatrixIcon";
@@ -18,7 +18,7 @@ const DRAG_THRESHOLD = 10;
 export default function ArticleCard({ item, isListView, needsRightOutline = false }: ArticleCardProps) {
 	const startPos = useRef<{ x: number; y: number } | null>(null);
 	const [isHovered, setIsHovered] = useState(false);
-	const IconComponent = resolvePhosphorIcon(item.icon);
+	const resolvedIcon = resolveIcon(item.icon);
 
 	const handlePointerDown = (e: PointerEvent<HTMLAnchorElement>) => {
 		startPos.current = { x: e.clientX, y: e.clientY };
@@ -73,17 +73,18 @@ export default function ArticleCard({ item, isListView, needsRightOutline = fals
 						<>
 							<div className="flex items-center justify-between">
 								<div className="inline-flex h-20 w-20 items-center justify-center rounded-sm text-black" aria-hidden="true">
-									<PixelIconDisplay
-										svg={<IconComponent size={48} weight="regular" />}
-										gridSize={32}
-										dotScale={0.8}
-										sparkleDensity={0.8}
-										shape="square"
-										color="black"
-										sparkleEnabled={isHovered}
-										className="w-full h-full"
-										alignX="left"
-									/>
+								<PixelIconDisplay
+									svg={resolvedIcon.type === "phosphor" ? <resolvedIcon.Component size={48} weight="regular" /> : undefined}
+									svgUrl={resolvedIcon.type === "custom" ? resolvedIcon.url : undefined}
+									gridSize={32}
+									dotScale={0.8}
+									sparkleDensity={0.8}
+									shape="square"
+									color="black"
+									sparkleEnabled={isHovered}
+									className="w-full h-full"
+									alignX="left"
+								/>
 								</div>
 								<span className="border border-light-gray/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-wide text-white/80 bg-black/90">{item.category}</span>
 							</div>

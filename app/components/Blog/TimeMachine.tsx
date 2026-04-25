@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { type ArticleItem } from "../../types/posts";
 import PixelIconDisplay from "./DotMatrixIcon";
-import { resolvePhosphorIcon } from "../../utils/icons";
+import { resolveIcon } from "../../utils/icons";
 import AuthorsList from "./AuthorsList";
 import { LinearBlur } from "progressive-blur";
 import { useSound } from "../../context/SoundContext";
@@ -230,7 +230,7 @@ export function TimeMachine({ items }: TimeMachineProps) {
 							rotateX = -dragProgress * 12; // Tilt back
 						}
 
-						const IconComponent = resolvePhosphorIcon(item.icon);
+						const resolvedIcon = resolveIcon(item.icon);
 						const excerptClasses = "relative mt-3 overflow-hidden lg:flex-grow";
 						const metadataClasses = "mt-4 flex items-center gap-2";
 
@@ -267,14 +267,15 @@ export function TimeMachine({ items }: TimeMachineProps) {
 									>
 										<div className="flex items-center justify-between">
 											<div className="inline-flex h-20 w-20 items-center justify-center rounded-sm text-black" aria-hidden="true">
-												<PixelIconDisplay
-													svg={<IconComponent size={48} weight="regular" />}
-													gridSize={32}
-													dotScale={0.8}
-													sparkleDensity={0.8}
-													shape="square"
-													color="black"
-													sparkleEnabled={isHovered === index}
+											<PixelIconDisplay
+												svg={resolvedIcon.type === "phosphor" ? <resolvedIcon.Component size={48} weight="regular" /> : undefined}
+												svgUrl={resolvedIcon.type === "custom" ? resolvedIcon.url : undefined}
+												gridSize={32}
+												dotScale={0.8}
+												sparkleDensity={0.8}
+												shape="square"
+												color="black"
+												sparkleEnabled={isHovered === index}
 													className="w-full h-full"
 													alignX="left"
 												/>

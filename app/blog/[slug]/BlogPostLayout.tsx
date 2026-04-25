@@ -10,7 +10,7 @@ import AuthorsList from "../../components/Blog/AuthorsList";
 import PixelIconDisplay from "../../components/Blog/DotMatrixIcon";
 import { ScrollProgressWheel } from "../../components/Blog/ScrollProgressWheel";
 import Dither from "../../components/Dither";
-import { resolvePhosphorIcon } from "../../utils/icons";
+import { resolveIcon } from "../../utils/icons";
 import { formatShortDate } from "../../utils/date";
 import { ScrambleText } from "../../components/ScrambleText";
 import { usePageTransition } from "../../components/PageTransitionProvider";
@@ -223,7 +223,7 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 	const progressWheelStateLabel = isProgressWheelVisible ? "Progress wheel visible" : "Progress wheel hidden";
 	const progressWheelButtonVariant = isProgressWheelVisible ? theme.linkButton : theme.toggleButton;
 	const soundButtonVariant = isMuted ? theme.toggleButton : theme.linkButton;
-	const IconComponent = resolvePhosphorIcon(metadata.icon);
+	const resolvedIcon = resolveIcon(metadata.icon);
 
 	return (
 		<>
@@ -317,7 +317,8 @@ export default function BlogPostLayout({ metadata, readTimeLabel, formattedDate,
 									<header className="flex flex-col gap-4 items-center">
 										<div className="inline-flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center" aria-hidden="true">
 											<PixelIconDisplay
-												svg={<IconComponent size={48} weight="regular" />}
+												svg={resolvedIcon.type === "phosphor" ? <resolvedIcon.Component size={48} weight="regular" /> : undefined}
+												svgUrl={resolvedIcon.type === "custom" ? resolvedIcon.url : undefined}
 												gridSize={32}
 												dotScale={0.8}
 												sparkleDensity={0.7}

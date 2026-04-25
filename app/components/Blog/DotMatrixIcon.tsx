@@ -21,6 +21,7 @@ interface SparkleData {
 export interface PixelIconDisplayProps {
 	icon?: LucideIcon;
 	svg?: React.ReactNode;
+	svgUrl?: string;
 	gridSize: number;
 	dotScale: number;
 	color: string;
@@ -38,6 +39,7 @@ export interface PixelIconDisplayProps {
 const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
 	icon: Icon,
 	svg,
+	svgUrl,
 	gridSize,
 	dotScale,
 	color,
@@ -52,13 +54,15 @@ const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
 	const [pixelData, setPixelData] = useState<PixelData[]>([]);
 	const [isHovered, setIsHovered] = useState(false);
 
-	// 1. Convert Icon/SVG to Image URL
-	const contentToRender = Icon ? <Icon size={gridSize} strokeWidth={2.5} fill="none" color="black" /> : svg;
+	// 1. Convert Icon/SVG to Image URL (skipped when svgUrl is provided directly)
+	const contentToRender = svgUrl ? null : Icon ? <Icon size={gridSize} strokeWidth={2.5} fill="none" color="black" /> : svg;
 	const { imageUrl, hiddenRef } = useSvgToImage<HTMLDivElement>(contentToRender, [gridSize]);
+
+	const resolvedUrl = svgUrl ?? imageUrl;
 
 	// 2. Rasterization Phase: Runs when Image URL or GridSize changes
 	useEffect(() => {
-		if (!imageUrl) return;
+		if (!resolvedUrl) return;
 
 		const img = new Image();
 		img.onload = () => {
@@ -122,8 +126,8 @@ const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
 			}
 		};
 
-		img.src = imageUrl;
-	}, [imageUrl, gridSize, alignX, alignY]);
+		img.src = resolvedUrl;
+	}, [resolvedUrl, gridSize, alignX, alignY]);
 
 	// 2. Partition Phase: Split pixels into Static vs Sparkling
 	const { staticPath, sparkles } = useMemo(() => {
@@ -176,10 +180,12 @@ const PixelIconDisplay: React.FC<PixelIconDisplayProps> = ({
         }
       `}</style>
 
-			{/* Hidden Render Container */}
-			<div ref={hiddenRef} style={{ position: "absolute", opacity: 0, pointerEvents: "none", zIndex: -1 }} aria-hidden="true">
-				{contentToRender}
-			</div>
+			{/* Hidden Render Container (only needed for Phosphor/Lucide icon → SVG serialization path) */}
+			{!svgUrl && (
+				<div ref={hiddenRef} style={{ position: "absolute", opacity: 0, pointerEvents: "none", zIndex: -1 }} aria-hidden="true">
+					{contentToRender}
+				</div>
+			)}
 
 			{/* Actual Display */}
 			{pixelData.length > 0 ? (
