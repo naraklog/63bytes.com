@@ -178,6 +178,15 @@ export const PageTransitionProvider = ({ children }: { children: ReactNode }) =>
 			if (shouldPush) router.push(href);
 			return;
 		}
+
+		// Skip transition for blog internal navigation (/blog <-> /blog/[slug])
+		const isBlogInternal =
+			normalizedCurrent.startsWith("/blog") && normalizedTarget.startsWith("/blog");
+		if (isBlogInternal) {
+			if (shouldPush) router.push(href);
+			return;
+		}
+
 		if (isTransitioningRef.current) return;
 
 		isTransitioningRef.current = true;
