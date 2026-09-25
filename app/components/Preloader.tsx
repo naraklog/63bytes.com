@@ -1,37 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { LockKeyIcon, LockKeyOpenIcon, CaretDoubleUpIcon, ArrowUpIcon } from "@phosphor-icons/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "../utils/gsap";
 import { waitForAppReady } from "../utils/preloader";
-import { useTouchDevice } from "../hooks/useTouchDevice";
 import { useSound } from "../context/SoundContext";
 
 const Preloader = () => {
 	const [count, setCount] = useState(0);
 	const [loadingText, setLoadingText] = useState("Booting up...");
 	const [isReady, setIsReady] = useState(false);
-	const [isLocked, setIsLocked] = useState(true);
 	const exitTimelineRef = useRef<gsap.core.Tween | null>(null);
 	const introTimelineRef = useRef<gsap.core.Timeline | null>(null);
-	const labelRef = useRef<HTMLDivElement>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
-	const isTouchDevice = useTouchDevice();
-	const touchStartY = useRef<number>(0);
 	const { playSound } = useSound();
 
-	const startExit = () => {
+	const startExit = useCallback(() => {
 		if (exitTimelineRef.current) return;
 
 		// Restore body scroll before exit animation starts
 		document.body.style.overflow = "";
 
-		// Play unlock sound on exit
+		// Play exit sound
 		playSound("unlock");
 
 		exitTimelineRef.current = gsap.to(".preloader", {
 			yPercent: -100,
-			duration: 0.6,
+			duration: 0.5,
 			ease: "power4.inOut",
 			onStart: () => {
 				window.dispatchEvent(new CustomEvent("app:preloader-start-exit"));
@@ -40,70 +33,7 @@ const Preloader = () => {
 				window.dispatchEvent(new CustomEvent("app:preloader-complete"));
 			},
 		});
-	};
-
-	const handleUnlockClick = () => {
-		if (!isReady || !isLocked) return;
-		setIsLocked(false);
-		setTimeout(() => {
-			startExit();
-		}, 500);
-	};
-
-	// Use native non-passive event listeners to ensure preventDefault works
-	useEffect(() => {
-		const container = containerRef.current;
-		if (!container || !isReady || !isTouchDevice) return;
-
-		const handleTouchStart = (e: TouchEvent) => {
-			e.stopPropagation();
-			touchStartY.current = e.touches[0].clientY;
-		};
-
-		const handleTouchMove = (e: TouchEvent) => {
-			e.stopPropagation();
-
-			// Always prevent default to stop scroll
-			if (e.cancelable) {
-				e.preventDefault();
-			}
-
-			const currentY = e.touches[0].clientY;
-			const deltaY = currentY - touchStartY.current;
-
-			// Only allow dragging up for the animation
-			if (deltaY < 0) {
-				const percent = (deltaY / window.innerHeight) * 100;
-				gsap.set(container, { yPercent: percent });
-			}
-		};
-
-		const handleTouchEnd = (e: TouchEvent) => {
-			const currentY = e.changedTouches[0].clientY;
-			const deltaY = currentY - touchStartY.current;
-
-			// Threshold: 15% of screen height
-			if (deltaY < -window.innerHeight * 0.15) {
-				startExit();
-			} else {
-				gsap.to(container, {
-					yPercent: 0,
-					duration: 0.3,
-					ease: "power2.out",
-				});
-			}
-		};
-
-		container.addEventListener("touchstart", handleTouchStart, { passive: false });
-		container.addEventListener("touchmove", handleTouchMove, { passive: false });
-		container.addEventListener("touchend", handleTouchEnd);
-
-		return () => {
-			container.removeEventListener("touchstart", handleTouchStart);
-			container.removeEventListener("touchmove", handleTouchMove);
-			container.removeEventListener("touchend", handleTouchEnd);
-		};
-	}, [isReady, isTouchDevice]);
+	}, [playSound]);
 
 	// Lock body scroll on mount
 	useEffect(() => {
@@ -117,27 +47,15 @@ const Preloader = () => {
 		};
 	}, []);
 
-	// Track mouse position directly via ref when ready
 	useEffect(() => {
-		if (!isReady || isTouchDevice) return;
+		if (!isReady) return;
 
-		const handleMouseMove = (e: MouseEvent) => {
-			if (labelRef.current) {
-				// Use translate3d for better performance
-				labelRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY - 40}px, 0) translateX(-50%)`;
-			}
-		};
+		const exitTimer = window.setTimeout(() => {
+			startExit();
+		}, 180);
 
-		// Initial position
-		const initialX = window.innerWidth / 2;
-		const initialY = window.innerHeight / 2;
-		if (labelRef.current) {
-			labelRef.current.style.transform = `translate3d(${initialX}px, ${initialY - 40}px, 0) translateX(-50%)`;
-		}
-
-		window.addEventListener("mousemove", handleMouseMove);
-		return () => window.removeEventListener("mousemove", handleMouseMove);
-	}, [isReady, isTouchDevice]);
+		return () => window.clearTimeout(exitTimer);
+	}, [isReady, startExit]);
 
 	useEffect(() => {
 		const counter = { value: 0 };
@@ -160,7 +78,7 @@ const Preloader = () => {
 			introTimelineRef.current
 				.to(counter, {
 					value: 72,
-					duration: 1,
+					duration: 0.85,
 					ease: "power4.inOut",
 					onUpdate: updateProgress,
 				})
@@ -185,22 +103,22 @@ const Preloader = () => {
 						gsap.set(".flip-container span:last-child", { yPercent: 100 });
 					},
 					[],
-					"+=0.2"
+					"+=0.15"
 				)
 				.to(
 					".flip-container span:first-child",
 					{
 						yPercent: -100,
-						duration: 0.4,
+						duration: 0.32,
 						ease: "power4.inOut",
 					},
-					"+=0.2"
+					"+=0.15"
 				)
 				.to(
 					".flip-container span:last-child",
 					{
 						yPercent: 0,
-						duration: 0.4,
+						duration: 0.32,
 						ease: "power4.inOut",
 					},
 					"<"
@@ -210,11 +128,11 @@ const Preloader = () => {
 					counter,
 					{
 						value: 100,
-						duration: 0.75,
+						duration: 0.6,
 						ease: "power2.in",
 						onUpdate: updateProgress,
 					},
-					"+=0.4"
+					"+=0.25"
 				)
 				.to(
 					".hex-flip-text",
@@ -227,7 +145,7 @@ const Preloader = () => {
 					},
 					"<"
 				)
-				.to({}, { duration: 0.3 });
+				.to({}, { duration: 0.2 });
 		});
 
 		// Wait for both the intro animation AND the app to be ready
@@ -243,14 +161,7 @@ const Preloader = () => {
 	}, []);
 
 	return (
-		<div
-			ref={containerRef}
-			className={`preloader fixed bottom-0 left-0 w-full h-full bg-background z-200 flex flex-col items-center justify-center p-4 sm:p-8 isolate ${
-				isReady && !isTouchDevice ? "cursor-none" : ""
-			}`}
-			style={{ touchAction: "none" }}
-			onClick={!isTouchDevice ? handleUnlockClick : undefined}
-		>
+		<div className="preloader fixed bottom-0 left-0 w-full h-full bg-background z-200 flex flex-col items-center justify-center p-4 sm:p-8 isolate">
 			<div className="hex-container relative z-10 text-lg sm:text-lg md:text-xl lg:text-2xl text-foreground/80 font-mono">
 				<div className="scramble-text"></div>
 				<div className="hex-flip-text" style={{ opacity: 0 }}>
@@ -262,28 +173,6 @@ const Preloader = () => {
 					206279746573
 				</div>
 			</div>
-
-			{isReady &&
-				(isTouchDevice ? (
-					// Touch device: centered text in bottom half
-					<div className="absolute bottom-[25%] left-1/2 -translate-x-1/2 z-300 pointer-events-none text-foreground font-mono flex flex-col items-center gap-2 text-sm sm:text-base mix-blend-difference">
-						<CaretDoubleUpIcon weight="regular" className="animate-bounce" />
-						<span>Slide up</span>
-					</div>
-				) : (
-					// Desktop: mouse following
-					<div
-						ref={labelRef}
-						className="fixed top-0 left-0 z-300 pointer-events-none text-foreground font-mono flex items-center gap-2 text-sm sm:text-base will-change-transform mix-blend-difference"
-						style={{
-							// Initial off-screen position to avoid flash, updated by JS immediately
-							transform: "translate3d(-1000px, -1000px, 0)",
-						}}
-					>
-						{isLocked ? <LockKeyIcon weight="fill" /> : <LockKeyOpenIcon weight="fill" />}
-						Click to Unlock
-					</div>
-				))}
 
 			<div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 text-foreground/80 text-xs sm:text-sm font-mono">{loadingText}</div>
 			<div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 text-foreground/80 text-xs sm:text-sm font-mono">{count}%</div>

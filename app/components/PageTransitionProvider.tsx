@@ -81,7 +81,10 @@ const getWindowPath = () => {
 	}
 };
 
-const REVEAL_HOLD_DURATION = 0.15;
+const PANEL_TRANSITION_DURATION = 0.55;
+const SCRAMBLE_DURATION = 0.58;
+const TEXT_FADE_DURATION = 0.15;
+const REVEAL_HOLD_DURATION = 0.1;
 
 export const PageTransitionProvider = ({ children }: { children: ReactNode }) => {
 	const router = useRouter();
@@ -133,12 +136,12 @@ export const PageTransitionProvider = ({ children }: { children: ReactNode }) =>
 			.to({}, { duration: REVEAL_HOLD_DURATION })
 			.add(() => {
 				if (textEl) {
-					gsap.to(textEl, { autoAlpha: 0, duration: 0.2, ease: "power2.out" });
+					gsap.to(textEl, { autoAlpha: 0, duration: TEXT_FADE_DURATION, ease: "power2.out" });
 				}
 			})
 			.to(panelRef.current, {
 				yPercent: -100,
-				duration: 0.65,
+				duration: PANEL_TRANSITION_DURATION,
 			})
 			.set(panelRef.current, { yPercent: 100 });
 	});
@@ -160,7 +163,7 @@ export const PageTransitionProvider = ({ children }: { children: ReactNode }) =>
 		});
 
 		scrambleTimelineRef.current.set(target, { autoAlpha: 1, textContent: "" }).to(target, {
-			duration: 0.7,
+			duration: SCRAMBLE_DURATION,
 			scrambleText: {
 				text,
 				chars: "upperCase",
@@ -217,7 +220,7 @@ export const PageTransitionProvider = ({ children }: { children: ReactNode }) =>
 		});
 		coverTimelineRef.current = tl;
 
-		tl.to(panel, { yPercent: 0, duration: 0.65 }).add(() => {
+		tl.to(panel, { yPercent: 0, duration: PANEL_TRANSITION_DURATION }).add(() => {
 			startScramble(resolvedLabel);
 			if (shouldPush) {
 				router.push(href);

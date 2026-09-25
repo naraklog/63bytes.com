@@ -60,21 +60,29 @@ const LandingSection = forwardRef<HTMLElement, LandingSectionProps>(function Lan
 		rafId.current = requestAnimationFrame(() => {
 			// Get fresh rect on every frame to account for GSAP transforms (scale, translate)
 			// that are applied during scroll animations
-			const rect = sectionRef.current?.getBoundingClientRect();
-			if (!rect) return;
+			const section = sectionRef.current;
+			const rect = section?.getBoundingClientRect();
+			if (!section || !rect) return;
 
-			const x = clientX - rect.left;
-			const y = clientY - rect.top;
+			const borderLeft = section.clientLeft;
+			const borderTop = section.clientTop;
+			const scaleX = section.offsetWidth > 0 ? rect.width / section.offsetWidth : 1;
+			const scaleY = section.offsetHeight > 0 ? rect.height / section.offsetHeight : 1;
+
+			const x = (clientX - rect.left) / scaleX - borderLeft;
+			const y = (clientY - rect.top) / scaleY - borderTop;
+			const crosshairX = x - 0.5;
+			const crosshairY = y - 0.5;
 
 			if (horizontalRef.current) {
-				horizontalRef.current.style.transform = `translateY(${y}px)`;
+				horizontalRef.current.style.transform = `translateY(${crosshairY}px)`;
 			}
 			if (verticalRef.current) {
-				verticalRef.current.style.transform = `translateX(${x}px)`;
+				verticalRef.current.style.transform = `translateX(${crosshairX}px)`;
 			}
 			if (coordinatesRef.current) {
-				const centerX = rect.width / 2;
-				const centerY = rect.height / 2;
+				const centerX = section.clientWidth / 2;
+				const centerY = section.clientHeight / 2;
 
 				const dx = x - centerX;
 				const dy = centerY - y; // Invert Y so up is positive (North)
